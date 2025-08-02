@@ -6,7 +6,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import authRoutes from './routes/authRoutes.js'; // Importing routes
 import teacherRoutes from './routes/teacherRoutes.js'; // Importing teacher routes
-
+import contactRoutes from './routes/contactRoutes.js';
 // Load environment variables
 dotenv.config();
 
@@ -29,6 +29,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Routes
 app.use('/api/auth', authRoutes); // Mount auth routes
+app.use('/api', contactRoutes);
 app.use('/api/teachers', teacherRoutes); // Mount teacher routes
 
 // Basic route
