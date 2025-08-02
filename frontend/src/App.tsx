@@ -17,6 +17,10 @@ import AdminCourses from "./pages/admin/Courses";
 import AdminEnrollments from "./pages/admin/Enrollments";
 import AdminTeachers from "./pages/admin/Teachers";
 
+import StudentEnrollmentPage from "./pages/StudentEnrollmentPage";
+import AdminReviewsPage from "./pages/admin/AdminReviewsPage";
+import AdminContactPage from "./pages/admin/AdminContactPage";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -32,12 +36,15 @@ const App = () => (
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/apply-teacher" element={<TeacherApplicationPage />} />
+           <Route path="/enroll-course" element={<StudentEnrollmentPage />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<AdminDashboard />} />
             <Route path="courses" element={<AdminCourses />} />
             <Route path="enrollments" element={<AdminEnrollments />} />
             <Route path="teachers" element={<AdminTeachers />} />
+              <Route path="/admin/reviews" element={<AdminReviewsPage/>} />
+  <Route path="/admin/contact" element={<AdminContactPage />} />
           </Route>
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
