@@ -1,253 +1,318 @@
-import { useState } from "react";
-import { Plus, Edit, Trash2, Mail, Phone } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { mockTeachers, type Teacher } from "@/lib/mockData";
-import { useToast } from "@/hooks/use-toast";
+import React, { useState, useEffect } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card';
+import { Button } from '../../components/ui/button';
+import { Input } from '../../components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../components/ui/select';
+import { Badge } from '../../components/ui/badge';
+import { Avatar, AvatarFallback, AvatarImage } from '../../components/ui/avatar';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '../../components/ui/dialog';
+import { Loader2, Search, Eye, Download, Trash2, Mail, Phone } from 'lucide-react';
+import { toast } from 'sonner';
+
+interface Teacher {
+  _id: string;
+  name: string;
+  email: string;
+  contactNumber: string;
+  address: string;
+  city: string;
+  country: string;
+  state: string;
+  zipCode: string;
+  gender: 'Male' | 'Female' | 'Other';
+  dateOfBirth: string;
+  qualification: string;
+  subject: string;
+  expertAt: string;
+  appliedFor: 'IELTS' | 'English' | 'Quran';
+  whyFitForJob: string;
+  image: string;
+  resume: string;
+  createdAt: string;
+  updatedAt: string;
+}
 
 export default function AdminTeachers() {
-  const [teachers, setTeachers] = useState<Teacher[]>(mockTeachers);
-  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
-  const [editingTeacher, setEditingTeacher] = useState<Teacher | null>(null);
-  const [formData, setFormData] = useState({
-    name: '',
-    expertise: '',
-    email: '',
-    phone: '',
-    bio: '',
-    image: ''
+  const [teachers, setTeachers] = useState<Teacher[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filterSubject, setFilterSubject] = useState<string>('all');
+  const [selectedTeacher, setSelectedTeacher] = useState<Teacher | null>(null);
+
+  useEffect(() => {
+    fetchTeachers();
+  }, []);
+
+  const fetchTeachers = async () => {
+    try {
+      const response = await fetch('http://localhost:8000/api/teachers');
+      const data = await response.json();
+      
+      if (response.ok) {
+        setTeachers(data.data);
+      } else {
+        toast.error('Failed to fetch teachers');
+      }
+    } catch (error) {
+      toast.error('Network error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteTeacher = async (teacherId: string) => {
+    if (!confirm('Are you sure you want to delete this teacher application?')) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`http://localhost:8000/api/teachers/${teacherId}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        toast.success('Teacher application deleted successfully');
+        fetchTeachers();
+      } else {
+        toast.error('Failed to delete teacher application');
+      }
+    } catch (error) {
+      toast.error('Network error');
+    }
+  };
+
+  const filteredTeachers = teachers.filter(teacher => {
+    const matchesSearch = teacher.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         teacher.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         teacher.subject.toLowerCase().includes(searchQuery.toLowerCase());
+    
+    const matchesFilter = filterSubject === 'all' || teacher.appliedFor === filterSubject;
+    
+    return matchesSearch && matchesFilter;
   });
-  const { toast } = useToast();
 
-  const resetForm = () => {
-    setFormData({
-      name: '',
-      expertise: '',
-      email: '',
-      phone: '',
-      bio: '',
-      image: ''
+  const getSubjectBadgeColor = (subject: string) => {
+    switch (subject) {
+      case 'IELTS':
+        return 'bg-blue-100 text-blue-800';
+      case 'English':
+        return 'bg-green-100 text-green-800';
+      case 'Quran':
+        return 'bg-purple-100 text-purple-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
     });
   };
 
-  const handleAddTeacher = () => {
-    const newTeacher: Teacher = {
-      id: Date.now().toString(),
-      name: formData.name,
-      expertise: formData.expertise,
-      email: formData.email,
-      phone: formData.phone,
-      bio: formData.bio,
-      image: formData.image || `https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face`,
-      coursesCount: 0
-    };
-
-    setTeachers([...teachers, newTeacher]);
-    setIsAddDialogOpen(false);
-    resetForm();
-    toast({
-      title: "Teacher added",
-      description: "New teacher has been successfully added.",
-    });
-  };
-
-  const handleEditTeacher = () => {
-    if (!editingTeacher) return;
-
-    const updatedTeachers = teachers.map(teacher =>
-      teacher.id === editingTeacher.id
-        ? {
-            ...teacher,
-            name: formData.name,
-            expertise: formData.expertise,
-            email: formData.email,
-            phone: formData.phone,
-            bio: formData.bio,
-            image: formData.image || teacher.image
-          }
-        : teacher
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
     );
-
-    setTeachers(updatedTeachers);
-    setEditingTeacher(null);
-    resetForm();
-    toast({
-      title: "Teacher updated",
-      description: "Teacher has been successfully updated.",
-    });
-  };
-
-  const handleDeleteTeacher = (teacherId: string) => {
-    setTeachers(teachers.filter(teacher => teacher.id !== teacherId));
-    toast({
-      title: "Teacher deleted",
-      description: "Teacher has been successfully deleted.",
-    });
-  };
-
-  const openEditDialog = (teacher: Teacher) => {
-    setEditingTeacher(teacher);
-    setFormData({
-      name: teacher.name,
-      expertise: teacher.expertise,
-      email: teacher.email,
-      phone: teacher.phone,
-      bio: teacher.bio,
-      image: teacher.image
-    });
-  };
-
-  const getInitials = (name: string) => {
-    return name.split(' ').map(n => n[0]).join('').toUpperCase();
-  };
+  }
 
   return (
-    <div className="p-6 space-y-6">
-      {/* Header */}
+    <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Teachers</h1>
-          <p className="text-muted-foreground">Manage your teaching staff</p>
+          <h1 className="text-3xl font-bold">Teacher Applications</h1>
+          <p className="text-gray-600">Manage teacher applications and view candidate details</p>
         </div>
-        <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-          <DialogTrigger asChild>
-            <Button variant="gradient" className="gap-2">
-              <Plus className="h-4 w-4" />
-              Add Teacher
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-md">
-            <DialogHeader>
-              <DialogTitle>Add New Teacher</DialogTitle>
-              <DialogDescription>
-                Add a new teacher to your platform.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="name">Full Name</Label>
-                <Input
-                  id="name"
-                  value={formData.name}
-                  onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                  placeholder="Enter teacher's full name"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="expertise">Expertise</Label>
-                <Input
-                  id="expertise"
-                  value={formData.expertise}
-                  onChange={(e) => setFormData(prev => ({ ...prev, expertise: e.target.value }))}
-                  placeholder="e.g. Full-Stack Development"
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={formData.email}
-                    onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                    placeholder="teacher@email.com"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="phone">Phone</Label>
-                  <Input
-                    id="phone"
-                    value={formData.phone}
-                    onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
-                    placeholder="+1 (555) 123-4567"
-                  />
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="bio">Bio</Label>
-                <Textarea
-                  id="bio"
-                  value={formData.bio}
-                  onChange={(e) => setFormData(prev => ({ ...prev, bio: e.target.value }))}
-                  placeholder="Brief description about the teacher"
-                  rows={3}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="image">Profile Image URL (optional)</Label>
-                <Input
-                  id="image"
-                  value={formData.image}
-                  onChange={(e) => setFormData(prev => ({ ...prev, image: e.target.value }))}
-                  placeholder="https://example.com/image.jpg"
-                />
-              </div>
-              <Button onClick={handleAddTeacher} className="w-full" variant="gradient">
-                Add Teacher
-              </Button>
-            </div>
-          </DialogContent>
-        </Dialog>
+        <Badge variant="secondary" className="text-sm">
+          {filteredTeachers.length} applications
+        </Badge>
       </div>
 
-      {/* Teachers Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {teachers.map((teacher) => (
-          <Card key={teacher.id} className="hover:shadow-lg transition-shadow">
-            <CardContent className="p-6">
-              <div className="flex flex-col items-center text-center space-y-4">
-                <Avatar className="w-20 h-20">
-                  <AvatarImage src={teacher.image} alt={teacher.name} />
-                  <AvatarFallback className="text-lg font-semibold">
-                    {getInitials(teacher.name)}
-                  </AvatarFallback>
-                </Avatar>
+      {/* Filters */}
+      <Card>
+        <CardContent className="pt-6">
+          <div className="flex gap-4">
+            <div className="flex-1">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <Input
+                  placeholder="Search by name, email, or subject..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+            </div>
+            <Select value={filterSubject} onValueChange={setFilterSubject}>
+              <SelectTrigger className="w-48">
+                <SelectValue placeholder="Filter by subject" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Subjects</SelectItem>
+                <SelectItem value="IELTS">IELTS</SelectItem>
+                <SelectItem value="English">English</SelectItem>
+                <SelectItem value="Quran">Quran</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Teachers List */}
+      <div className="grid gap-4">
+        {filteredTeachers.map((teacher) => (
+          <Card key={teacher._id} className="hover:shadow-md transition-shadow">
+            <CardContent className="pt-6">
+              <div className="flex items-start justify-between">
+                <div className="flex items-start space-x-4">
+                  <Avatar className="h-16 w-16">
+                    <AvatarImage src={`http://localhost:8000/uploads/images/${teacher.image}`} />
+                    <AvatarFallback>{teacher.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                  </Avatar>
+                  
+                  <div className="flex-1">
+                    <div className="flex items-center space-x-2 mb-2">
+                      <h3 className="text-lg font-semibold">{teacher.name}</h3>
+                      <Badge className={getSubjectBadgeColor(teacher.appliedFor)}>
+                        {teacher.appliedFor}
+                      </Badge>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm text-gray-600">
+                      <div className="flex items-center space-x-2">
+                        <Mail className="h-4 w-4" />
+                        <span>{teacher.email}</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Phone className="h-4 w-4" />
+                        <span>{teacher.contactNumber}</span>
+                      </div>
+                      <div>
+                        <span className="font-medium">Subject:</span> {teacher.subject}
+                      </div>
+                      <div>
+                        <span className="font-medium">Applied:</span> {formatDate(teacher.createdAt)}
+                      </div>
+                    </div>
+                    
+                    <div className="mt-2">
+                      <p className="text-sm text-gray-600 line-clamp-2">
+                        <span className="font-medium">Expertise:</span> {teacher.expertAt}
+                      </p>
+                    </div>
+                  </div>
+                </div>
                 
-                <div>
-                  <h3 className="font-semibold text-lg">{teacher.name}</h3>
-                  <p className="text-sm text-muted-foreground">{teacher.expertise}</p>
-                </div>
-
-                <p className="text-sm text-center">{teacher.bio}</p>
-
-                <div className="flex items-center space-x-4 text-sm text-muted-foreground">
-                  <div className="flex items-center">
-                    <Mail className="h-4 w-4 mr-1" />
-                    <span className="truncate max-w-32">{teacher.email}</span>
-                  </div>
-                  <div className="flex items-center">
-                    <Phone className="h-4 w-4 mr-1" />
-                    <span>{teacher.phone}</span>
-                  </div>
-                </div>
-
-                <div className="text-center">
-                  <p className="text-sm font-medium">{teacher.coursesCount} Courses</p>
-                </div>
-
-                <div className="flex space-x-2 w-full">
+                <div className="flex items-center space-x-2">
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setSelectedTeacher(teacher)}
+                      >
+                        <Eye className="h-4 w-4 mr-2" />
+                        View Details
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+                      <DialogHeader>
+                        <DialogTitle>Teacher Application Details</DialogTitle>
+                        <DialogDescription>
+                          Complete information for {teacher.name}
+                        </DialogDescription>
+                      </DialogHeader>
+                      
+                      {selectedTeacher && (
+                        <div className="space-y-4">
+                          <div className="flex items-center space-x-4">
+                            <Avatar className="h-20 w-20">
+                              <AvatarImage src={`http://localhost:8000/uploads/images/${selectedTeacher.image}`} />
+                              <AvatarFallback>{selectedTeacher.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                            </Avatar>
+                            <div>
+                              <h3 className="text-xl font-semibold">{selectedTeacher.name}</h3>
+                              <p className="text-gray-600">{selectedTeacher.email}</p>
+                              <Badge className={`mt-2 ${getSubjectBadgeColor(selectedTeacher.appliedFor)}`}>
+                                {selectedTeacher.appliedFor}
+                              </Badge>
+                            </div>
+                          </div>
+                          
+                          <div className="grid grid-cols-2 gap-4">
+                            <div>
+                              <label className="font-medium">Contact Number</label>
+                              <p className="text-gray-600">{selectedTeacher.contactNumber}</p>
+                            </div>
+                            <div>
+                              <label className="font-medium">Gender</label>
+                              <p className="text-gray-600">{selectedTeacher.gender}</p>
+                            </div>
+                            <div>
+                              <label className="font-medium">Date of Birth</label>
+                              <p className="text-gray-600">{formatDate(selectedTeacher.dateOfBirth)}</p>
+                            </div>
+                            <div>
+                              <label className="font-medium">Qualification</label>
+                              <p className="text-gray-600">{selectedTeacher.qualification}</p>
+                            </div>
+                          </div>
+                          
+                          <div>
+                            <label className="font-medium">Address</label>
+                            <p className="text-gray-600">
+                              {selectedTeacher.address}, {selectedTeacher.city}, {selectedTeacher.state}, {selectedTeacher.country} {selectedTeacher.zipCode}
+                            </p>
+                          </div>
+                          
+                          <div>
+                            <label className="font-medium">Subject</label>
+                            <p className="text-gray-600">{selectedTeacher.subject}</p>
+                          </div>
+                          
+                          <div>
+                            <label className="font-medium">Expertise</label>
+                            <p className="text-gray-600">{selectedTeacher.expertAt}</p>
+                          </div>
+                          
+                          <div>
+                            <label className="font-medium">Why Fit for This Job</label>
+                            <p className="text-gray-600">{selectedTeacher.whyFitForJob}</p>
+                          </div>
+                          
+                          <div className="flex space-x-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => window.open(`http://localhost:8000/uploads/images/${selectedTeacher.image}`, '_blank')}
+                            >
+                              <Eye className="h-4 w-4 mr-2" />
+                              View Image
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => window.open(`http://localhost:8000/uploads/resumes/${selectedTeacher.resume}`, '_blank')}
+                            >
+                              <Download className="h-4 w-4 mr-2" />
+                              Download Resume
+                            </Button>
+                          </div>
+                        </div>
+                      )}
+                    </DialogContent>
+                  </Dialog>
+                  
                   <Button
-                    variant="outline"
+                    variant="destructive"
                     size="sm"
-                    onClick={() => openEditDialog(teacher)}
-                    className="flex-1"
+                    onClick={() => handleDeleteTeacher(teacher._id)}
                   >
-                    <Edit className="h-4 w-4 mr-1" />
-                    Edit
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleDeleteTeacher(teacher.id)}
-                    className="flex-1"
-                  >
-                    <Trash2 className="h-4 w-4 mr-1" />
-                    Delete
+                    <Trash2 className="h-4 w-4" />
                   </Button>
                 </div>
               </div>
@@ -256,74 +321,13 @@ export default function AdminTeachers() {
         ))}
       </div>
 
-      {/* Edit Dialog */}
-      <Dialog open={!!editingTeacher} onOpenChange={() => setEditingTeacher(null)}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle>Edit Teacher</DialogTitle>
-            <DialogDescription>
-              Update teacher information.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="edit-name">Full Name</Label>
-              <Input
-                id="edit-name"
-                value={formData.name}
-                onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="edit-expertise">Expertise</Label>
-              <Input
-                id="edit-expertise"
-                value={formData.expertise}
-                onChange={(e) => setFormData(prev => ({ ...prev, expertise: e.target.value }))}
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="edit-email">Email</Label>
-                <Input
-                  id="edit-email"
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="edit-phone">Phone</Label>
-                <Input
-                  id="edit-phone"
-                  value={formData.phone}
-                  onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
-                />
-              </div>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="edit-bio">Bio</Label>
-              <Textarea
-                id="edit-bio"
-                value={formData.bio}
-                onChange={(e) => setFormData(prev => ({ ...prev, bio: e.target.value }))}
-                rows={3}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="edit-image">Profile Image URL</Label>
-              <Input
-                id="edit-image"
-                value={formData.image}
-                onChange={(e) => setFormData(prev => ({ ...prev, image: e.target.value }))}
-              />
-            </div>
-            <Button onClick={handleEditTeacher} className="w-full" variant="gradient">
-              Update Teacher
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+      {filteredTeachers.length === 0 && (
+        <Card>
+          <CardContent className="pt-6 text-center">
+            <p className="text-gray-500">No teacher applications found</p>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }
