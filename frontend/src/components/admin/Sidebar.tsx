@@ -1,33 +1,45 @@
 import { NavLink, useLocation } from "react-router-dom";
-import { 
-  LayoutDashboard, 
-  BookOpen, 
-  Users, 
+import {
+  LayoutDashboard,
+  BookOpen,
+  Users,
   GraduationCap,
-  LogOut
+  LogOut,
+  MessageSquare, // for Contact
+  Star // for Reviews
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navigation = [
   {
-    name: 'Dashboard',
-    href: '/admin',
+    name: "Dashboard",
+    href: "/admin",
     icon: LayoutDashboard,
   },
   {
-    name: 'Courses',
-    href: '/admin/courses',
+    name: "Courses",
+    href: "/admin/courses",
     icon: BookOpen,
   },
   {
-    name: 'Enrollments',
-    href: '/admin/enrollments',
+    name: "Enrollments",
+    href: "/admin/enrollments",
     icon: Users,
   },
   {
-    name: 'Teachers',
-    href: '/admin/teachers',
+    name: "Teachers",
+    href: "/admin/teachers",
     icon: GraduationCap,
+  },
+  {
+    name: "Reviews",
+    href: "/admin/reviews",
+    icon: Star,
+  },
+  {
+    name: "Contact",
+    href: "/admin/contact",
+    icon: MessageSquare,
   },
 ];
 
@@ -71,7 +83,7 @@ export default function Sidebar() {
         <button
           onClick={() => {
             // In a real app, handle logout here
-            window.location.href = '/';
+            window.location.href = "/";
           }}
           className="flex items-center w-full px-4 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent rounded-lg transition-colors"
         >

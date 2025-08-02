@@ -7,6 +7,7 @@ import { fileURLToPath } from 'url';
 import authRoutes from './routes/authRoutes.js'; // Importing routes
 import teacherRoutes from './routes/teacherRoutes.js'; // Importing teacher routes
 import contactRoutes from './routes/contactRoutes.js';
+import studentRoutes from './routes/studentRoutes.js';
 // Load environment variables
 dotenv.config();
 
@@ -29,9 +30,9 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Routes
 app.use('/api/auth', authRoutes); // Mount auth routes
-app.use('/api', contactRoutes);
+app.use('/api/contacts', contactRoutes);
 app.use('/api/teachers', teacherRoutes); // Mount teacher routes
-
+app.use('/api/students', studentRoutes);
 // Basic route
 app.get('/', (req, res) => {
   res.send('<h1>Welcome to the Tutor Web Application</h1>');

@@ -9,15 +9,15 @@ import {
 const router = express.Router();
 
 // POST /api/contact
-router.post('/contact/add', addContact);
+router.post('/get/add', addContact);
 
 // GET /api/contacts
-router.get('/contact/get', getAllContacts);
+router.get('/getAll', getAllContacts);
 
 // GET /api/contact/:id
-router.get('/contact/get/:id', getContactById);
+router.get('/get/:id', getContactById);
 
 // DELETE /api/contact/:id
-router.delete('/contact/delete/:id', deleteContact);
+router.delete('/delete/:id', deleteContact);
 
 export default router;
