@@ -409,35 +409,7 @@ export function TeacherApplicationForm({ onSuccess, onError }: TeacherApplicatio
             <h3 className="text-lg font-semibold border-b pb-2">Documents</h3>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Image Upload */}
-              <div className="space-y-4">
-                <Label htmlFor="image">Profile Image *</Label>
-                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-gray-400 transition-colors">
-                  <input
-                    id="image"
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageChange}
-                    className="hidden"
-                  />
-                  <label htmlFor="image" className="cursor-pointer">
-                    <ImageIcon className="mx-auto h-12 w-12 text-gray-400" />
-                    <p className="mt-2 text-sm text-gray-600">
-                      {imageFile ? imageFile.name : 'Click to upload image'}
-                    </p>
-                    <p className="text-xs text-gray-500">PNG, JPG, GIF, WebP up to 5MB</p>
-                  </label>
-                </div>
-                {imagePreview && (
-                  <div className="mt-2">
-                    <img
-                      src={imagePreview}
-                      alt="Preview"
-                      className="w-32 h-32 object-cover rounded-lg border"
-                    />
-                  </div>
-                )}
-              </div>
+             
 
               {/* Resume Upload */}
               <div className="space-y-4">
