@@ -54,7 +54,7 @@ const Navbar = () => {
               </Link>
             ))}
             <Button variant="gradient-secondary" size="sm">
-              Get Started
+             Join as a Teacher
             </Button>
           </div>
 
@@ -90,7 +90,7 @@ const Navbar = () => {
                 </Link>
               ))}
               <Button variant="gradient-secondary" size="sm" className="w-fit">
-                Get Started
+               Join as a Teacher
               </Button>
             </div>
           </div>
