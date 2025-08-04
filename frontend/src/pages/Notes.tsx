@@ -6,9 +6,12 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
-import { Search, Download, Eye, FileText, Calendar, User, Tag, Filter, BookOpen } from 'lucide-react';
+import { Search, Download, Eye, FileText, Calendar, User, Tag, Filter, BookOpen, Info, Star, Clock, Share2, Bookmark, ExternalLink, BarChart3 } from 'lucide-react';
 import { formatDate } from '@/lib/utils';
+import Navbar from '@/components/layout/Navbar';
+import Footer from '@/components/layout/Footer';
 
 interface Notes {
   _id: string;
@@ -38,8 +41,13 @@ const Notes = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState('');
-  const [difficultyFilter, setDifficultyFilter] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState('all');
+  const [difficultyFilter, setDifficultyFilter] = useState('all');
+  
+  // Modal states
+  const [selectedNote, setSelectedNote] = useState<Notes | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [downloading, setDownloading] = useState<string | null>(null);
 
   const categories = ['Grammar', 'Vocabulary', 'Reading', 'Writing', 'Listening', 'Speaking', 'General'];
   const difficulties = ['Beginner', 'Intermediate', 'Advanced'];
@@ -55,8 +63,8 @@ const Notes = () => {
         page: currentPage,
         limit: 12,
         search: searchTerm || undefined,
-        category: categoryFilter || undefined,
-        difficulty: difficultyFilter || undefined
+        category: categoryFilter === 'all' ? undefined : categoryFilter || undefined,
+        difficulty: difficultyFilter === 'all' ? undefined : difficultyFilter || undefined
       });
 
       setNotes(response.data);
@@ -72,6 +80,7 @@ const Notes = () => {
 
   const handleDownload = async (id: string) => {
     try {
+      setDownloading(id);
       await notesAPI.downloadNotes(id);
       const note = notes.find(n => n._id === id);
       if (note) {
@@ -81,14 +90,21 @@ const Notes = () => {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-        toast.success('Download started');
+        toast.success('Download started successfully!');
         // Refresh the notes to update download count
         fetchNotes();
       }
     } catch (error) {
       console.error('Error downloading notes:', error);
       toast.error('Failed to download notes');
+    } finally {
+      setDownloading(null);
     }
+  };
+
+  const openNoteDetails = (note: Notes) => {
+    setSelectedNote(note);
+    setIsModalOpen(true);
   };
 
   const getFileIcon = (fileType: string) => {
@@ -102,7 +118,7 @@ const Notes = () => {
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
-      case 'Beginner': return 'bg-blue-100 text-blue-800';
+      case 'Beginner': return 'bg-primary/10 text-primary';
       case 'Intermediate': return 'bg-orange-100 text-orange-800';
       case 'Advanced': return 'bg-red-100 text-red-800';
       default: return 'bg-gray-100 text-gray-800';
@@ -122,44 +138,42 @@ const Notes = () => {
     }
   };
 
+  const getDifficultyStars = (difficulty: string) => {
+    switch (difficulty) {
+      case 'Beginner': return '⭐';
+      case 'Intermediate': return '⭐⭐';
+      case 'Advanced': return '⭐⭐⭐';
+      default: return '⭐';
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50">
+    <div className="min-h-screen bg-gradient-to-br from-primary/5 to-accent/5">
+      <Navbar />
+      
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-r from-blue-600 to-purple-600 text-white py-20">
-        <div className="absolute inset-0 bg-black/20"></div>
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="text-center max-w-4xl mx-auto">
-            <div className="flex justify-center mb-6">
-              <div className="bg-white/20 backdrop-blur-sm rounded-full p-4">
-                <BookOpen className="w-12 h-12 text-white" />
-              </div>
-            </div>
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">
-              Educational Notes & Materials
-            </h1>
-            <p className="text-xl md:text-2xl text-blue-100 mb-8">
-              Access comprehensive study materials, notes, and resources to enhance your learning journey
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <div className="bg-white/20 backdrop-blur-sm rounded-lg p-4">
-                <div className="text-2xl font-bold">{totalItems}</div>
-                <div className="text-blue-100">Available Notes</div>
-              </div>
-              <div className="bg-white/20 backdrop-blur-sm rounded-lg p-4">
-                <div className="text-2xl font-bold">{categories.length}</div>
-                <div className="text-blue-100">Categories</div>
-              </div>
-              <div className="bg-white/20 backdrop-blur-sm rounded-lg p-4">
-                <div className="text-2xl font-bold">{difficulties.length}</div>
-                <div className="text-blue-100">Difficulty Levels</div>
-              </div>
-            </div>
+      <section className="relative overflow-hidden bg-gradient-to-r from-primary via-primary-dark to-accent py-20 lg:py-32">
+        <div className="absolute inset-0">
+          <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.1)_1px,transparent_1px)] bg-[length:60px_60px]"></div>
+        </div>
+        
+        <div className="container mx-auto px-4 text-center relative z-10">
+          <div className="inline-flex items-center px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-white/90 text-sm font-medium mb-6">
+            <BookOpen className="w-4 h-4 mr-2" />
+            Study Materials
           </div>
+          
+          <h1 className="text-5xl md:text-6xl font-bold mb-6 text-white">
+            Educational Notes & Materials
+          </h1>
+          <p className="text-xl text-white/90 max-w-3xl mx-auto">
+            Access comprehensive study materials, notes, and resources to enhance your learning journey
+          </p>
         </div>
       </section>
 
       {/* Search and Filters */}
-      <section className="py-8 bg-white/80 backdrop-blur-sm">
+      <section className="py-8 bg-white">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="md:col-span-2">
@@ -170,18 +184,18 @@ const Notes = () => {
                   placeholder="Search by title, description, subject, or tags..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 bg-white/90 backdrop-blur-sm border-gray-200 focus:border-blue-500"
+                  className="pl-10"
                 />
               </div>
             </div>
             <div>
               <label className="text-sm font-medium text-gray-700 mb-2 block">Category</label>
               <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-                <SelectTrigger className="bg-white/90 backdrop-blur-sm border-gray-200">
+                <SelectTrigger>
                   <SelectValue placeholder="All categories" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All categories</SelectItem>
+                  <SelectItem value="all">All categories</SelectItem>
                   {categories.map((category) => (
                     <SelectItem key={category} value={category}>{category}</SelectItem>
                   ))}
@@ -191,11 +205,11 @@ const Notes = () => {
             <div>
               <label className="text-sm font-medium text-gray-700 mb-2 block">Difficulty</label>
               <Select value={difficultyFilter} onValueChange={setDifficultyFilter}>
-                <SelectTrigger className="bg-white/90 backdrop-blur-sm border-gray-200">
+                <SelectTrigger>
                   <SelectValue placeholder="All difficulties" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All difficulties</SelectItem>
+                  <SelectItem value="all">All difficulties</SelectItem>
                   {difficulties.map((difficulty) => (
                     <SelectItem key={difficulty} value={difficulty}>{difficulty}</SelectItem>
                   ))}
@@ -208,8 +222,8 @@ const Notes = () => {
               variant="outline" 
               onClick={() => {
                 setSearchTerm('');
-                setCategoryFilter('');
-                setDifficultyFilter('');
+                setCategoryFilter('all');
+                setDifficultyFilter('all');
               }}
               className="flex items-center gap-2"
             >
@@ -225,7 +239,7 @@ const Notes = () => {
         <div className="container mx-auto px-4">
           {loading ? (
             <div className="text-center py-16">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
               <p className="text-gray-600 text-lg">Loading educational materials...</p>
             </div>
           ) : notes.length === 0 ? (
@@ -259,10 +273,10 @@ const Notes = () => {
                           </div>
                         </div>
                         <Badge className={`text-xs ${getDifficultyColor(note.difficulty)}`}>
-                          {note.difficulty}
+                          {getDifficultyStars(note.difficulty)} {note.difficulty}
                         </Badge>
                       </div>
-                      <CardTitle className="text-lg leading-tight group-hover:text-blue-600 transition-colors">
+                      <CardTitle className="text-lg leading-tight group-hover:text-primary transition-colors cursor-pointer" onClick={() => openNoteDetails(note)}>
                         {note.title}
                       </CardTitle>
                       <CardDescription className="line-clamp-2 text-sm">
@@ -319,13 +333,28 @@ const Notes = () => {
                           </div>
                         )}
 
-                        <Button 
-                          onClick={() => handleDownload(note._id)}
-                          className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
-                        >
-                          <Download className="w-4 h-4 mr-2" />
-                          Download Notes
-                        </Button>
+                        <div className="flex gap-2">
+                          <Button 
+                            onClick={() => openNoteDetails(note)}
+                            variant="outline"
+                            className="flex-1"
+                          >
+                            <Info className="w-4 h-4 mr-2" />
+                            Details
+                          </Button>
+                          <Button 
+                            onClick={() => handleDownload(note._id)}
+                            disabled={downloading === note._id}
+                            className="flex-1 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-white"
+                          >
+                            {downloading === note._id ? (
+                              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                            ) : (
+                              <Download className="w-4 h-4 mr-2" />
+                            )}
+                            {downloading === note._id ? 'Downloading...' : 'Download'}
+                          </Button>
+                        </div>
                       </div>
                     </CardContent>
                   </Card>
@@ -347,7 +376,7 @@ const Notes = () => {
                         <PaginationItem key={page}>
                           <PaginationLink
                             onClick={() => setCurrentPage(page)}
-                            className={currentPage === page ? 'bg-blue-600 text-white' : 'cursor-pointer'}
+                            className={currentPage === page ? 'bg-primary text-white' : 'cursor-pointer'}
                           >
                             {page}
                           </PaginationLink>
@@ -367,6 +396,161 @@ const Notes = () => {
           )}
         </div>
       </section>
+
+      {/* Note Details Modal */}
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          {selectedNote && (
+            <>
+              <DialogHeader>
+                <div className="flex items-center gap-3">
+                  <div className="text-4xl">{getFileIcon(selectedNote.fileType)}</div>
+                  <div>
+                    <DialogTitle className="text-2xl">{selectedNote.title}</DialogTitle>
+                    <DialogDescription className="text-base">
+                      {selectedNote.description}
+                    </DialogDescription>
+                  </div>
+                </div>
+              </DialogHeader>
+              
+              <div className="space-y-6">
+                {/* File Information */}
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <h3 className="font-semibold text-lg mb-3 flex items-center gap-2">
+                    <FileText className="w-5 h-5" />
+                    File Information
+                  </h3>
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <span className="font-medium">File Name:</span>
+                      <p className="text-gray-600">{selectedNote.fileName}</p>
+                    </div>
+                    <div>
+                      <span className="font-medium">File Size:</span>
+                      <p className="text-gray-600">{selectedNote.formattedFileSize}</p>
+                    </div>
+                    <div>
+                      <span className="font-medium">File Type:</span>
+                      <p className="text-gray-600">{selectedNote.fileType}</p>
+                    </div>
+                    <div>
+                      <span className="font-medium">Subject:</span>
+                      <p className="text-gray-600">{selectedNote.subject}</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Categories and Difficulty */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="bg-primary/5 rounded-lg p-4">
+                    <h3 className="font-semibold text-lg mb-3 flex items-center gap-2">
+                      {getCategoryIcon(selectedNote.category)}
+                      Category
+                    </h3>
+                    <Badge variant="outline" className="text-base px-3 py-1">
+                      {selectedNote.category}
+                    </Badge>
+                  </div>
+                  <div className="bg-orange-50 rounded-lg p-4">
+                    <h3 className="font-semibold text-lg mb-3 flex items-center gap-2">
+                      {getDifficultyStars(selectedNote.difficulty)}
+                      Difficulty
+                    </h3>
+                    <Badge className={`text-base px-3 py-1 ${getDifficultyColor(selectedNote.difficulty)}`}>
+                      {selectedNote.difficulty}
+                    </Badge>
+                  </div>
+                </div>
+
+                {/* Statistics */}
+                <div className="bg-primary/5 rounded-lg p-4">
+                  <h3 className="font-semibold text-lg mb-3 flex items-center gap-2">
+                    <BarChart3 className="w-5 h-5" />
+                    Statistics
+                  </h3>
+                  <div className="grid grid-cols-3 gap-4 text-center">
+                    <div>
+                      <div className="text-2xl font-bold text-primary">{selectedNote.views}</div>
+                      <div className="text-sm text-gray-600">Views</div>
+                    </div>
+                    <div>
+                      <div className="text-2xl font-bold text-primary">{selectedNote.downloads}</div>
+                      <div className="text-sm text-gray-600">Downloads</div>
+                    </div>
+                    <div>
+                      <div className="text-2xl font-bold text-primary">{formatDate(selectedNote.createdAt)}</div>
+                      <div className="text-sm text-gray-600">Created</div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Tags */}
+                {selectedNote.tags && selectedNote.tags.length > 0 && (
+                  <div className="bg-primary/5 rounded-lg p-4">
+                    <h3 className="font-semibold text-lg mb-3 flex items-center gap-2">
+                      <Tag className="w-5 h-5" />
+                      Tags
+                    </h3>
+                    <div className="flex flex-wrap gap-2">
+                      {selectedNote.tags.map((tag, index) => (
+                        <Badge key={index} variant="secondary" className="text-sm">
+                          {tag}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Author Information */}
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <h3 className="font-semibold text-lg mb-3 flex items-center gap-2">
+                    <User className="w-5 h-5" />
+                    Author Information
+                  </h3>
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-gradient-to-r from-primary to-accent rounded-full flex items-center justify-center text-white font-semibold">
+                      {selectedNote.createdBy?.name?.charAt(0) || 'A'}
+                    </div>
+                    <div>
+                      <div className="font-medium">{selectedNote.createdBy?.name || 'Anonymous'}</div>
+                      <div className="text-sm text-gray-600">Content Creator</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <DialogFooter className="flex gap-2">
+                <Button variant="outline" onClick={() => setIsModalOpen(false)}>
+                  Close
+                </Button>
+                <Button 
+                  onClick={() => {
+                    handleDownload(selectedNote._id);
+                    setIsModalOpen(false);
+                  }}
+                  disabled={downloading === selectedNote._id}
+                  className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-white"
+                >
+                  {downloading === selectedNote._id ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                      Downloading...
+                    </>
+                  ) : (
+                    <>
+                      <Download className="w-4 h-4 mr-2" />
+                      Download Notes
+                    </>
+                  )}
+                </Button>
+              </DialogFooter>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
+      
+      <Footer />
     </div>
   );
 };

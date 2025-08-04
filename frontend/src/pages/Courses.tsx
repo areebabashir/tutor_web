@@ -210,7 +210,19 @@ const Courses = () => {
                       }}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                                      <div className="absolute top-4 left-4 flex flex-col gap-2">
+                    
+                    {/* Video Preview Overlay */}
+                    {course.video && (
+                      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <div className="bg-white/90 backdrop-blur-sm rounded-full p-3 cursor-pointer hover:bg-white transition-colors duration-200">
+                          <svg className="w-8 h-8 text-primary" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M8 5v14l11-7z"/>
+                          </svg>
+                        </div>
+                      </div>
+                    )}
+                    
+                    <div className="absolute top-4 left-4 flex flex-col gap-2">
                     <Badge className="badge-modern bg-gradient-to-r from-primary to-accent text-white">
                       {course.category}
                     </Badge>
@@ -271,7 +283,7 @@ const Courses = () => {
                           </Button>
                         </Link>
                         <Link to={`/enroll-course?courseId=${course._id}`}>
-                          <Button className="btn-modern bg-gradient-to-r from-green-500 to-green-600 text-white hover:shadow-lg">
+                          <Button className="btn-modern bg-gradient-to-r from-primary to-accent text-white hover:shadow-lg">
                             Enroll Now
                           </Button>
                         </Link>

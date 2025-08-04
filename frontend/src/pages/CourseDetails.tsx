@@ -53,6 +53,88 @@ const CourseDetails = () => {
   const { id } = useParams();
   const { course, loading, error } = useCourse(id || "");
 
+  // Helper function to format video URL
+  const formatVideoUrl = (videoUrl: string) => {
+    if (!videoUrl) return null;
+    
+    // YouTube URL handling
+    if (videoUrl.includes('youtube.com/watch?v=')) {
+      return videoUrl.replace('watch?v=', 'embed/');
+    }
+    if (videoUrl.includes('youtu.be/')) {
+      const videoId = videoUrl.split('youtu.be/')[1];
+      return `https://www.youtube.com/embed/${videoId}`;
+    }
+    
+    // Vimeo URL handling
+    if (videoUrl.includes('vimeo.com/')) {
+      const videoId = videoUrl.split('vimeo.com/')[1];
+      return `https://player.vimeo.com/video/${videoId}`;
+    }
+    
+    // Direct video file - check if it's a relative path from backend
+    if (videoUrl.startsWith('/uploads/')) {
+      const backendUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+      return `${backendUrl}${videoUrl}`;
+    }
+    
+    // If it's already a full URL, return as is
+    if (videoUrl.startsWith('http://') || videoUrl.startsWith('https://')) {
+      return videoUrl;
+    }
+    
+    // Default case - assume it's a relative path
+    const backendUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+    return `${backendUrl}${videoUrl}`;
+  };
+
+  // Helper function to get video type
+  const getVideoType = (videoUrl: string) => {
+    if (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be')) {
+      return 'youtube';
+    }
+    if (videoUrl.includes('vimeo.com')) {
+      return 'vimeo';
+    }
+    return 'direct';
+  };
+
+  // Helper function to format image URL
+  const formatImageUrl = (imageUrl: string) => {
+    if (!imageUrl) return null;
+    
+    // If it's already a full URL, return as is
+    if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
+      return imageUrl;
+    }
+    
+    // If it's a relative path from backend
+    if (imageUrl.startsWith('/uploads/')) {
+      const backendUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+      return `${backendUrl}${imageUrl}`;
+    }
+    
+    // Default case - assume it's a relative path
+    const backendUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+    return `${backendUrl}${imageUrl}`;
+  };
+
+  // Debug logging
+  if (course && course.video) {
+    console.log('Course video data:', {
+      videoUrl: course.video,
+      videoType: getVideoType(course.video),
+      formattedUrl: formatVideoUrl(course.video)
+    });
+  }
+  
+  if (course && course.image) {
+    console.log('Course image data:', {
+      imageUrl: course.image,
+      formattedUrl: formatImageUrl(course.image)
+    });
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background">
@@ -86,9 +168,13 @@ const CourseDetails = () => {
     <div className="min-h-screen bg-background">
       <Navbar />
       
-      {/* Hero Section */}
-      <section className="bg-gradient-primary py-16">
-        <div className="container mx-auto px-4">
+      {/* Video Hero Section */}
+      <section className="relative overflow-hidden bg-gradient-to-r from-primary via-primary-dark to-accent py-20 lg:py-32">
+        <div className="absolute inset-0">
+          <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.1)_1px,transparent_1px)] bg-[length:60px_60px]"></div>
+        </div>
+        
+        <div className="container mx-auto px-4 relative z-10">
           <Link to="/courses" className="inline-flex items-center text-white/80 hover:text-white mb-6 transition-colors">
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Courses
@@ -96,56 +182,85 @@ const CourseDetails = () => {
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
             <div>
-              <Badge className="bg-white/20 text-white mb-4">
+              <div className="inline-flex items-center px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-white/90 text-sm font-medium mb-6">
+                <Globe className="w-4 h-4 mr-2" />
                 {course.category}
-              </Badge>
-              <h1 className="text-4xl md:text-5xl font-poppins font-bold text-white mb-4">
+              </div>
+              
+              <h1 className="text-4xl md:text-5xl font-bold mb-6 text-white">
                 {course.title}
               </h1>
-              <p className="text-xl text-white/90 mb-6">
+              <p className="text-xl text-white/90 mb-8">
                 {course.description}
               </p>
               
-              <div className="flex flex-wrap items-center gap-6 text-white/80 mb-8">
-                <div className="flex items-center space-x-2">
-                  <Clock className="h-5 w-5" />
+              <div className="flex flex-wrap gap-4 text-white/90">
+                <div className="flex items-center">
+                  <Clock className="w-4 h-4 mr-2" />
                   <span>{course.durationInDays ? `${course.durationInDays} days` : 'Flexible'}</span>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <Badge variant="secondary" className="bg-white/20 text-white">
-                    {course.level}
-                  </Badge>
+                <div className="flex items-center">
+                  <Users className="w-4 h-4 mr-2" />
+                  <span>{course.currentStudents} students</span>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <Badge variant="secondary" className="bg-white/20 text-white">
-                    {course.category}
-                  </Badge>
+                <div className="flex items-center">
+                  <Star className="w-4 h-4 mr-2" />
+                  <span>{course.level} level</span>
                 </div>
-              </div>
-              
-              <div className="flex flex-col sm:flex-row gap-4">
-                                <Link to={`/enroll-course?courseId=${course._id}`}>
-                  <Button size="lg" variant="gradient-secondary" className="text-lg px-8">
-                    Enroll Now - ${course.price}
-                  </Button>
-                </Link>
-                <Link to="/contact">
-                  <Button size="lg" variant="gradient-secondary" className="text-lg px-8">
-                    Contact Us
-                  </Button>
-                </Link>
               </div>
             </div>
             
             <div className="relative">
-              <video
-                src={`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}${course.video}`}
-                controls
-                className="rounded-lg shadow-2xl w-full"
-                poster={`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}${course.image}`}
-              >
-                Your browser does not support the video tag.
-              </video>
+              {course.video ? (
+                <div className="relative w-full aspect-video rounded-lg overflow-hidden shadow-2xl">
+                  {getVideoType(course.video) === 'youtube' ? (
+                    <iframe
+                      src={formatVideoUrl(course.video)}
+                      title="Course Preview"
+                      className="w-full h-full"
+                      frameBorder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    />
+                  ) : getVideoType(course.video) === 'vimeo' ? (
+                    <iframe
+                      src={formatVideoUrl(course.video)}
+                      title="Course Preview"
+                      className="w-full h-full"
+                      frameBorder="0"
+                      allow="autoplay; fullscreen; picture-in-picture"
+                      allowFullScreen
+                    />
+                  ) : (
+                    <video
+                      controls
+                      className="w-full h-full object-cover"
+                      poster={formatImageUrl(course.image)}
+                      onError={(e) => {
+                        console.error('Video loading error:', e);
+                        console.error('Video URL:', formatVideoUrl(course.video));
+                      }}
+                      onLoadStart={() => {
+                        console.log('Video loading started:', formatVideoUrl(course.video));
+                      }}
+                      onCanPlay={() => {
+                        console.log('Video can play:', formatVideoUrl(course.video));
+                      }}
+                    >
+                      <source src={formatVideoUrl(course.video)} type="video/mp4" />
+                      <source src={formatVideoUrl(course.video)} type="video/webm" />
+                      <source src={formatVideoUrl(course.video)} type="video/ogg" />
+                      Your browser does not support the video tag.
+                    </video>
+                  )}
+                </div>
+              ) : (
+                <img 
+                  src={formatImageUrl(course.image)} 
+                  alt={course.title}
+                  className="w-full h-64 lg:h-80 object-cover rounded-lg shadow-2xl"
+                />
+              )}
             </div>
           </div>
         </div>

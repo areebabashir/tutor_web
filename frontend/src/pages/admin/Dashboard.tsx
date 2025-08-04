@@ -73,7 +73,13 @@ export default function AdminDashboard() {
     passingRate: 0,
     failingRate: 0
   });
-  const [recentEnrollments, setRecentEnrollments] = useState<RecentEnrollment[]>([]);
+
+  const [statsCards, setStatsCards] = useState<any[]>([]);
+  const [scoreDistribution, setScoreDistribution] = useState<any[]>([]);
+  const [monthlyAttempts, setMonthlyAttempts] = useState<any[]>([]);
+  const [recentAttempts, setRecentAttempts] = useState<any[]>([]);
+  const [recentEnrollments, setRecentEnrollments] = useState<any[]>([]);
+  const [recentReviews, setRecentReviews] = useState<any[]>([]);
   const [topCourses, setTopCourses] = useState<TopCourse[]>([]);
   const [quizStats, setQuizStats] = useState<QuizStats>({
     totalQuizzes: 0,
@@ -86,68 +92,113 @@ export default function AdminDashboard() {
     monthlyAttempts: []
   });
   const [loading, setLoading] = useState(true);
-  const { getAuthHeaders } = useAdminAuth();
+  const { adminToken } = useAdminAuth();
 
   useEffect(() => {
     fetchDashboardData();
-  }, []);
+  }, [adminToken]);
+
+  // Debug quizStats changes
+  useEffect(() => {
+    console.log('quizStats updated:', quizStats);
+  }, [quizStats]);
 
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
-      const { Authorization } = getAuthHeaders();
+      
+      // Check if admin is logged in
+      if (!adminToken) {
+        console.log('Admin not logged in, skipping dashboard data fetch');
+        setLoading(false);
+        return;
+      }
+      
+      const Authorization = `Bearer ${adminToken}`;
 
-      // Fetch all data in parallel
-      const [
-        coursesResponse,
-        studentsResponse,
-        teachersResponse,
-        reviewsResponse,
-        quizzesResponse,
-        quizResultsResponse,
-        quizStatsResponse,
-        notesStatsResponse
-      ] = await Promise.all([
-        courseAPI.getAllCourses(),
-        studentAPI.getAllStudents(Authorization),
-        teacherAPI.getAllTeachers(Authorization),
-        reviewAPI.getAllReviews(Authorization, { limit: 1 }), // Just get count
-        quizAPI.getAllQuizzes(Authorization),
-        quizAPI.getAllQuizResults(Authorization, { limit: 100 }), // Get more results for better stats
-        quizAPI.getQuizStats(Authorization),
-        notesAPI.getNotesStats(Authorization)
-      ]);
+      // Initialize default values
+      let courses = [];
+      let students = [];
+      let teachers = [];
+      let reviews = [];
+      let quizzes = [];
+      let quizResults = [];
+      let quizStats = {};
+      let notesStats = {};
 
-      // Extract data
-      const courses = coursesResponse.data || [];
-      const students = studentsResponse.data || [];
-      const teachers = teachersResponse.data || [];
-      const reviews = reviewsResponse.data || [];
-      const quizzes = quizzesResponse.data || [];
-      const quizResults = quizResultsResponse.data || [];
-      const quizStats = quizStatsResponse.data || {};
-      const notesStats = notesStatsResponse.data || {};
+      try {
+        const [
+          coursesResponse,
+          studentsResponse,
+          teachersResponse,
+          reviewsResponse,
+          quizzesResponse,
+          quizResultsResponse,
+          quizStatsResponse,
+          notesStatsResponse
+        ] = await Promise.allSettled([
+          courseAPI.getAllCourses(),
+          studentAPI.getAllStudents(Authorization),
+          teacherAPI.getAllTeachers(Authorization),
+          reviewAPI.getAllReviews(Authorization, { limit: 1 }), // Just get count
+          quizAPI.getAllQuizzes(Authorization),
+          quizAPI.getAllQuizResults(Authorization, { limit: 100 }), // Get more results for better stats
+          quizAPI.getQuizStats(Authorization),
+          notesAPI.getNotesStats(Authorization)
+        ]);
+
+        // Handle each response safely
+        if (coursesResponse.status === 'fulfilled') {
+          courses = coursesResponse.value.data || [];
+        }
+        if (studentsResponse.status === 'fulfilled') {
+          students = studentsResponse.value.data || [];
+        }
+        if (teachersResponse.status === 'fulfilled') {
+          teachers = teachersResponse.value.data || [];
+        }
+        if (reviewsResponse.status === 'fulfilled') {
+          reviews = reviewsResponse.value.data || [];
+        }
+        if (quizzesResponse.status === 'fulfilled') {
+          quizzes = quizzesResponse.value.data || [];
+        }
+        if (quizResultsResponse.status === 'fulfilled') {
+          quizResults = quizResultsResponse.value.data || [];
+        }
+        if (quizStatsResponse.status === 'fulfilled') {
+          quizStats = quizStatsResponse.value.data || {};
+        }
+        if (notesStatsResponse.status === 'fulfilled') {
+          notesStats = notesStatsResponse.value.data || {};
+        }
+
+      } catch (error) {
+        console.error('Error in API calls:', error);
+        // Continue with empty data arrays
+      }
 
       // Calculate quiz statistics from real data
       const totalAttempts = quizResults.length;
       const passedAttempts = quizResults.filter((result: any) => result.passed).length;
+      const failedAttempts = totalAttempts - passedAttempts;
       
-      // Calculate average score as percentage
-      const totalScore = quizResults.reduce((sum: number, result: any) => {
-        const percentage = (result.score / result.totalQuestions) * 100;
-        return sum + percentage;
-      }, 0);
-      const averageScore = totalAttempts > 0 ? totalScore / totalAttempts : 0;
+      const averageScore = totalAttempts > 0 
+        ? quizResults.reduce((sum: number, result: any) => {
+            const percentage = (result.score / result.totalQuestions) * 100;
+            return sum + percentage;
+          }, 0) / totalAttempts
+        : 0;
       
       const passingRate = totalAttempts > 0 ? (passedAttempts / totalAttempts) * 100 : 0;
-      const failingRate = 100 - passingRate;
+      const failingRate = totalAttempts > 0 ? (failedAttempts / totalAttempts) * 100 : 0;
 
-      // Generate score distribution from real data
+      // Create score distribution based on pass/fail and score ranges
       const scoreRanges = [
-        { min: 0, max: 49, label: '0-49%' },
-        { min: 50, max: 69, label: '50-69%' },
-        { min: 70, max: 89, label: '70-89%' },
-        { min: 90, max: 100, label: '90-100%' }
+        { min: 0, max: 49, label: '0-49%', category: 'Failing' },
+        { min: 50, max: 69, label: '50-69%', category: 'Below Average' },
+        { min: 70, max: 89, label: '70-89%', category: 'Good' },
+        { min: 90, max: 100, label: '90-100%', category: 'Excellent' }
       ];
 
       const scoreDistribution = scoreRanges.map(range => {
@@ -158,16 +209,17 @@ export default function AdminDashboard() {
         return {
           range: range.label,
           count,
-          percentage: totalAttempts > 0 ? (count / totalAttempts) * 100 : 0
+          percentage: totalAttempts > 0 ? (count / totalAttempts) * 100 : 0,
+          category: range.category
         };
       });
 
-      // If no real score data, generate mock data
+      // If no real score data, generate mock data with proper pass/fail distribution
       if (totalAttempts === 0) {
-        scoreDistribution[0] = { range: '0-49%', count: 8, percentage: 20 }; // Failing
-        scoreDistribution[1] = { range: '50-69%', count: 12, percentage: 30 }; // Below Average
-        scoreDistribution[2] = { range: '70-89%', count: 15, percentage: 37.5 }; // Good
-        scoreDistribution[3] = { range: '90-100%', count: 5, percentage: 12.5 }; // Excellent
+        scoreDistribution[0] = { range: '0-49%', count: 8, percentage: 20, category: 'Failing' }; // Failing
+        scoreDistribution[1] = { range: '50-69%', count: 12, percentage: 30, category: 'Below Average' }; // Below Average
+        scoreDistribution[2] = { range: '70-89%', count: 15, percentage: 37.5, category: 'Good' }; // Good
+        scoreDistribution[3] = { range: '90-100%', count: 5, percentage: 12.5, category: 'Excellent' }; // Excellent
       }
 
       // Generate monthly attempts data from real data
@@ -203,7 +255,11 @@ export default function AdminDashboard() {
 
       // Get recent quiz attempts from real data
       const recentAttempts = quizResults
-        .sort((a: any, b: any) => new Date(b.completedAt || b.createdAt).getTime() - new Date(a.completedAt || a.createdAt).getTime())
+        .sort((a: any, b: any) => {
+          const dateA = new Date(a.completedAt || a.createdAt);
+          const dateB = new Date(b.completedAt || b.createdAt);
+          return dateB.getTime() - dateA.getTime();
+        })
         .slice(0, 5)
         .map((result: any) => {
           const percentage = (result.score / result.totalQuestions) * 100;
@@ -212,7 +268,7 @@ export default function AdminDashboard() {
             studentName: result.studentName || result.name || 'Unknown Student',
             score: Math.round(percentage), // Display as percentage
             passed: result.passed,
-            date: result.completedAt || result.createdAt
+            date: result.completedAt || result.createdAt || new Date().toISOString()
           };
         });
 
@@ -227,30 +283,6 @@ export default function AdminDashboard() {
         ];
         recentAttempts.push(...mockAttempts);
       }
-
-      setQuizStats({
-        totalQuizzes: quizzes.length,
-        totalAttempts,
-        averageScore: Math.round(averageScore),
-        passingRate: Math.round(passingRate),
-        failingRate: Math.round(failingRate),
-        recentAttempts,
-        scoreDistribution,
-        monthlyAttempts
-      });
-
-      // Update stats
-      setStats({
-        totalCourses: courses.length,
-        totalStudents: students.length,
-        totalTeachers: teachers.length,
-        totalReviews: reviews.length,
-        totalQuizzes: quizzes.length,
-        totalQuizAttempts: totalAttempts,
-        averageQuizScore: Math.round(averageScore),
-        passingRate: Math.round(passingRate),
-        failingRate: Math.round(failingRate)
-      });
 
       // Update stats cards with notes data
       const statsCards = [
@@ -288,7 +320,7 @@ export default function AdminDashboard() {
         },
         {
           title: "Total Notes",
-          value: notesStats.totalNotes || 0,
+          value: (notesStats as any)?.totalNotes || 0,
           change: "+20%",
           changeType: "positive" as const,
           icon: FileText,
@@ -296,7 +328,7 @@ export default function AdminDashboard() {
         },
         {
           title: "Total Downloads",
-          value: notesStats.totalDownloads || 0,
+          value: (notesStats as any)?.totalDownloads || 0,
           change: "+25%",
           changeType: "positive" as const,
           icon: Download,
@@ -305,50 +337,123 @@ export default function AdminDashboard() {
       ];
 
       // Get recent enrollments (last 5 students)
-      const recentStudents = students
-        .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-        .slice(0, 5)
-        .map((student: any) => ({
-          _id: student._id,
-          name: student.name,
-          email: student.email,
-          course: student.course || 'Not specified',
-          createdAt: student.createdAt,
-          status: 'Enrolled'
-        }));
+      const recentEnrollments = students.slice(0, 5).map((student: any) => ({
+        name: student.fullName || student.name || 'Unknown Student',
+        email: student.emailAddress || student.email || 'No email',
+        course: student.courseName || 'General Course',
+        date: student.createdAt ? new Date(student.createdAt).toISOString() : new Date().toISOString()
+      }));
 
-      setRecentEnrollments(recentStudents);
+      // Get recent reviews (last 5 reviews)
+      const recentReviews = reviews.slice(0, 5).map((review: any) => ({
+        name: review.reviewerName || review.name || 'Anonymous',
+        rating: review.rating || 5,
+        comment: review.reviewText || review.comment || 'Great experience!',
+        date: review.createdAt ? new Date(review.createdAt).toISOString() : new Date().toISOString()
+      }));
 
-      // Get top courses (sorted by title for now, since we don't have enrollment count)
-      const sortedCourses = courses
-        .sort((a: any, b: any) => a.title.localeCompare(b.title))
-        .slice(0, 3)
-        .map((course: any) => ({
-          _id: course._id,
-          title: course.title,
-          instructor: course.instructorName || 'Unknown',
-          enrollments: Math.floor(Math.random() * 50) + 10, // Mock data
-          price: course.price || 0
-        }));
+      setStats({
+        totalCourses: courses.length,
+        totalStudents: students.length,
+        totalTeachers: teachers.length,
+        totalReviews: reviews.length,
+        totalQuizzes: quizzes.length,
+        totalQuizAttempts: totalAttempts,
+        averageQuizScore: Math.round(averageScore),
+        passingRate: Math.round(passingRate),
+        failingRate: Math.round(failingRate)
+      });
 
-      setTopCourses(sortedCourses);
+      setStatsCards(statsCards);
+      setScoreDistribution(scoreDistribution);
+      setMonthlyAttempts(monthlyAttempts);
+      setRecentAttempts(recentAttempts);
+      setRecentEnrollments(recentEnrollments);
+      setRecentReviews(recentReviews);
+
+      // Set quiz stats for charts
+      const quizStatsData = {
+        totalQuizzes: quizzes.length,
+        totalAttempts: totalAttempts,
+        averageScore: Math.round(averageScore),
+        passingRate: Math.round(passingRate),
+        failingRate: Math.round(failingRate),
+        recentAttempts: recentAttempts,
+        scoreDistribution: scoreDistribution,
+        monthlyAttempts: monthlyAttempts,
+        // Add pass/fail data for pie chart
+        passFailData: [
+          { name: 'Passed', value: passedAttempts, color: '#10b981' },
+          { name: 'Failed', value: failedAttempts, color: '#ef4444' }
+        ]
+      };
+
+      console.log('Quiz Results:', quizResults);
+      console.log('Pass/Fail Data:', quizStatsData.passFailData);
+      console.log('Score Distribution:', scoreDistribution);
+      console.log('Setting quiz stats:', quizStatsData);
+      setQuizStats(quizStatsData);
 
     } catch (error) {
-      console.error('Dashboard data fetch error:', error);
+      console.error('Error fetching dashboard data:', error);
       toast.error('Failed to load dashboard data');
+      
+      // Set fallback data to ensure charts still work
+      setStats({
+        totalCourses: 0,
+        totalStudents: 0,
+        totalTeachers: 0,
+        totalReviews: 0,
+        totalQuizzes: 0,
+        totalQuizAttempts: 0,
+        averageQuizScore: 75,
+        passingRate: 80,
+        failingRate: 20
+      });
+
+      setQuizStats({
+        totalQuizzes: 0,
+        totalAttempts: 0,
+        averageScore: 75,
+        passingRate: 80,
+        failingRate: 20,
+        recentAttempts: [],
+        scoreDistribution: [
+          { range: '0-49%', count: 8, percentage: 20 },
+          { range: '50-69%', count: 12, percentage: 30 },
+          { range: '70-89%', count: 15, percentage: 37.5 },
+          { range: '90-100%', count: 5, percentage: 12.5 }
+        ],
+        monthlyAttempts: [
+          { month: 'Jan 2024', attempts: 15, averageScore: 78 },
+          { month: 'Feb 2024', attempts: 12, averageScore: 82 },
+          { month: 'Mar 2024', attempts: 18, averageScore: 75 },
+          { month: 'Apr 2024', attempts: 10, averageScore: 85 },
+          { month: 'May 2024', attempts: 20, averageScore: 80 },
+          { month: 'Jun 2024', attempts: 14, averageScore: 83 }
+        ]
+      });
     } finally {
       setLoading(false);
     }
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) {
+        return 'Invalid Date';
+      }
+      return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+      });
+    } catch (error) {
+      return 'Invalid Date';
+    }
   };
 
   const chartConfig = {
@@ -375,6 +480,23 @@ export default function AdminDashboard() {
           <div className="text-center">
             <Loader2 className="h-12 w-12 animate-spin mx-auto mb-4 text-primary" />
             <p className="text-muted-foreground">Preparing your insights...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!adminToken) {
+    return (
+      <div className="p-8 space-y-8">
+        <div className="animate-fade-in-up">
+          <h1 className="text-4xl font-bold text-foreground mb-2">Dashboard</h1>
+          <p className="text-muted-foreground">Please log in to view the dashboard</p>
+        </div>
+        <div className="flex items-center justify-center h-64">
+          <div className="text-center">
+            <AlertCircle className="h-12 w-12 mx-auto mb-4 text-yellow-500" />
+            <p className="text-muted-foreground">Authentication required</p>
           </div>
         </div>
       </div>
@@ -523,25 +645,34 @@ export default function AdminDashboard() {
             </div>
           </CardHeader>
           <CardContent>
-            <ChartContainer config={chartConfig.scoreDistribution}>
-              <RechartsPieChart>
-                <Pie
-                  data={quizStats.scoreDistribution}
-                  dataKey="count"
-                  nameKey="range"
-                  cx="50%"
-                  cy="50%"
-                  outerRadius={80}
-                  fill="#8884d8"
-                >
-                  {quizStats.scoreDistribution.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={chartConfig.scoreDistribution[entry.range]?.color || "#8884d8"} />
-                  ))}
-                </Pie>
-                <Tooltip content={<ChartTooltipContent />} />
-                <Legend content={<ChartLegendContent />} />
-              </RechartsPieChart>
-            </ChartContainer>
+            {quizStats.scoreDistribution && quizStats.scoreDistribution.length > 0 ? (
+              <ChartContainer config={chartConfig.scoreDistribution}>
+                <RechartsPieChart>
+                  <Pie
+                    data={quizStats.scoreDistribution}
+                    dataKey="count"
+                    nameKey="range"
+                    cx="50%"
+                    cy="50%"
+                    outerRadius={80}
+                    fill="#8884d8"
+                  >
+                    {quizStats.scoreDistribution.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={chartConfig.scoreDistribution[entry.range]?.color || "#8884d8"} />
+                    ))}
+                  </Pie>
+                  <Tooltip content={<ChartTooltipContent />} />
+                  <Legend content={<ChartLegendContent />} />
+                </RechartsPieChart>
+              </ChartContainer>
+            ) : (
+              <div className="flex items-center justify-center h-64">
+                <div className="text-center">
+                  <PieChart className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+                  <p className="text-muted-foreground">No quiz data available</p>
+                </div>
+              </div>
+            )}
           </CardContent>
         </Card>
 
@@ -559,18 +690,27 @@ export default function AdminDashboard() {
             </div>
           </CardHeader>
           <CardContent>
-            <ChartContainer config={chartConfig.monthlyAttempts}>
-              <BarChart data={quizStats.monthlyAttempts}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="month" />
-                <YAxis yAxisId="left" />
-                <YAxis yAxisId="right" orientation="right" />
-                <Tooltip content={<ChartTooltipContent />} />
-                <Legend content={<ChartLegendContent />} />
-                <Bar yAxisId="left" dataKey="attempts" fill="#8b5cf6" name="Quiz Attempts" />
-                <Line yAxisId="right" type="monotone" dataKey="averageScore" stroke="#06b6d4" name="Average Score" />
-              </BarChart>
-            </ChartContainer>
+            {quizStats.monthlyAttempts && quizStats.monthlyAttempts.length > 0 ? (
+              <ChartContainer config={chartConfig.monthlyAttempts}>
+                <BarChart data={quizStats.monthlyAttempts}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="month" />
+                  <YAxis yAxisId="left" />
+                  <YAxis yAxisId="right" orientation="right" />
+                  <Tooltip content={<ChartTooltipContent />} />
+                  <Legend content={<ChartLegendContent />} />
+                  <Bar yAxisId="left" dataKey="attempts" fill="#8b5cf6" name="Quiz Attempts" />
+                  <Line yAxisId="right" type="monotone" dataKey="averageScore" stroke="#06b6d4" name="Average Score" />
+                </BarChart>
+              </ChartContainer>
+            ) : (
+              <div className="flex items-center justify-center h-64">
+                <div className="text-center">
+                  <BarChart3 className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+                  <p className="text-muted-foreground">No monthly data available</p>
+                </div>
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>
@@ -667,7 +807,7 @@ export default function AdminDashboard() {
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="text-sm text-muted-foreground">{formatDate(enrollment.createdAt)}</p>
+                      <p className="text-sm text-muted-foreground">{formatDate(enrollment.date)}</p>
                       <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 border border-green-200">
                         {enrollment.status}
                       </span>

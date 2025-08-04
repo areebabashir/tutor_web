@@ -1,4 +1,5 @@
 import Notes from '../models/notesModel.js';
+import User from '../models/authModel.js';
 
 // Create new notes
 export const createNotes = async (req, res) => {

@@ -360,7 +360,7 @@ export default function AdminCoursesPage() {
     });
   };
 
-  const getStatusColor = (status: string) => {
+  const getStatusColor = (status: 'active' | 'inactive' | 'upcoming') => {
     switch (status) {
       case 'active': return 'bg-green-100 text-green-800';
       case 'inactive': return 'bg-red-100 text-red-800';
@@ -369,13 +369,88 @@ export default function AdminCoursesPage() {
     }
   };
 
-  const getCategoryColor = (category: string) => {
+  const getStatusVariant = (status: 'active' | 'inactive' | 'upcoming') => {
+    switch (status) {
+      case 'active': return 'default' as const;
+      case 'inactive': return 'destructive' as const;
+      case 'upcoming': return 'secondary' as const;
+      default: return 'outline' as const;
+    }
+  };
+
+  const getCategoryColor = (category: 'IELTS' | 'English Proficiency' | 'Quran') => {
     switch (category) {
       case 'IELTS': return 'bg-purple-100 text-purple-800';
       case 'English Proficiency': return 'bg-blue-100 text-blue-800';
       case 'Quran': return 'bg-green-100 text-green-800';
       default: return 'bg-gray-100 text-gray-800';
     }
+  };
+
+  // Helper function to format image URL
+  const formatImageUrl = (imageUrl: string) => {
+    if (!imageUrl) return null;
+    
+    // If it's already a full URL, return as is
+    if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://') || imageUrl.startsWith('data:')) {
+      return imageUrl;
+    }
+    
+    // If it starts with /uploads/, it's already a proper path
+    if (imageUrl.startsWith('/uploads/')) {
+      const backendUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+      return `${backendUrl}${imageUrl}`;
+    }
+    
+    // If it's just a filename, construct the full path
+    const backendUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+    return `${backendUrl}/uploads/images/${imageUrl}`;
+  };
+
+  // Helper function to format video URL
+  const formatVideoUrl = (videoUrl: string) => {
+    if (!videoUrl) return null;
+    
+    // YouTube URL handling
+    if (videoUrl.includes('youtube.com/watch?v=')) {
+      return videoUrl.replace('watch?v=', 'embed/');
+    }
+    if (videoUrl.includes('youtu.be/')) {
+      const videoId = videoUrl.split('youtu.be/')[1];
+      return `https://www.youtube.com/embed/${videoId}`;
+    }
+    
+    // Vimeo URL handling
+    if (videoUrl.includes('vimeo.com/')) {
+      const videoId = videoUrl.split('vimeo.com/')[1];
+      return `https://player.vimeo.com/video/${videoId}`;
+    }
+    
+    // Direct video file - check if it's a relative path from backend
+    if (videoUrl.startsWith('/uploads/')) {
+      const backendUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+      return `${backendUrl}${videoUrl}`;
+    }
+    
+    // If it's already a full URL, return as is
+    if (videoUrl.startsWith('http://') || videoUrl.startsWith('https://')) {
+      return videoUrl;
+    }
+    
+    // Default case - assume it's a relative path
+    const backendUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+    return `${backendUrl}${videoUrl}`;
+  };
+
+  // Helper function to get video type
+  const getVideoType = (videoUrl: string) => {
+    if (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be')) {
+      return 'youtube';
+    }
+    if (videoUrl.includes('vimeo.com')) {
+      return 'vimeo';
+    }
+    return 'direct';
   };
 
   if (loading) {
@@ -1165,15 +1240,40 @@ export default function AdminCoursesPage() {
           
           {selectedCourse && (
             <div className="space-y-6">
+              {/* Debug logging */}
+              {(() => {
+                console.log('View Course Debug:', {
+                  image: {
+                    original: selectedCourse.image,
+                    formatted: formatImageUrl(selectedCourse.image)
+                  },
+                  video: {
+                    original: selectedCourse.video,
+                    formatted: formatVideoUrl(selectedCourse.video),
+                    type: getVideoType(selectedCourse.video)
+                  }
+                });
+                return null;
+              })()}
+              
               {/* Course Header */}
               <div className="flex items-start space-x-6">
                 <div className="relative">
                   <div className="w-32 h-32 bg-gray-200 rounded-lg overflow-hidden">
                     {selectedCourse.image ? (
                       <img 
-                        src={selectedCourse.image} 
+                        src={formatImageUrl(selectedCourse.image)} 
                         alt={selectedCourse.title}
                         className="w-full h-full object-cover"
+                        onError={(e) => {
+                          console.error('Image failed to load:', selectedCourse.image);
+                          const target = e.target as HTMLImageElement;
+                          target.style.display = 'none';
+                          const fallback = document.createElement('div');
+                          fallback.className = 'w-full h-full flex items-center justify-center bg-gray-300';
+                          fallback.innerHTML = '<svg class="h-12 w-12 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>';
+                          target.parentNode?.appendChild(fallback);
+                        }}
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center bg-gray-300">
@@ -1211,7 +1311,7 @@ export default function AdminCoursesPage() {
                   <CardContent className="space-y-3">
                     <div>
                       <p className="text-sm text-gray-500">Status</p>
-                      <Badge variant={getStatusColor(selectedCourse.status)}>
+                      <Badge variant={getStatusVariant(selectedCourse.status)}>
                         {selectedCourse.status}
                       </Badge>
                     </div>
@@ -1241,13 +1341,45 @@ export default function AdminCoursesPage() {
                     {selectedCourse.video && (
                       <div>
                         <p className="text-sm text-gray-500">Video</p>
-                        <video 
-                          controls 
-                          className="w-full rounded"
-                          src={selectedCourse.video}
-                        >
-                          Your browser does not support the video tag.
-                        </video>
+                        {getVideoType(selectedCourse.video) === 'youtube' ? (
+                          <iframe
+                            src={formatVideoUrl(selectedCourse.video)}
+                            title="Course Preview"
+                            className="w-full h-48 rounded"
+                            frameBorder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                          />
+                        ) : getVideoType(selectedCourse.video) === 'vimeo' ? (
+                          <iframe
+                            src={formatVideoUrl(selectedCourse.video)}
+                            title="Course Preview"
+                            className="w-full h-48 rounded"
+                            frameBorder="0"
+                            allow="autoplay; fullscreen; picture-in-picture"
+                            allowFullScreen
+                          />
+                        ) : (
+                          <video 
+                            controls 
+                            className="w-full h-48 object-cover rounded"
+                            poster={formatImageUrl(selectedCourse.image)}
+                            onError={(e) => {
+                              console.error('Video failed to load:', selectedCourse.video);
+                              const target = e.target as HTMLVideoElement;
+                              target.style.display = 'none';
+                              const fallback = document.createElement('div');
+                              fallback.className = 'w-full h-48 bg-gray-200 rounded flex items-center justify-center text-gray-500';
+                              fallback.textContent = 'Video preview unavailable';
+                              target.parentNode?.appendChild(fallback);
+                            }}
+                          >
+                            <source src={formatVideoUrl(selectedCourse.video)} type="video/mp4" />
+                            <source src={formatVideoUrl(selectedCourse.video)} type="video/webm" />
+                            <source src={formatVideoUrl(selectedCourse.video)} type="video/ogg" />
+                            Your browser does not support the video tag.
+                          </video>
+                        )}
                       </div>
                     )}
                   </CardContent>

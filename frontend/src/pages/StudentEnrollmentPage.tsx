@@ -6,25 +6,40 @@ import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import StudentEnrollmentForm from '@/components/StudentEnrollmentForm';
 import { Toaster } from 'sonner';
+import { Users } from 'lucide-react';
 
 export default function StudentEnrollmentPage() {
   const [searchParams] = useSearchParams();
   const courseId = searchParams.get('courseId');
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-background">
       <Navbar />
+      
+      {/* Hero Section */}
+      <section className="relative overflow-hidden bg-gradient-to-r from-primary via-primary-dark to-accent py-20 lg:py-32">
+        <div className="absolute inset-0">
+          <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.1)_1px,transparent_1px)] bg-[length:60px_60px]"></div>
+        </div>
+        
+        <div className="container mx-auto px-4 text-center relative z-10">
+          <div className="inline-flex items-center px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-white/90 text-sm font-medium mb-6">
+            <Users className="w-4 h-4 mr-2" />
+            Start Learning
+          </div>
+          
+          <h1 className="text-5xl md:text-6xl font-bold mb-6 text-white">
+            Enroll as a Student
+          </h1>
+          <p className="text-xl text-white/90 max-w-3xl mx-auto">
+            Ready to start your learning journey? Enroll now by filling out the form below.
+            {courseId && <span className="block text-sm text-white/80 mt-2">Course has been pre-selected for you!</span>}
+          </p>
+        </div>
+      </section>
+
       <main className="flex-grow">
         <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          {/* Header Section */}
-          <section className="text-center mb-16">
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">Enroll as a Student</h1>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Ready to start your learning journey? Enroll now by filling out the form below.
-              {courseId && <span className="block text-sm text-blue-600 mt-2">Course has been pre-selected for you!</span>}
-            </p>
-          </section>
-
           {/* Form Section */}
           <section className="mb-16">
             <StudentEnrollmentForm preSelectedCourseId={courseId || undefined} />

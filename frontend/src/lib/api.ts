@@ -1105,7 +1105,7 @@ export const commentAPI = {
   },
 
   // Update comment status (admin only)
-  updateCommentStatus: async (commentId: string, status: string, authorization: string) => {
+  updateCommentStatus: async (commentId: string, status: 'pending' | 'approved' | 'rejected', authorization: string) => {
     const url = `${API_ENDPOINTS.COMMENTS}/admin/${commentId}/status`;
     const requestBody = { status };
     const options = {

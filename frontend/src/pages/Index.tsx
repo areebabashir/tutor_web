@@ -135,7 +135,7 @@ const testimonials = [
     role: "Software Developer",
     image: "https://images.unsplash.com/photo-1494790108755-2616b612b378?w=100&h=100&fit=crop&crop=face",
     rating: 5,
-    text: "EduVibe completely transformed my career. The web development course was comprehensive and the instructors were amazing!"
+    text: "Bizlish completely transformed my career. The web development course was comprehensive and the instructors were amazing!"
   },
   {
     name: "Michael Chen",
@@ -542,7 +542,7 @@ const Index = () => {
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-poppins font-bold mb-4">
-              Why Choose EduVibe?
+              Why Choose Bizlish?
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
               We're committed to providing the best learning experience with features designed for your success

@@ -61,7 +61,7 @@ const BlogPage: React.FC = () => {
       setTotalPages(response.pagination?.totalPages || 1);
       
       // Extract unique categories
-      const uniqueCategories = [...new Set(response.data.map((blog: Blog) => blog.category))];
+      const uniqueCategories = [...new Set(response.data.map((blog: Blog) => blog.category))] as string[];
       setCategories(uniqueCategories);
     } catch (error) {
       console.error('Error fetching blogs:', error);
@@ -81,14 +81,14 @@ const BlogPage: React.FC = () => {
 
   const getCategoryColor = (category: string) => {
     const colors: { [key: string]: string } = {
-      'Technology': 'bg-blue-100 text-blue-800 border-blue-200',
-      'Education': 'bg-green-100 text-green-800 border-green-200',
-      'Lifestyle': 'bg-purple-100 text-purple-800 border-purple-200',
-      'Business': 'bg-orange-100 text-orange-800 border-orange-200',
-      'Health': 'bg-red-100 text-red-800 border-red-200',
-      'Science': 'bg-indigo-100 text-indigo-800 border-indigo-200'
+      'Technology': 'bg-primary/10 text-primary border-primary/20',
+      'Education': 'bg-primary/10 text-primary border-primary/20',
+      'Lifestyle': 'bg-primary/10 text-primary border-primary/20',
+      'Business': 'bg-primary/10 text-primary border-primary/20',
+      'Health': 'bg-primary/10 text-primary border-primary/20',
+      'Science': 'bg-primary/10 text-primary border-primary/20'
     };
-    return colors[category] || 'bg-gray-100 text-gray-800 border-gray-200';
+    return colors[category] || 'bg-primary/10 text-primary border-primary/20';
   };
 
   const getInitials = (name: string) => {
@@ -210,7 +210,7 @@ const BlogPage: React.FC = () => {
                       setSearchTerm('');
                       setSelectedCategory('all');
                     }}
-                    className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3 text-lg"
+                    className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-white px-8 py-3 text-lg"
                   >
                     Clear Filters
                   </Button>
@@ -244,7 +244,7 @@ const BlogPage: React.FC = () => {
                             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                           />
                         ) : (
-                          <div className="w-full h-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center">
+                          <div className="w-full h-full bg-gradient-to-br from-primary to-accent flex items-center justify-center">
                             <BookOpen className="h-12 w-12 text-white" />
                           </div>
                         )}
@@ -268,7 +268,7 @@ const BlogPage: React.FC = () => {
 
                       <CardContent className="p-6">
                         {/* Title */}
-                        <h3 className="font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-blue-600 transition-colors text-lg leading-tight">
+                        <h3 className="font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-primary transition-colors text-lg leading-tight">
                           {blog.title}
                         </h3>
 
@@ -281,7 +281,7 @@ const BlogPage: React.FC = () => {
                         <div className="flex items-center space-x-3 mb-4">
                           <Avatar className="h-8 w-8 border border-gray-200">
                             <AvatarImage src="" />
-                            <AvatarFallback className="bg-gradient-to-r from-blue-500 to-purple-600 text-white text-xs font-semibold">
+                            <AvatarFallback className="bg-gradient-to-r from-primary to-accent text-white text-xs font-semibold">
                               {getInitials(blog.author)}
                             </AvatarFallback>
                           </Avatar>
@@ -322,7 +322,7 @@ const BlogPage: React.FC = () => {
 
                         {/* Read More Button */}
                         <Link to={`/blog/${blog.slug}`}>
-                          <Button variant="ghost" size="sm" className="w-full group-hover:bg-blue-50 text-blue-600 hover:text-blue-700 font-medium">
+                          <Button variant="ghost" size="sm" className="w-full group-hover:bg-primary/10 text-primary hover:text-primary/80 font-medium">
                             Read Article
                             <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" />
                           </Button>
@@ -340,7 +340,7 @@ const BlogPage: React.FC = () => {
                       disabled={currentPage === 1}
                       variant="outline"
                       size="sm"
-                      className="px-4 py-2"
+                      className="px-4 py-2 hover:bg-primary/10 hover:text-primary"
                     >
                       Previous
                     </Button>
@@ -353,7 +353,11 @@ const BlogPage: React.FC = () => {
                           onClick={() => setCurrentPage(page)}
                           variant={currentPage === page ? "default" : "outline"}
                           size="sm"
-                          className="px-4 py-2"
+                          className={`px-4 py-2 ${
+                            currentPage === page 
+                              ? "bg-gradient-to-r from-primary to-accent text-white" 
+                              : "hover:bg-primary/10 hover:text-primary"
+                          }`}
                         >
                           {page}
                         </Button>
@@ -365,7 +369,7 @@ const BlogPage: React.FC = () => {
                       disabled={currentPage === totalPages}
                       variant="outline"
                       size="sm"
-                      className="px-4 py-2"
+                      className="px-4 py-2 hover:bg-primary/10 hover:text-primary"
                     >
                       Next
                     </Button>

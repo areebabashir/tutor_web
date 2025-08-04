@@ -49,9 +49,9 @@ const Notes = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState('');
-  const [difficultyFilter, setDifficultyFilter] = useState('');
-  const [statusFilter, setStatusFilter] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState('all');
+  const [difficultyFilter, setDifficultyFilter] = useState('all');
+  const [statusFilter, setStatusFilter] = useState('all');
 
   // Dialog states
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
@@ -88,9 +88,9 @@ const Notes = () => {
         page: currentPage,
         limit: 10,
         search: searchTerm || undefined,
-        category: categoryFilter || undefined,
-        difficulty: difficultyFilter || undefined,
-        status: statusFilter || undefined
+        category: categoryFilter === 'all' ? undefined : categoryFilter || undefined,
+        difficulty: difficultyFilter === 'all' ? undefined : difficultyFilter || undefined,
+        status: statusFilter === 'all' ? undefined : statusFilter || undefined
       });
 
       setNotes(response.data);
@@ -424,7 +424,7 @@ const Notes = () => {
                   <SelectValue placeholder="All categories" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All categories</SelectItem>
+                  <SelectItem value="all">All categories</SelectItem>
                   {categories.map((category) => (
                     <SelectItem key={category} value={category}>{category}</SelectItem>
                   ))}
@@ -438,7 +438,7 @@ const Notes = () => {
                   <SelectValue placeholder="All difficulties" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All difficulties</SelectItem>
+                  <SelectItem value="all">All difficulties</SelectItem>
                   {difficulties.map((difficulty) => (
                     <SelectItem key={difficulty} value={difficulty}>{difficulty}</SelectItem>
                   ))}
@@ -452,7 +452,7 @@ const Notes = () => {
                   <SelectValue placeholder="All statuses" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All statuses</SelectItem>
+                  <SelectItem value="all">All statuses</SelectItem>
                   {statuses.map((status) => (
                     <SelectItem key={status} value={status}>{status}</SelectItem>
                   ))}
@@ -464,9 +464,9 @@ const Notes = () => {
                 variant="outline" 
                 onClick={() => {
                   setSearchTerm('');
-                  setCategoryFilter('');
-                  setDifficultyFilter('');
-                  setStatusFilter('');
+                  setCategoryFilter('all');
+                  setDifficultyFilter('all');
+                  setStatusFilter('all');
                 }}
                 className="w-full"
               >

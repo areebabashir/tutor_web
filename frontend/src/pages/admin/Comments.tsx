@@ -129,7 +129,7 @@ const Comments: React.FC = () => {
     }
   };
 
-  const handleStatusUpdate = async (commentId: string, status: string) => {
+  const handleStatusUpdate = async (commentId: string, status: 'pending' | 'approved' | 'rejected') => {
     try {
       setUpdating(commentId);
       
@@ -184,7 +184,7 @@ const Comments: React.FC = () => {
     }
   };
 
-  const getStatusColor = (status: string) => {
+  const getStatusColor = (status: 'pending' | 'approved' | 'rejected') => {
     switch (status) {
       case 'approved': return 'bg-green-100 text-green-800';
       case 'rejected': return 'bg-red-100 text-red-800';

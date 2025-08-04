@@ -335,9 +335,30 @@ export default function QuizzesPage() {
       {/* Main Content */}
       <section className="py-16 lg:py-24">
         <div className="container mx-auto px-4">
-          {/* Filters */}
+          {/* Page Header */}
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Available Quizzes
+            </h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">
+              Choose from our collection of interactive quizzes designed to test and enhance your knowledge
+            </p>
+          </div>
+
+          {/* Filters Section */}
           <div className="mb-12">
             <Card className="card-modern shadow-lg">
+              <CardHeader className="pb-4">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center">
+                    <Filter className="h-5 w-5 text-white" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-xl">Filter Quizzes</CardTitle>
+                    <p className="text-sm text-muted-foreground">Find the perfect quiz for your learning needs</p>
+                  </div>
+                </div>
+              </CardHeader>
               <CardContent className="p-6">
                 <div className="flex flex-col lg:flex-row gap-6">
                   <div className="flex-1">
@@ -376,6 +397,22 @@ export default function QuizzesPage() {
             </Card>
           </div>
 
+          {/* Results Summary */}
+          <div className="mb-8">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-xl font-semibold text-gray-900">
+                  {quizzes.length} Quiz{quizzes.length !== 1 ? 'zes' : ''} Found
+                </h3>
+                <p className="text-gray-600">Ready to test your knowledge</p>
+              </div>
+              <div className="flex items-center space-x-2 text-sm text-muted-foreground">
+                <Sparkles className="w-4 h-4" />
+                <span>Hand-picked by experts</span>
+              </div>
+            </div>
+          </div>
+
           {/* Quizzes Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {quizzes.map((quiz, index) => (
@@ -402,32 +439,32 @@ export default function QuizzesPage() {
                     {quiz.description}
                   </p>
 
-                                     <div className="space-y-3 mb-6">
-                     <div className="flex items-center justify-between text-sm">
-                       <span className="text-muted-foreground flex items-center gap-1">
-                         <BookOpen className="h-4 w-4" />
-                         Category:
-                       </span>
-                       <span className="font-medium">{quiz.category}</span>
-                     </div>
-                     <div className="flex items-center justify-between text-sm">
-                       <span className="text-muted-foreground flex items-center gap-1">
-                         <Target className="h-4 w-4" />
-                         Questions:
-                       </span>
-                       <span className="font-medium">{quiz.totalQuestions}</span>
-                     </div>
-                     <div className="flex items-center justify-between text-sm">
-                       <span className="text-muted-foreground flex items-center gap-1">
-                         <Timer className="h-4 w-4" />
-                         Time Limit:
-                       </span>
-                       <span className="font-medium">{quiz.timeLimit} min</span>
-                     </div>
-                   </div>
+                  <div className="space-y-3 mb-6">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-muted-foreground flex items-center gap-1">
+                        <BookOpen className="h-4 w-4" />
+                        Category:
+                      </span>
+                      <span className="font-medium">{quiz.category}</span>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-muted-foreground flex items-center gap-1">
+                        <Target className="h-4 w-4" />
+                        Questions:
+                      </span>
+                      <span className="font-medium">{quiz.totalQuestions}</span>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-muted-foreground flex items-center gap-1">
+                        <Timer className="h-4 w-4" />
+                        Time Limit:
+                      </span>
+                      <span className="font-medium">{quiz.timeLimit} min</span>
+                    </div>
+                  </div>
 
                   <Button 
-                    className="w-full btn-modern bg-gradient-to-r from-primary to-accent text-white hover:shadow-lg group-hover:scale-105 transition-transform duration-300" 
+                    className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 group-hover:scale-105" 
                     onClick={() => startQuiz(quiz)}
                   >
                     <Play className="h-4 w-4 mr-2" />
@@ -438,6 +475,7 @@ export default function QuizzesPage() {
             ))}
           </div>
 
+          {/* Empty State */}
           {quizzes.length === 0 && (
             <Card className="card-modern">
               <CardContent className="pt-12 pb-12 text-center">
@@ -449,6 +487,103 @@ export default function QuizzesPage() {
               </CardContent>
             </Card>
           )}
+
+          {/* Quiz Tips Section */}
+          <div className="mt-16">
+            <Card className="card-modern shadow-lg">
+              <CardHeader className="pb-4">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-gradient-to-r from-green-500 to-emerald-600 rounded-xl flex items-center justify-center">
+                    <CheckCircle className="h-5 w-5 text-white" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-xl">Quiz Tips & Guidelines</CardTitle>
+                    <p className="text-sm text-muted-foreground">Make the most of your quiz experience</p>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="p-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  <div className="flex items-start space-x-3">
+                    <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                      <Clock className="h-4 w-4 text-blue-600" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-gray-900 mb-1">Time Management</h4>
+                      <p className="text-sm text-gray-600">Read questions carefully and manage your time effectively</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start space-x-3">
+                    <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                      <Target className="h-4 w-4 text-green-600" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-gray-900 mb-1">Focus on Accuracy</h4>
+                      <p className="text-sm text-gray-600">Take your time to ensure correct answers rather than rushing</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start space-x-3">
+                    <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
+                      <Brain className="h-4 w-4 text-purple-600" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-gray-900 mb-1">Review Your Work</h4>
+                      <p className="text-sm text-gray-600">Double-check your answers before submitting</p>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Quiz Categories Info */}
+          <div className="mt-8">
+            <Card className="card-modern shadow-lg">
+              <CardHeader className="pb-4">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-gradient-to-r from-orange-500 to-red-600 rounded-xl flex items-center justify-center">
+                    <BookOpen className="h-5 w-5 text-white" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-xl">Quiz Categories</CardTitle>
+                    <p className="text-sm text-muted-foreground">Explore different subjects and topics</p>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="p-6">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="text-center p-4 bg-blue-50 rounded-lg">
+                    <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                      <BookOpen className="h-6 w-6 text-blue-600" />
+                    </div>
+                    <h4 className="font-semibold text-sm text-gray-900">General</h4>
+                    <p className="text-xs text-gray-600">Basic knowledge</p>
+                  </div>
+                  <div className="text-center p-4 bg-green-50 rounded-lg">
+                    <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                      <Target className="h-6 w-6 text-green-600" />
+                    </div>
+                    <h4 className="font-semibold text-sm text-gray-900">Mathematics</h4>
+                    <p className="text-xs text-gray-600">Problem solving</p>
+                  </div>
+                  <div className="text-center p-4 bg-purple-50 rounded-lg">
+                    <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                      <Brain className="h-6 w-6 text-purple-600" />
+                    </div>
+                    <h4 className="font-semibold text-sm text-gray-900">Science</h4>
+                    <p className="text-xs text-gray-600">Scientific concepts</p>
+                  </div>
+                  <div className="text-center p-4 bg-orange-50 rounded-lg">
+                    <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                      <CheckCircle className="h-6 w-6 text-orange-600" />
+                    </div>
+                    <h4 className="font-semibold text-sm text-gray-900">English</h4>
+                    <p className="text-xs text-gray-600">Language skills</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </section>
 
@@ -665,7 +800,7 @@ export default function QuizzesPage() {
                     variant="outline"
                     onClick={handlePreviousQuestion}
                     disabled={currentQuestionIndex === 0 || isQuizSubmitted}
-                    className="btn-modern"
+                    className="border-2 border-primary/20 text-primary hover:bg-primary/10 hover:border-primary/40 font-semibold py-2 px-4 rounded-xl transition-all duration-300"
                   >
                     <ArrowLeft className="h-4 w-4 mr-2" />
                     Previous
@@ -675,7 +810,7 @@ export default function QuizzesPage() {
                     variant="outline"
                     onClick={handleCancelQuiz}
                     disabled={isQuizSubmitted}
-                    className="btn-modern"
+                    className="border-2 border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 font-semibold py-2 px-4 rounded-xl transition-all duration-300"
                   >
                     Cancel Quiz
                   </Button>
@@ -684,12 +819,12 @@ export default function QuizzesPage() {
                 <div className="flex gap-3">
                   {!isQuizSubmitted ? (
                     currentQuestionIndex < quizQuestions.length - 1 ? (
-                      <Button onClick={handleNextQuestion} className="btn-modern bg-gradient-to-r from-primary to-accent text-white">
+                      <Button onClick={handleNextQuestion} className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-white font-semibold py-2 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
                         Next
                         <ArrowRight className="h-4 w-4 ml-2" />
                       </Button>
                     ) : (
-                      <Button onClick={handleSubmitQuiz} className="btn-modern bg-gradient-to-r from-green-500 to-emerald-600 text-white">
+                      <Button onClick={handleSubmitQuiz} className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold py-2 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
                         <Check className="h-4 w-4 mr-2" />
                         Submit Quiz
                       </Button>
@@ -786,7 +921,7 @@ export default function QuizzesPage() {
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <Button 
                   onClick={() => setIsResultDialogOpen(false)}
-                  className="btn-modern bg-gradient-to-r from-primary to-accent text-white"
+                  className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
                 >
                   <BookOpen className="h-4 w-4 mr-2" />
                   Take Another Quiz
@@ -794,7 +929,7 @@ export default function QuizzesPage() {
                 <Button 
                   variant="outline" 
                   onClick={() => setIsResultDialogOpen(false)}
-                  className="btn-modern"
+                  className="border-2 border-primary/20 text-primary hover:bg-primary/10 hover:border-primary/40 font-semibold py-3 px-6 rounded-xl transition-all duration-300"
                 >
                   Close
                 </Button>
