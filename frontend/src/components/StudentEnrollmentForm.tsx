@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -15,39 +15,95 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Loader2, UserPlus } from 'lucide-react';
 import { toast } from 'sonner';
+import { studentAPI, courseAPI } from '@/lib/api';
 
 const studentFormSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters').max(50),
   email: z.string().email('Please enter a valid email address'),
   phone: z.string().min(10, 'Phone must be at least 10 digits').max(15),
   city: z.string().min(2, 'City must be at least 2 characters').max(50),
-  qualifications: z.string().min(2, 'Qualification must be at least 2 characters').max(100),
+  qualification: z.string().min(2, 'Qualification must be at least 2 characters').max(100),
+  selectedCourse: z.string().optional(),
 });
 
 type StudentFormData = z.infer<typeof studentFormSchema>;
 
-export default function StudentEnrollmentForm() {
+interface StudentEnrollmentFormProps {
+  preSelectedCourseId?: string;
+}
+
+export default function StudentEnrollmentForm({ preSelectedCourseId }: StudentEnrollmentFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [courses, setCourses] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
+    setValue,
+    watch,
   } = useForm<StudentFormData>({
     resolver: zodResolver(studentFormSchema),
   });
 
+
+
+  // Fetch available courses
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const response = await courseAPI.getAllCourses();
+        setCourses(response.data);
+        
+        // Pre-select course if provided
+        if (preSelectedCourseId) {
+          console.log('Pre-selecting course:', preSelectedCourseId);
+        }
+      } catch (error) {
+        console.error('Error fetching courses:', error);
+        toast.error('Failed to load courses');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCourses();
+  }, [preSelectedCourseId, setValue]);
+
+
+
   const onSubmit = async (data: StudentFormData) => {
     setIsSubmitting(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate API call
-      console.log('Student enrollment data:', data);
+      const formData = new FormData();
+      formData.append('name', data.name);
+      formData.append('email', data.email);
+      formData.append('phone', data.phone);
+      formData.append('city', data.city);
+      formData.append('qualification', data.qualification);
+      
+      // Add selected course
+      if (preSelectedCourseId) {
+        formData.append('courses', JSON.stringify([preSelectedCourseId]));
+        
+        // Add course name for display
+        const selectedCourse = courses.find(course => course._id === preSelectedCourseId);
+        if (selectedCourse) {
+          formData.append('courseNames', JSON.stringify([selectedCourse.title]));
+        }
+      }
+
+      await studentAPI.submitEnrollment(formData);
       toast.success('Student enrollment submitted successfully!');
       reset();
-    } catch {
+    } catch (error) {
+      console.error('Enrollment error:', error);
       toast.error('Failed to submit enrollment. Please try again.');
     } finally {
       setIsSubmitting(false);
@@ -110,18 +166,67 @@ export default function StudentEnrollmentForm() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="qualifications">Qualifications *</Label>
+              <Label htmlFor="qualification">Qualifications *</Label>
               <Input
-                id="qualifications"
-                {...register('qualifications')}
+                id="qualification"
+                {...register('qualification')}
                 placeholder="e.g., Bachelor's Degree in Computer Science"
               />
-              {errors.qualifications && (
+              {errors.qualification && (
                 <Alert>
-                  <AlertDescription>{errors.qualifications.message}</AlertDescription>
+                  <AlertDescription>{errors.qualification.message}</AlertDescription>
                 </Alert>
               )}
             </div>
+          </div>
+
+          {/* Course Selection Section */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold border-b pb-2">Course Selection</h3>
+            
+            {loading ? (
+              <div className="flex items-center justify-center py-8">
+                <Loader2 className="h-6 w-6 animate-spin mr-2" />
+                <span>Loading available courses...</span>
+              </div>
+            ) : (
+              <>
+                                                                                   <div className="space-y-2">
+                  <Label>Selected Course</Label>
+                  {preSelectedCourseId ? (
+                    (() => {
+                      const selectedCourseData = courses.find(course => course._id === preSelectedCourseId);
+                      return selectedCourseData ? (
+                        <div className="p-4 border border-blue-200 rounded-lg bg-blue-50">
+                          <div className="flex items-center justify-between mb-2">
+                            <h4 className="font-semibold text-lg text-gray-900">{selectedCourseData.title}</h4>
+                            <Badge variant="default" className="bg-blue-500">
+                              Pre-selected
+                            </Badge>
+                          </div>
+                          <p className="text-gray-600 text-sm mb-3">{selectedCourseData.description}</p>
+                          <div className="flex items-center gap-3 text-sm">
+                            <Badge variant="outline">{selectedCourseData.category}</Badge>
+                            <Badge variant="secondary">{selectedCourseData.level}</Badge>
+                            <span className="text-gray-500">${selectedCourseData.price}</span>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="p-4 border border-dashed border-gray-300 rounded-lg text-center">
+                          <p className="text-gray-500">Loading course information...</p>
+                        </div>
+                      );
+                    })()
+                  ) : (
+                    <div className="p-4 border border-dashed border-gray-300 rounded-lg text-center">
+                      <p className="text-gray-500">No course selected</p>
+                      <p className="text-sm text-gray-400 mt-1">Please select a course from the course page</p>
+                    </div>
+                  )}
+                                     
+                 </div>
+              </>
+            )}
           </div>
 
           <div className="flex justify-center pt-6">

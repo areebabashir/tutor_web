@@ -8,6 +8,8 @@ import { Avatar, AvatarFallback, AvatarImage } from '../../components/ui/avatar'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '../../components/ui/dialog';
 import { Loader2, Search, Eye, Download, Trash2, Mail, Phone } from 'lucide-react';
 import { toast } from 'sonner';
+import { useAdminAuth } from '../../contexts/AdminAuthContext';
+import { teacherAPI } from '../../lib/api';
 
 interface Teacher {
   _id: string;
@@ -38,6 +40,9 @@ export default function AdminTeachers() {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterSubject, setFilterSubject] = useState<string>('all');
   const [selectedTeacher, setSelectedTeacher] = useState<Teacher | null>(null);
+  const { getAuthHeaders, isAdminLoggedIn, adminToken } = useAdminAuth();
+  
+  console.log('AdminTeachers component - isAdminLoggedIn:', isAdminLoggedIn, 'adminToken:', adminToken); // Debug log
 
   useEffect(() => {
     fetchTeachers();
@@ -45,16 +50,19 @@ export default function AdminTeachers() {
 
   const fetchTeachers = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/teachers');
-      const data = await response.json();
+      const { Authorization } = getAuthHeaders();
+      console.log('Admin Authorization header:', Authorization ? 'Present' : 'Not present'); // Debug log
       
-      if (response.ok) {
-        setTeachers(data.data);
-      } else {
-        toast.error('Failed to fetch teachers');
+      if (!Authorization) {
+        toast.error('No authentication token found. Please log in again.');
+        return;
       }
+      
+      const data = await teacherAPI.getAllTeachers(Authorization);
+      setTeachers(data.data);
     } catch (error) {
-      toast.error('Network error');
+      console.error('Fetch teachers error:', error); // Debug log
+      toast.error('Failed to fetch teachers');
     } finally {
       setLoading(false);
     }
@@ -66,18 +74,12 @@ export default function AdminTeachers() {
     }
 
     try {
-      const response = await fetch(`http://localhost:8000/api/teachers/${teacherId}`, {
-        method: 'DELETE',
-      });
-
-      if (response.ok) {
-        toast.success('Teacher application deleted successfully');
-        fetchTeachers();
-      } else {
-        toast.error('Failed to delete teacher application');
-      }
+      const { Authorization } = getAuthHeaders();
+      await teacherAPI.deleteTeacher(teacherId, Authorization);
+      toast.success('Teacher application deleted successfully');
+      fetchTeachers();
     } catch (error) {
-      toast.error('Network error');
+      toast.error('Failed to delete teacher application');
     }
   };
 

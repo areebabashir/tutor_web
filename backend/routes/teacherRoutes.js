@@ -10,10 +10,23 @@ import {
 } from '../controllers/teacherController.js';
 import { uploadTeacherFiles, handleUploadError } from '../middleware/uploadMiddleware.js';
 import { validateTeacher, handleValidationErrors } from '../middleware/teacherValidation.js';
+import { requireSignIn, isAdmin } from '../Middlewares/authMiddlewares.js';
 
 const router = express.Router();
 
 // Create a new teacher with file uploads
+router.post('/add',
+    uploadTeacherFiles.fields([
+        { name: 'image', maxCount: 1 },
+        { name: 'resume', maxCount: 1 }
+    ]),
+    handleUploadError,
+    validateTeacher,
+    handleValidationErrors,
+    createTeacher
+);
+
+// Public route - anyone can submit teacher application
 router.post('/',
     uploadTeacherFiles.fields([
         { name: 'image', maxCount: 1 },
@@ -25,14 +38,10 @@ router.post('/',
     createTeacher
 );
 
-// Get all teachers
-router.get('/getall', getAllTeachers);
-
-// Get teacher by ID
-router.get('/get/:id', getTeacherById);
-
-// Update teacher with optional file uploads
-router.put('/update/:id',
+// Admin only routes - require admin authentication
+router.get('/getall', requireSignIn, isAdmin, getAllTeachers);
+router.get('/get/:id', requireSignIn, isAdmin, getTeacherById);
+router.put('/update/:id', requireSignIn, isAdmin,
     uploadTeacherFiles.fields([
         { name: 'image', maxCount: 1 },
         { name: 'resume', maxCount: 1 }
@@ -42,14 +51,8 @@ router.put('/update/:id',
     handleValidationErrors,
     updateTeacher
 );
-
-// Delete teacher
-router.delete('/:id', deleteTeacher);
-
-// Get teachers by applied subject
-router.get('/subject/:appliedFor', getTeachersBySubject);
-
-// Search teachers
-router.get('/search', searchTeachers);
+router.delete('/:id', requireSignIn, isAdmin, deleteTeacher);
+router.get('/subject/:appliedFor', requireSignIn, isAdmin, getTeachersBySubject);
+router.get('/search', requireSignIn, isAdmin, searchTeachers);
 
 export default router; 

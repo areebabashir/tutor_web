@@ -1,12 +1,16 @@
 'use client';
 
 import React from 'react';
+import { useSearchParams } from 'react-router-dom';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import StudentEnrollmentForm from '@/components/StudentEnrollmentForm';
 import { Toaster } from 'sonner';
 
 export default function StudentEnrollmentPage() {
+  const [searchParams] = useSearchParams();
+  const courseId = searchParams.get('courseId');
+
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-blue-50 to-indigo-100">
       <Navbar />
@@ -17,12 +21,13 @@ export default function StudentEnrollmentPage() {
             <h1 className="text-4xl font-bold text-gray-900 mb-4">Enroll as a Student</h1>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
               Ready to start your learning journey? Enroll now by filling out the form below.
+              {courseId && <span className="block text-sm text-blue-600 mt-2">Course has been pre-selected for you!</span>}
             </p>
           </section>
 
           {/* Form Section */}
           <section className="mb-16">
-            <StudentEnrollmentForm />
+            <StudentEnrollmentForm preSelectedCourseId={courseId || undefined} />
           </section>
 
           {/* Benefits Section */}

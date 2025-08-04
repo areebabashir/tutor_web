@@ -27,6 +27,16 @@ const studentSchema = new mongoose.Schema({
     trim: true,
     lowercase: true,
   },
+  courses: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Course',
+    required: false,
+  }],
+  courseNames: [{
+    type: String,
+    required: false,
+    trim: true,
+  }],
 }, {
   timestamps: true,
 });

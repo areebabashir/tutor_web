@@ -11,6 +11,9 @@ const Navbar = () => {
   const navItems = [
     { href: "/", label: "Home" },
     { href: "/courses", label: "Courses" },
+    { href: "/notes", label: "Notes" },
+    { href: "/quizzes", label: "Quizzes" },
+    { href: "/blog", label: "Blog" },
     { href: "/about", label: "About" },
     { href: "/contact", label: "Contact" },
   ];
@@ -19,20 +22,20 @@ const Navbar = () => {
 
   return (
     <nav className="bg-background/95 backdrop-blur-sm border-b border-border sticky top-0 z-50">
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
+      <div className="container mx-auto ">
+        <div className="flex items-center justify-between ">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-3">
+          <Link to="/" className="flex items-center  ">
             <img 
               src={bizlishLogo} 
               alt="BIZLISH Logo" 
-              className="h-12 w-auto rounded-lg"
+              className=" w-auto rounded-xl  " style={{width: "80px", height: "80px"}}
             />
             <div className="flex flex-col">
-              <span className="text-xl font-poppins font-bold text-primary">
+              <span className="text-3xl font-poppins font-bold text-primary">
                 BIZLISH
               </span>
-              <span className="text-xs text-muted-foreground font-medium">
+              <span className="text-base text-muted-foreground font-medium">
                 Enliven English
               </span>
             </div>

@@ -2,144 +2,144 @@ import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
 
-// Create upload directories if they don't exist
-const createUploadDirs = () => {
-    const uploadDir = './uploads';
-    const imageDir = './uploads/images';
-    const resumeDir = './uploads/resumes';
+// Define allowed extensions for images and documents
+const allowedImageTypes = /jpeg|jpg|png|gif/;
+const allowedVideoTypes = /mp4|mov|avi|mkv/;
+const allowedDocTypes = /pdf|doc|docx/;
+const allowedNotesTypes = /pdf|doc|docx|txt|ppt|pptx|xls|xlsx/;
 
-    if (!fs.existsSync(uploadDir)) {
-        fs.mkdirSync(uploadDir, { recursive: true });
-    }
-    if (!fs.existsSync(imageDir)) {
-        fs.mkdirSync(imageDir, { recursive: true });
-    }
-    if (!fs.existsSync(resumeDir)) {
-        fs.mkdirSync(resumeDir, { recursive: true });
-    }
+// Ensure directories exist
+const ensureDirectoryExists = (dirPath) => {
+  if (!fs.existsSync(dirPath)) {
+    fs.mkdirSync(dirPath, { recursive: true });
+  }
 };
 
-// Call the function to create directories
-createUploadDirs();
-
-// Configure storage for images
-const imageStorage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, './uploads/images');
-    },
-    filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, 'image-' + uniqueSuffix + path.extname(file.originalname));
-    }
-});
-
-// Configure storage for resumes
-const resumeStorage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, './uploads/resumes');
-    },
-    filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, 'resume-' + uniqueSuffix + path.extname(file.originalname));
-    }
-});
-
-// File filter for images
-const imageFileFilter = (req, file, cb) => {
-    const allowedTypes = /jpeg|jpg|png|gif|webp/;
-    const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
-    const mimetype = allowedTypes.test(file.mimetype);
-
-    if (mimetype && extname) {
-        return cb(null, true);
+// Storage configuration
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    let uploadPath;
+    
+    if (['image', 'img', 'pic', 'images'].includes(file.fieldname)) {
+      uploadPath = 'uploads/images';
+    } else if (file.fieldname === 'documents') {
+      uploadPath = 'uploads/documents';
+    } else if (file.fieldname === 'receipt') {
+      uploadPath = 'uploads/receipts';
+    } else if (file.fieldname === 'video') {
+      uploadPath = 'uploads/videos';
+    } else if (file.fieldname === 'resume') {
+      uploadPath = 'uploads/resumes';
+    } else if (file.fieldname === 'file') {
+      uploadPath = 'uploads/notes';
     } else {
-        cb(new Error('Only image files are allowed!'), false);
+      return cb(new Error('Invalid fieldname'));
     }
+    
+    // Ensure the directory exists before using it
+    ensureDirectoryExists(uploadPath);
+    cb(null, uploadPath);
+  },
+  filename: function (req, file, cb) {
+    const filename = `${Date.now()}-${file.originalname}`;
+    cb(null, filename);
+  }
+});
+
+// File filter function - only apply when files are actually uploaded
+function fileFilter(req, file, cb) {
+  console.log('Incoming file field:', file.fieldname);
+
+  // If no file is provided, skip validation
+  if (!file) {
+    return cb(null, true);
+  }
+
+  const extname = path.extname(file.originalname).toLowerCase().substring(1);
+
+  if (
+    (['image', 'img', 'pic', 'images'].includes(file.fieldname) && allowedImageTypes.test(extname)) ||
+    (file.fieldname === 'documents' && allowedDocTypes.test(extname)) ||
+    (file.fieldname === 'receipt' && (allowedImageTypes.test(extname) || allowedDocTypes.test(extname))) ||
+    (file.fieldname === 'video' && allowedVideoTypes.test(extname)) ||
+    (file.fieldname === 'resume' && allowedDocTypes.test(extname)) ||
+    (file.fieldname === 'file' && allowedNotesTypes.test(extname))
+  ) {
+    cb(null, true);
+  } else {
+    cb(new multer.MulterError('LIMIT_UNEXPECTED_FILE', file.fieldname));
+  }
+}
+
+// Function to copy file to company_ngo folder if user is a company
+const copyToCompanyFolder = (filePath, filename) => {
+  return new Promise((resolve, reject) => {
+    const companyNgoDir = 'uploads/company_ngo';
+    ensureDirectoryExists(companyNgoDir);
+
+    const sourcePath = filePath;
+    const destPath = path.join(companyNgoDir, filename);
+
+    fs.copyFile(sourcePath, destPath, (err) => {
+      if (err) {
+        console.error('Error copying file to company_ngo folder:', err);
+        reject(err);
+      } else {
+        console.log(`File copied to company_ngo folder: ${destPath}`);
+        resolve(destPath);
+      }
+    });
+  });
 };
 
-// File filter for resumes
-const resumeFileFilter = (req, file, cb) => {
-    const allowedTypes = /pdf|doc|docx/;
-    const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
-    const mimetype = file.mimetype === 'application/pdf' || 
-                    file.mimetype === 'application/msword' || 
-                    file.mimetype === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
-
-    if (mimetype && extname) {
-        return cb(null, true);
-    } else {
-        cb(new Error('Only PDF and Word documents are allowed for resumes!'), false);
+// Error handling middleware for upload errors
+const handleUploadError = (err, req, res, next) => {
+  if (err instanceof multer.MulterError) {
+    if (err.code === 'LIMIT_FILE_SIZE') {
+      return res.status(400).json({
+        success: false,
+        message: 'File too large. Maximum size is 10MB.'
+      });
     }
+    if (err.code === 'LIMIT_FILE_COUNT') {
+      return res.status(400).json({
+        success: false,
+        message: 'Too many files uploaded.'
+      });
+    }
+    if (err.code === 'LIMIT_UNEXPECTED_FILE') {
+      return res.status(400).json({
+        success: false,
+        message: `Unexpected field: ${err.field}`
+      });
+    }
+  }
+  
+  if (err) {
+    return res.status(400).json({
+      success: false,
+      message: err.message || 'File upload error'
+    });
+  }
+  
+  next();
 };
 
-// Create multer instances
-export const uploadImage = multer({
-    storage: imageStorage,
-    limits: {
-        fileSize: 5 * 1024 * 1024 // 5MB limit
-    },
-    fileFilter: imageFileFilter
+const upload = multer({
+  storage,
+  fileFilter,
+  limits: {
+    fileSize: 10 * 1024 * 1024 // 10MB limit
+  }
 });
 
-export const uploadResume = multer({
-    storage: resumeStorage,
-    limits: {
-        fileSize: 10 * 1024 * 1024 // 10MB limit
-    },
-    fileFilter: resumeFileFilter
-});
+// Export specific middlewares
+export const uploadReceipt = upload.single('receipt');
+export const uploadMultiple = upload.fields([{ name: 'documents', maxCount: 5 }]);
+export const uploadTeacherFiles = upload;
+export const uploadCourseFiles = upload;
+export const uploadVideo = upload.single('video');
+export const uploadNotes = upload.single('file');
+export { copyToCompanyFolder, handleUploadError };
 
-// Combined upload for both image and resume
-export const uploadTeacherFiles = multer({
-    storage: multer.diskStorage({
-        destination: (req, file, cb) => {
-            if (file.fieldname === 'image') {
-                cb(null, './uploads/images');
-            } else if (file.fieldname === 'resume') {
-                cb(null, './uploads/resumes');
-            }
-        },
-        filename: (req, file, cb) => {
-            const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-            if (file.fieldname === 'image') {
-                cb(null, 'image-' + uniqueSuffix + path.extname(file.originalname));
-            } else if (file.fieldname === 'resume') {
-                cb(null, 'resume-' + uniqueSuffix + path.extname(file.originalname));
-            }
-        }
-    }),
-    limits: {
-        fileSize: 10 * 1024 * 1024 // 10MB limit
-    },
-    fileFilter: (req, file, cb) => {
-        if (file.fieldname === 'image') {
-            imageFileFilter(req, file, cb);
-        } else if (file.fieldname === 'resume') {
-            resumeFileFilter(req, file, cb);
-        } else {
-            cb(new Error('Unexpected field'), false);
-        }
-    }
-});
-
-// Error handling middleware for multer
-export const handleUploadError = (error, req, res, next) => {
-    if (error instanceof multer.MulterError) {
-        if (error.code === 'LIMIT_FILE_SIZE') {
-            return res.status(400).json({
-                success: false,
-                message: 'File too large. Please upload a smaller file.'
-            });
-        }
-        return res.status(400).json({
-            success: false,
-            message: error.message
-        });
-    } else if (error) {
-        return res.status(400).json({
-            success: false,
-            message: error.message
-        });
-    }
-    next();
-}; 
+export default upload;

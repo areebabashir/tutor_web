@@ -1,11 +1,12 @@
 import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, Clock, Users, Star, CheckCircle, User, Calendar, Globe } from "lucide-react";
+import { ArrowLeft, Clock, Users, Star, CheckCircle, User, Calendar, Globe, Loader2 } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { useCourse } from "@/hooks/useCourses";
 
 const courseData = {
   1: {
@@ -50,14 +51,28 @@ const courseData = {
 
 const CourseDetails = () => {
   const { id } = useParams();
-  const course = courseData[parseInt(id || "1") as keyof typeof courseData];
+  const { course, loading, error } = useCourse(id || "");
 
-  if (!course) {
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <div className="container mx-auto px-4 py-16 text-center">
+          <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mb-4" />
+          <p className="text-muted-foreground">Loading course details...</p>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (error || !course) {
     return (
       <div className="min-h-screen bg-background">
         <Navbar />
         <div className="container mx-auto px-4 py-16 text-center">
           <h1 className="text-2xl font-poppins font-bold mb-4">Course not found</h1>
+          <p className="text-muted-foreground mb-4">{error}</p>
           <Link to="/courses">
             <Button>Back to Courses</Button>
           </Link>
@@ -94,34 +109,43 @@ const CourseDetails = () => {
               <div className="flex flex-wrap items-center gap-6 text-white/80 mb-8">
                 <div className="flex items-center space-x-2">
                   <Clock className="h-5 w-5" />
-                  <span>{course.duration}</span>
+                  <span>{course.durationInDays ? `${course.durationInDays} days` : 'Flexible'}</span>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <Users className="h-5 w-5" />
-                  <span>{course.students.toLocaleString()} students</span>
+                  <Badge variant="secondary" className="bg-white/20 text-white">
+                    {course.level}
+                  </Badge>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
-                  <span>{course.rating} ({course.reviews} reviews)</span>
+                  <Badge variant="secondary" className="bg-white/20 text-white">
+                    {course.category}
+                  </Badge>
                 </div>
               </div>
               
               <div className="flex flex-col sm:flex-row gap-4">
-                <Button size="lg" variant="gradient-secondary" className="text-lg px-8">
-                  Enroll Now - {course.price}
-                </Button>
-                <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
-                  Contact Us
-                </Button>
+                                <Link to={`/enroll-course?courseId=${course._id}`}>
+                  <Button size="lg" variant="gradient-secondary" className="text-lg px-8">
+                    Enroll Now - ${course.price}
+                  </Button>
+                </Link>
+                <Link to="/contact">
+                  <Button size="lg" variant="gradient-secondary" className="text-lg px-8">
+                    Contact Us
+                  </Button>
+                </Link>
               </div>
             </div>
             
             <div className="relative">
-              <img
-                src={course.image}
-                alt={course.title}
+              <video
+                src={`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}${course.video}`}
+                controls
                 className="rounded-lg shadow-2xl w-full"
-              />
+                poster={`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}${course.image}`}
+              >
+                Your browser does not support the video tag.
+              </video>
             </div>
           </div>
         </div>
@@ -140,7 +164,7 @@ const CourseDetails = () => {
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground leading-relaxed">
-                    {course.longDescription}
+                    {course.description}
                   </p>
                 </CardContent>
               </Card>
@@ -152,15 +176,90 @@ const CourseDetails = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
-                    {course.syllabus.map((item, index) => (
+                    {course.syllabus.split('\n').map((item, index) => (
                       <div key={index} className="flex items-start space-x-3">
                         <CheckCircle className="h-5 w-5 text-success mt-0.5 flex-shrink-0" />
-                        <span className="text-muted-foreground">{item}</span>
+                        <span className="text-muted-foreground">{item.trim()}</span>
                       </div>
                     ))}
                   </div>
                 </CardContent>
               </Card>
+
+              {/* Features */}
+              {course.features && course.features.length > 0 && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-2xl font-poppins">Course Features</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {course.features.map((feature, index) => (
+                        <div key={index} className="flex items-start space-x-3">
+                          <CheckCircle className="h-5 w-5 text-success mt-0.5 flex-shrink-0" />
+                          <span className="text-muted-foreground">{feature}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Tags */}
+              {course.tags && course.tags.length > 0 && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-2xl font-poppins">Course Tags</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex flex-wrap gap-2">
+                      {course.tags.map((tag, index) => (
+                        <Badge key={index} variant="outline" className="text-sm">
+                          {tag}
+                        </Badge>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Requirements */}
+              {course.requirements && course.requirements.length > 0 && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-2xl font-poppins">Requirements</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3">
+                      {course.requirements.map((requirement, index) => (
+                        <div key={index} className="flex items-start space-x-3">
+                          <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
+                          <span className="text-muted-foreground">{requirement}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Learning Outcomes */}
+              {course.learningOutcomes && course.learningOutcomes.length > 0 && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-2xl font-poppins">What You'll Learn</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3">
+                      {course.learningOutcomes.map((outcome, index) => (
+                        <div key={index} className="flex items-start space-x-3">
+                          <CheckCircle className="h-5 w-5 text-success mt-0.5 flex-shrink-0" />
+                          <span className="text-muted-foreground">{outcome}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
 
               {/* Instructor */}
               <Card>
@@ -169,14 +268,12 @@ const CourseDetails = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="flex items-center space-x-4">
-                    <img
-                      src={course.tutor.image}
-                      alt={course.tutor.name}
-                      className="w-16 h-16 rounded-full object-cover"
-                    />
+                    <div className="w-16 h-16 bg-gradient-primary rounded-full flex items-center justify-center">
+                      <User className="h-8 w-8 text-white" />
+                    </div>
                     <div>
-                      <h3 className="text-xl font-poppins font-semibold">{course.tutor.name}</h3>
-                      <p className="text-muted-foreground">{course.tutor.bio}</p>
+                      <h3 className="text-xl font-poppins font-semibold">{course.instructorName}</h3>
+                      <p className="text-muted-foreground">Expert instructor in {course.category}</p>
                     </div>
                   </div>
                 </CardContent>
@@ -192,12 +289,33 @@ const CourseDetails = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
-                    {course.features.map((feature, index) => (
-                      <div key={index} className="flex items-center space-x-3">
-                        <CheckCircle className="h-4 w-4 text-success flex-shrink-0" />
-                        <span className="text-sm text-muted-foreground">{feature}</span>
+                    {course.features && course.features.length > 0 ? (
+                      course.features.map((feature, index) => (
+                        <div key={index} className="flex items-center space-x-3">
+                          <CheckCircle className="h-4 w-4 text-success flex-shrink-0" />
+                          <span className="text-sm text-muted-foreground">{feature}</span>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="space-y-3">
+                        <div className="flex items-center space-x-3">
+                          <CheckCircle className="h-4 w-4 text-success flex-shrink-0" />
+                          <span className="text-sm text-muted-foreground">24/7 Support</span>
+                        </div>
+                        <div className="flex items-center space-x-3">
+                          <CheckCircle className="h-4 w-4 text-success flex-shrink-0" />
+                          <span className="text-sm text-muted-foreground">Lifetime Access</span>
+                        </div>
+                        <div className="flex items-center space-x-3">
+                          <CheckCircle className="h-4 w-4 text-success flex-shrink-0" />
+                          <span className="text-sm text-muted-foreground">Certificate of Completion</span>
+                        </div>
+                        <div className="flex items-center space-x-3">
+                          <CheckCircle className="h-4 w-4 text-success flex-shrink-0" />
+                          <span className="text-sm text-muted-foreground">Interactive Learning</span>
+                        </div>
                       </div>
-                    ))}
+                    )}
                   </div>
                 </CardContent>
               </Card>
@@ -208,13 +326,15 @@ const CourseDetails = () => {
                   <div className="text-center space-y-4">
                     <div>
                       <span className="text-3xl font-poppins font-bold text-primary">
-                        {course.price}
+                        ${course.price}
                       </span>
                       <span className="text-muted-foreground ml-2">one-time payment</span>
                     </div>
-                    <Button className="w-full" variant="gradient" size="lg">
-                      Enroll Now
-                    </Button>
+                    <Link to={`/enroll-course?courseId=${course._id}`}>
+                      <Button className="w-full" variant="gradient" size="lg">
+                        Enroll Now
+                      </Button>
+                    </Link>
                     <p className="text-xs text-muted-foreground">
                       30-day money-back guarantee
                     </p>
@@ -230,12 +350,12 @@ const CourseDetails = () => {
                 <CardContent className="space-y-3">
                   <div className="flex items-center justify-between">
                     <span className="text-muted-foreground">Duration</span>
-                    <span className="font-medium">{course.duration}</span>
+                    <span className="font-medium">{course.durationInDays ? `${course.durationInDays} days` : 'Flexible'}</span>
                   </div>
                   <Separator />
                   <div className="flex items-center justify-between">
-                    <span className="text-muted-foreground">Students</span>
-                    <span className="font-medium">{course.students.toLocaleString()}</span>
+                    <span className="text-muted-foreground">Level</span>
+                    <span className="font-medium capitalize">{course.level}</span>
                   </div>
                   <Separator />
                   <div className="flex items-center justify-between">

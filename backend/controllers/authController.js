@@ -1,6 +1,6 @@
 import auth from "../models/authModel.js";
 import { hashPassword, comparePassword } from "../helpers/authHelper.js";
-import { generateToken } from "../helpers/tokenHelper.js";
+import { generateToken, verifyTokenPersistent } from "../helpers/tokenHelper.js";
 
 // Register Controller
 export const registerController = async (req, res) => {
@@ -156,6 +156,71 @@ export const forgotPasswordController = async (req, res) => {
 
 
 
+// Admin Login Controller
+export const adminLoginController = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+
+        // Validation
+        if (!email || !password) {
+            return res.status(400).send({
+                success: false,
+                message: "Email and password are required",
+            });
+        }
+
+        // Check user
+        const user = await auth.findOne({ email });
+        if (!user) {
+            return res.status(404).send({
+                success: false,
+                message: "Admin not found",
+            });
+        }
+
+        // Check if user is admin
+        if (user.role !== 1) {
+            return res.status(403).send({
+                success: false,
+                message: "Access denied. Admin privileges required.",
+            });
+        }
+
+        // Check password
+        const match = await comparePassword(password, user.password);
+        if (!match) {
+            return res.status(200).send({
+                success: false,
+                message: "Incorrect password",
+            });
+        }
+
+        // Generate JWT token
+        const token = await generateToken(user);
+
+        res.status(200).send({
+            success: true,
+            message: "Admin logged in successfully",
+            user: {
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                phone: user.phone,
+                address: user.address,
+                role: user.role,
+            },
+            token,
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({
+            success: false,
+            message: "Admin login failed",
+            error,
+        });
+    }
+};
+
 //test controller
 export const testController = (req, res) => {
     try {
@@ -211,6 +276,78 @@ export const updateProfileController = async (req, res) => {
             success: false,
             message: "Error while updating profile",
             error,
+        });
+    }
+};
+
+// Token verification endpoint for persistent sessions
+export const verifyTokenController = async (req, res) => {
+    try {
+        const { token } = req.body;
+        
+        if (!token) {
+            return res.status(400).json({
+                success: false,
+                message: 'Token is required'
+            });
+        }
+
+        const result = verifyTokenPersistent(token);
+        
+        if (!result.valid) {
+            return res.status(401).json({
+                success: false,
+                message: result.error || 'Invalid token'
+            });
+        }
+
+        // Get user data from database
+        const user = await auth.findById(result.decoded._id);
+        if (!user) {
+            return res.status(401).json({
+                success: false,
+                message: 'User not found'
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: 'Token is valid',
+            user: {
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                phone: user.phone,
+                address: user.address,
+                role: user.role,
+            },
+            tokenExpired: result.expired || false
+        });
+    } catch (error) {
+        console.error('Token verification error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error verifying token',
+            error: error.message
+        });
+    }
+};
+
+// Logout endpoint
+export const logoutController = async (req, res) => {
+    try {
+        // For persistent sessions, we don't need to invalidate the token on the server
+        // The client will remove the token from localStorage
+        res.status(200).json({
+            success: true,
+            message: 'Logged out successfully'
+        });
+    } catch (error) {
+        console.error('Logout error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error during logout',
+            error: error.message
         });
     }
 };

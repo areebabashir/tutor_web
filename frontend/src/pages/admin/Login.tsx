@@ -5,23 +5,38 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
+import { useAdminAuth } from "@/contexts/AdminAuthContext";
+import { authAPI } from "@/lib/api";
 
 export default function AdminLogin() {
   const [credentials, setCredentials] = useState({
-    username: '',
+    email: '',
     password: ''
   });
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { login } = useAdminAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
-    // Mock authentication - in real app, this would be API call
-    setTimeout(() => {
-      if (credentials.username === 'admin' && credentials.password === 'admin123') {
+    try {
+      const data = await authAPI.adminLogin({
+        email: credentials.email,
+        password: credentials.password
+      });
+
+      console.log('Login response:', data);
+
+      if (data.success) {
+        console.log('Login successful, token:', data.token ? 'Present' : 'Not present');
+        console.log('Login successful, user:', data.user);
+        
+        // Use context to login
+        login(data.token, data.user);
+        
         toast({
           title: "Login successful",
           description: "Welcome to the admin dashboard!",
@@ -30,12 +45,20 @@ export default function AdminLogin() {
       } else {
         toast({
           title: "Login failed",
-          description: "Invalid username or password",
+          description: data.message || "Invalid credentials",
           variant: "destructive",
         });
       }
+    } catch (error) {
+      console.error('Login error:', error);
+      toast({
+        title: "Login failed",
+        description: "Network error. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
       setIsLoading(false);
-    }, 1000);
+    }
   };
 
   return (
@@ -50,13 +73,13 @@ export default function AdminLogin() {
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="username">Username</Label>
+              <Label htmlFor="email">Email</Label>
               <Input
-                id="username"
-                type="text"
-                placeholder="Enter username"
-                value={credentials.username}
-                onChange={(e) => setCredentials(prev => ({ ...prev, username: e.target.value }))}
+                id="email"
+                type="email"
+                placeholder="Enter admin email"
+                value={credentials.email}
+                onChange={(e) => setCredentials(prev => ({ ...prev, email: e.target.value }))}
                 required
               />
             </div>
@@ -80,11 +103,7 @@ export default function AdminLogin() {
               {isLoading ? "Signing in..." : "Sign In"}
             </Button>
           </form>
-          <div className="mt-4 text-center text-sm text-muted-foreground">
-            <p>Demo credentials:</p>
-            <p>Username: <strong>admin</strong></p>
-            <p>Password: <strong>admin123</strong></p>
-          </div>
+          
         </CardContent>
       </Card>
     </div>

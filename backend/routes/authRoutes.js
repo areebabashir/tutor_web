@@ -3,11 +3,14 @@ import express from "express";
 import {
   registerController,
   loginController,
+  adminLoginController,
   testController,
   forgotPasswordController,
   updateProfileController,
+  verifyTokenController,
+  logoutController,
 } from "../controllers/authController.js";
-import { requireSignIn, isAdmin } from "../middlewares/authMiddlewares.js";
+import { requireSignIn, isAdmin } from "../Middlewares/authMiddlewares.js";
 //router object
 const router = express.Router();
 
@@ -22,8 +25,18 @@ router.post("/register", registerController);
 //LOGIN 
 router.post("/login", loginController);
 
+//ADMIN LOGIN 
+router.post("/admin-login", adminLoginController);
+
 //forget passworrd || post
 router.post("/ForgetPassword", forgotPasswordController);
+
+//verify token for persistent sessions
+router.post("/verify-token", verifyTokenController);
+
+//logout
+router.post("/logout", logoutController);
+
 //test routes
 router.get("/test", requireSignIn, isAdmin, testController);
 
@@ -39,8 +52,5 @@ router.get("/admin-auth", requireSignIn, isAdmin, (req, res) => {
 
 //update profile
 router.put("/profile", updateProfileController);
-
-
-
 
 export default router;
