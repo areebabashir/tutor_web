@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 import { contactAPI } from "@/lib/api";
+import { useErrorHandler } from '@/hooks/useErrorHandler';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -17,6 +18,7 @@ const Contact = () => {
     message: ""
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { handleError } = useErrorHandler();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,8 +38,11 @@ const Contact = () => {
       
       setFormData({ name: "", email: "", subject: "", message: "" });
     } catch (error) {
-      console.error('Contact submission error:', error);
-      toast.error("Failed to Send Message. Please try again later or contact us directly.");
+      handleError(error, {
+        title: 'Failed to Send Message',
+        description: 'Unable to send your message. Please try again later or contact us directly.',
+        duration: 8000
+      });
     } finally {
       setIsSubmitting(false);
     }

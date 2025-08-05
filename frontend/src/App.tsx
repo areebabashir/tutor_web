@@ -38,7 +38,23 @@ const App = () => (
     <QueryClientProvider client={queryClient}>
       <AdminAuthProvider>
         <TooltipProvider>
-          <Sonner />
+          <Sonner 
+            position="top-right"
+            richColors
+            closeButton
+            duration={5000}
+            expand={true}
+            theme="light"
+            toastOptions={{
+              error: {
+                style: {
+                  background: '#3b82f6',
+                  color: 'white',
+                  border: '1px solid #2563eb'
+                }
+              }
+            }}
+          />
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<Index />} />

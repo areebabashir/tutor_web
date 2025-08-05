@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { courseAPI } from '@/lib/api';
+import { useErrorHandler } from './useErrorHandler';
 
 export interface Course {
   _id: string;
@@ -59,6 +60,7 @@ export const useCourses = (params?: {
     totalPages: 1,
     count: 0
   });
+  const { handleError } = useErrorHandler();
 
   const fetchCourses = async () => {
     try {
@@ -73,7 +75,12 @@ export const useCourses = (params?: {
         count: response.count
       });
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch courses');
+      const errorMessage = err instanceof Error ? err.message : 'Failed to fetch courses';
+      setError(errorMessage);
+      handleError(err, {
+        title: 'Failed to fetch courses',
+        description: 'Unable to load course data. Please try again.'
+      });
       console.error('Error fetching courses:', err);
     } finally {
       setLoading(false);
@@ -97,6 +104,7 @@ export const useCourse = (id: string) => {
   const [course, setCourse] = useState<Course | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { handleError } = useErrorHandler();
 
   const fetchCourse = async () => {
     try {
@@ -105,7 +113,12 @@ export const useCourse = (id: string) => {
       const response = await courseAPI.getCourseById(id);
       setCourse(response.data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch course');
+      const errorMessage = err instanceof Error ? err.message : 'Failed to fetch course';
+      setError(errorMessage);
+      handleError(err, {
+        title: 'Failed to fetch course',
+        description: 'Unable to load course details. Please try again.'
+      });
       console.error('Error fetching course:', err);
     } finally {
       setLoading(false);

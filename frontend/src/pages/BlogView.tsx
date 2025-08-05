@@ -23,13 +23,15 @@ import {
   ChevronLeft,
   ChevronRight,
   Bookmark,
-  MoreHorizontal
+  MoreHorizontal,
+  Loader2
 } from 'lucide-react';
 import { blogAPI } from '@/lib/api';
 import { toast } from 'sonner';
 import CommentSection from '@/components/CommentSection';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
+import { useErrorHandler } from '@/hooks/useErrorHandler';
 
 interface Blog {
   _id: string;
@@ -66,8 +68,8 @@ interface RelatedBlog {
   readingTime: number;
 }
 
-const BlogView: React.FC = () => {
-  const { slug } = useParams<{ slug: string }>();
+export default function BlogView() {
+  const { slug } = useParams();
   const navigate = useNavigate();
   const [blog, setBlog] = useState<Blog | null>(null);
   const [relatedBlogs, setRelatedBlogs] = useState<RelatedBlog[]>([]);
@@ -75,6 +77,8 @@ const BlogView: React.FC = () => {
   const [liked, setLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(0);
   const [bookmarked, setBookmarked] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const { handleError } = useErrorHandler();
 
   useEffect(() => {
     if (slug) {
@@ -83,23 +87,36 @@ const BlogView: React.FC = () => {
   }, [slug]);
 
   const fetchBlog = async () => {
+    if (!slug) return;
+    
     try {
       setLoading(true);
-      const response = await blogAPI.getBlogBySlug(slug!);
-      setBlog(response.data);
+      setError(null);
+      const response = await blogAPI.getBlogBySlug(slug);
       
-      // Initialize like state from blog data
-      setLikesCount(response.data.likeCount || 0);
-      // Check if current user has liked (for now, we'll use a mock check)
-      const userEmail = 'user@example.com'; // This should come from user authentication
-      const userLiked = response.data.likes?.some(like => like.userEmail === userEmail) || false;
-      setLiked(userLiked);
-      
-      // Fetch related blogs
-      fetchRelatedBlogs(response.data.category, response.data._id);
+      if (response.success) {
+        setBlog(response.data);
+        
+        // Initialize like state from blog data
+        setLikesCount(response.data.likeCount || 0);
+        // Check if current user has liked (for now, we'll use a mock check)
+        const userEmail = 'user@example.com'; // This should come from user authentication
+        const userLiked = response.data.likes?.some(like => like.userEmail === userEmail) || false;
+        setLiked(userLiked);
+        
+        // Fetch related blogs
+        fetchRelatedBlogs(response.data.category, response.data._id);
+      } else {
+        throw new Error(response.message || 'Blog not found');
+      }
     } catch (error) {
-      console.error('Error fetching blog:', error);
-      toast.error('Failed to load blog');
+      const errorMessage = error instanceof Error ? error.message : 'Failed to load blog';
+      setError(errorMessage);
+      handleError(error, {
+        title: 'Failed to load blog',
+        description: 'Unable to load the blog post. Please try again later.',
+        duration: 6000
+      });
       navigate('/blog');
     } finally {
       setLoading(false);
@@ -510,6 +527,4 @@ const BlogView: React.FC = () => {
       <Footer />
     </>
   );
-};
-
-export default BlogView; 
+}; 

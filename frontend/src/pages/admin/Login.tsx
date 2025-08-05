@@ -7,6 +7,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { useToast } from "@/hooks/use-toast";
 import { useAdminAuth } from "@/contexts/AdminAuthContext";
 import { authAPI } from "@/lib/api";
+import { useErrorHandler } from '@/hooks/useErrorHandler';
+import { toast } from "sonner";
 
 export default function AdminLogin() {
   const [credentials, setCredentials] = useState({
@@ -15,8 +17,9 @@ export default function AdminLogin() {
   });
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const { toast } = useToast();
+  const { toast: oldToast } = useToast();
   const { login } = useAdminAuth();
+  const { handleError } = useErrorHandler();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,24 +40,20 @@ export default function AdminLogin() {
         // Use context to login
         login(data.token, data.user);
         
-        toast({
-          title: "Login successful",
-          description: "Welcome to the admin dashboard!",
-        });
+        toast.success("Login successful! Welcome to the admin dashboard!");
         navigate('/admin');
       } else {
-        toast({
-          title: "Login failed",
-          description: data.message || "Invalid credentials",
-          variant: "destructive",
+        handleError(data.message || "Invalid credentials", {
+          title: 'Login Failed',
+          description: 'Please check your credentials and try again.',
+          duration: 6000
         });
       }
     } catch (error) {
-      console.error('Login error:', error);
-      toast({
-        title: "Login failed",
-        description: "Network error. Please try again.",
-        variant: "destructive",
+      handleError(error, {
+        title: 'Login Failed',
+        description: 'Network error. Please check your connection and try again.',
+        duration: 8000
       });
     } finally {
       setIsLoading(false);

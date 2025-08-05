@@ -4,14 +4,104 @@ import { Toaster } from 'sonner';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { GraduationCap } from 'lucide-react';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Upload, Send, Loader2, Sparkles, User, Mail, Phone, BookOpen, Award, Globe, Clock, CheckCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { toast } from "sonner";
+import { teacherAPI } from "@/lib/api";
+import { useErrorHandler } from '@/hooks/useErrorHandler';
 
 export function TeacherApplicationPage() {
-  const handleSuccess = (data: any) => {
-    console.log('Application submitted successfully:', data);
-  };
+  const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [selectedResume, setSelectedResume] = useState<File | null>(null);
+  const { handleError } = useErrorHandler();
 
-  const handleError = (error: string) => {
-    console.error('Application submission failed:', error);
+  const [formData, setFormData] = useState({
+    fullName: "",
+    email: "",
+    phone: "",
+    education: "",
+    experience: "",
+    subjects: "",
+    availability: "",
+    motivation: "",
+    references: ""
+  });
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      // Validate required fields
+      if (!formData.fullName || !formData.email || !formData.phone || !formData.education || !formData.experience || !formData.subjects || !formData.motivation) {
+        handleError("Please fill in all required fields", {
+          title: 'Validation Error',
+          description: 'All required fields must be completed.',
+          duration: 5000
+        });
+        return;
+      }
+
+      // Validate email format
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(formData.email)) {
+        handleError("Please enter a valid email address", {
+          title: 'Invalid Email',
+          description: 'The email format is not valid.',
+          duration: 5000
+        });
+        return;
+      }
+
+      const applicationData = new FormData();
+      
+      // Add form data
+      Object.entries(formData).forEach(([key, value]) => {
+        applicationData.append(key, value);
+      });
+
+      // Add resume file if selected
+      if (selectedResume) {
+        applicationData.append('resume', selectedResume);
+      }
+
+      await teacherAPI.submitApplication(applicationData);
+
+      toast.success("Application submitted successfully! We'll review your application and get back to you within 3-5 business days.");
+      
+      // Reset form
+      setFormData({
+        fullName: "",
+        email: "",
+        phone: "",
+        education: "",
+        experience: "",
+        subjects: "",
+        availability: "",
+        motivation: "",
+        references: ""
+      });
+      setSelectedResume(null);
+      
+      // Navigate to thank you page or home
+      navigate('/');
+    } catch (error) {
+      handleError(error, {
+        title: 'Application Submission Failed',
+        description: 'Unable to submit your application. Please try again later.',
+        duration: 8000
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (

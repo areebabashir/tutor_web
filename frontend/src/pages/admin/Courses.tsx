@@ -11,6 +11,7 @@ import { Loader2, Plus, Edit, Trash2, Eye, Search, Filter, Calendar, User, BookO
 import { toast } from "sonner";
 import { useAdminAuth } from "@/contexts/AdminAuthContext";
 import { courseAPI } from "@/lib/api";
+import { useErrorHandler } from '@/hooks/useErrorHandler';
 
 interface Course {
   _id: string;
@@ -49,6 +50,7 @@ export default function AdminCoursesPage() {
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
   const { getAuthHeaders } = useAdminAuth();
+  const { handleError, handleAsyncError } = useErrorHandler();
 
   // Form states
   const [formData, setFormData] = useState({
@@ -84,6 +86,7 @@ export default function AdminCoursesPage() {
 
   const fetchCourses = async () => {
     try {
+      setLoading(true);
       const data = await courseAPI.getAllCourses({
         search: searchTerm || undefined,
         category: categoryFilter === 'all' ? undefined : categoryFilter || undefined,
@@ -91,8 +94,10 @@ export default function AdminCoursesPage() {
       });
       setCourses(data.data);
     } catch (error) {
-      console.error('Fetch courses error:', error);
-      toast.error(error.message || 'Failed to fetch courses');
+      handleError(error, {
+        title: 'Failed to fetch courses',
+        description: 'Unable to load course data. Please try again.'
+      });
     } finally {
       setLoading(false);
     }
@@ -142,7 +147,7 @@ export default function AdminCoursesPage() {
         courseFormData.append('video', selectedVideo);
       }
       
-      // Add arrays as JSON strings
+      // Add optional fields
       if (formData.features.length > 0) {
         courseFormData.append('features', JSON.stringify(formData.features));
       }
@@ -156,20 +161,17 @@ export default function AdminCoursesPage() {
         courseFormData.append('learningOutcomes', JSON.stringify(formData.learningOutcomes));
       }
       
-      // Debug: Log the FormData contents
-      console.log('FormData contents:');
-      for (let [key, value] of courseFormData.entries()) {
-        console.log(key, ':', value);
-      }
-      
       await courseAPI.createCourse(courseFormData, Authorization);
+      
       toast.success('Course created successfully');
       setIsCreateDialogOpen(false);
       resetForm();
       fetchCourses();
     } catch (error) {
-      console.error('Create course error:', error);
-      toast.error(error.message || 'Failed to create course');
+      handleError(error, {
+        title: 'Failed to create course',
+        description: 'Unable to create the course. Please check your input and try again.'
+      });
     }
   };
 
@@ -217,7 +219,7 @@ export default function AdminCoursesPage() {
         courseFormData.append('video', selectedVideo);
       }
       
-      // Add arrays as JSON strings
+      // Add optional fields
       if (formData.features.length > 0) {
         courseFormData.append('features', JSON.stringify(formData.features));
       }
@@ -232,29 +234,35 @@ export default function AdminCoursesPage() {
       }
       
       await courseAPI.updateCourse(selectedCourse._id, courseFormData, Authorization);
+      
       toast.success('Course updated successfully');
       setIsEditDialogOpen(false);
       resetForm();
       fetchCourses();
     } catch (error) {
-      console.error('Update course error:', error);
-      toast.error(error.message || 'Failed to update course');
+      handleError(error, {
+        title: 'Failed to update course',
+        description: 'Unable to update the course. Please check your input and try again.'
+      });
     }
   };
 
   const handleDeleteCourse = async (courseId: string) => {
-    if (!confirm('Are you sure you want to delete this course?')) {
+    if (!confirm('Are you sure you want to delete this course? This action cannot be undone.')) {
       return;
     }
 
     try {
       const { Authorization } = getAuthHeaders();
       await courseAPI.deleteCourse(courseId, Authorization);
+      
       toast.success('Course deleted successfully');
       fetchCourses();
     } catch (error) {
-      console.error('Delete course error:', error);
-      toast.error(error.message || 'Failed to delete course');
+      handleError(error, {
+        title: 'Failed to delete course',
+        description: 'Unable to delete the course. Please try again.'
+      });
     }
   };
 

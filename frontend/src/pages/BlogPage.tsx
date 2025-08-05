@@ -11,6 +11,7 @@ import { blogAPI } from '@/lib/api';
 import { toast } from 'sonner';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
+import { useErrorHandler } from '@/hooks/useErrorHandler';
 
 interface Blog {
   _id: string;
@@ -42,6 +43,7 @@ const BlogPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [categories, setCategories] = useState<string[]>([]);
+  const { handleError } = useErrorHandler();
 
   useEffect(() => {
     fetchBlogs();
@@ -50,22 +52,25 @@ const BlogPage: React.FC = () => {
   const fetchBlogs = async () => {
     try {
       setLoading(true);
-
       const response = await blogAPI.getPublishedBlogs({
         page: currentPage,
-        limit: 12,
-        ...(searchTerm && { search: searchTerm }),
-        ...(selectedCategory !== 'all' && { category: selectedCategory })
+        limit: 9,
+        search: searchTerm || undefined,
+        category: selectedCategory === 'all' ? undefined : selectedCategory
       });
-      setBlogs(response.data);
-      setTotalPages(response.pagination?.totalPages || 1);
       
-      // Extract unique categories
-      const uniqueCategories = [...new Set(response.data.map((blog: Blog) => blog.category))] as string[];
-      setCategories(uniqueCategories);
+      if (response.success) {
+        setBlogs(response.data);
+        setTotalPages(response.totalPages || 1);
+      } else {
+        throw new Error(response.message || 'Failed to fetch blogs');
+      }
     } catch (error) {
-      console.error('Error fetching blogs:', error);
-      toast.error('Failed to load blogs');
+      handleError(error, {
+        title: 'Failed to load blogs',
+        description: 'Unable to load blog posts. Please try again later.',
+        duration: 6000
+      });
     } finally {
       setLoading(false);
     }

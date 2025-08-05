@@ -6,6 +6,7 @@ import { courseAPI, studentAPI, teacherAPI, reviewAPI, quizAPI, notesAPI } from 
 import { toast } from "sonner";
 import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent } from "@/components/ui/chart";
 import { Bar, BarChart, Line, LineChart, Pie, PieChart as RechartsPieChart, Cell, ResponsiveContainer, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from "recharts";
+import { useErrorHandler } from '@/hooks/useErrorHandler';
 
 interface DashboardStats {
   totalCourses: number;
@@ -93,6 +94,7 @@ export default function AdminDashboard() {
   });
   const [loading, setLoading] = useState(true);
   const { adminToken } = useAdminAuth();
+  const { handleError } = useErrorHandler();
 
   useEffect(() => {
     fetchDashboardData();
@@ -174,7 +176,11 @@ export default function AdminDashboard() {
         }
 
       } catch (error) {
-        console.error('Error in API calls:', error);
+        handleError(error, {
+          title: 'Dashboard Data Error',
+          description: 'Unable to load some dashboard data. Some statistics may be incomplete.',
+          duration: 8000
+        });
         // Continue with empty data arrays
       }
 

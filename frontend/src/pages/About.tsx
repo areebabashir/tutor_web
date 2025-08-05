@@ -1,8 +1,11 @@
-import { Users, Target, Heart, Award, BookOpen, Globe, Sparkles, Star, CheckCircle, TrendingUp, Zap, Clock, Shield, Lightbulb, Rocket, GraduationCap } from "lucide-react";
+import { useState } from "react";
+import { Users, Award, Globe, Clock, Star, CheckCircle, Sparkles, BookOpen, Target, Heart, Shield, Zap, TrendingUp, Lightbulb, Rocket, GraduationCap } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { useErrorHandler } from '@/hooks/useErrorHandler';
 
 const teamMembers = [
   {
@@ -127,6 +130,17 @@ const achievements = [
 ];
 
 const About = () => {
+  const { handleError } = useErrorHandler();
+
+  // Handle any potential errors in the component
+  const handleComponentError = (error: any, context: string) => {
+    handleError(error, {
+      title: `Error in ${context}`,
+      description: `Something went wrong while loading ${context}. Please try refreshing the page.`,
+      duration: 6000
+    });
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50">
       <Navbar />
@@ -135,20 +149,20 @@ const About = () => {
       <section className="relative overflow-hidden bg-gradient-to-r from-primary via-primary-dark to-accent py-20 lg:py-32">
         <div className="absolute inset-0">
           <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.1)_1px,transparent_1px)] bg-[length:60px_60px]"></div>
-        </div>
+              </div>
         
         <div className="container mx-auto px-4 text-center relative z-10">
           <div className="inline-flex items-center px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-white/90 text-sm font-medium mb-6">
-            <Users className="w-4 h-4 mr-2" />
-            About Our Platform
-          </div>
+              <Users className="w-4 h-4 mr-2" />
+              About Our Platform
+            </div>
           
           <h1 className="text-5xl md:text-6xl font-bold mb-6 text-white">
-            Who We Are
-          </h1>
+              Who We Are
+            </h1>
           <p className="text-xl text-white/90 max-w-3xl mx-auto">
-            We're passionate educators and industry experts dedicated to making high-quality learning accessible to everyone, everywhere.
-          </p>
+              We're passionate educators and industry experts dedicated to making high-quality learning accessible to everyone, everywhere.
+            </p>
         </div>
       </section>
 

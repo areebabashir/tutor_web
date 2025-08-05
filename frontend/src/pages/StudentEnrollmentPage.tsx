@@ -1,16 +1,106 @@
 'use client';
 
-import React from 'react';
-import { useSearchParams } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import StudentEnrollmentForm from '@/components/StudentEnrollmentForm';
 import { Toaster } from 'sonner';
 import { Users } from 'lucide-react';
+import { useErrorHandler } from '@/hooks/useErrorHandler';
+import { toast } from 'sonner';
+import { studentAPI } from '@/lib/api';
 
 export default function StudentEnrollmentPage() {
-  const [searchParams] = useSearchParams();
+  const searchParams = useSearchParams();
   const courseId = searchParams.get('courseId');
+  const courseTitle = searchParams.get('courseTitle');
+  const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { handleError } = useErrorHandler();
+
+  const [formData, setFormData] = useState({
+    fullName: "",
+    email: "",
+    phone: "",
+    age: "",
+    educationLevel: "",
+    learningGoals: "",
+    preferredSchedule: "",
+    specialRequirements: ""
+  });
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      // Validate required fields
+      if (!formData.fullName || !formData.email || !formData.phone || !formData.age || !formData.educationLevel || !formData.learningGoals) {
+        handleError("Please fill in all required fields", {
+          title: 'Validation Error',
+          description: 'All required fields must be completed.',
+          duration: 5000
+        });
+        return;
+      }
+
+      // Validate email format
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(formData.email)) {
+        handleError("Please enter a valid email address", {
+          title: 'Invalid Email',
+          description: 'The email format is not valid.',
+          duration: 5000
+        });
+        return;
+      }
+
+      // Validate age
+      const age = parseInt(formData.age);
+      if (isNaN(age) || age < 5 || age > 100) {
+        handleError("Please enter a valid age between 5 and 100", {
+          title: 'Invalid Age',
+          description: 'Age must be a number between 5 and 100.',
+          duration: 5000
+        });
+        return;
+      }
+
+      const enrollmentData = {
+        ...formData,
+        courseId: courseId || '',
+        courseTitle: courseTitle || ''
+      };
+
+      await studentAPI.submitEnrollment(enrollmentData);
+
+      toast.success("Enrollment submitted successfully! We'll contact you within 24 hours to confirm your enrollment and provide next steps.");
+      
+      // Reset form
+      setFormData({
+        fullName: "",
+        email: "",
+        phone: "",
+        age: "",
+        educationLevel: "",
+        learningGoals: "",
+        preferredSchedule: "",
+        specialRequirements: ""
+      });
+      
+      // Navigate to thank you page or courses
+      navigate('/courses');
+    } catch (error) {
+      handleError(error, {
+        title: 'Enrollment Submission Failed',
+        description: 'Unable to submit your enrollment. Please try again later.',
+        duration: 8000
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background">

@@ -35,6 +35,7 @@ import { toast } from "sonner";
 import { quizAPI } from "@/lib/api";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import { useErrorHandler } from '@/hooks/useErrorHandler';
 
 interface Quiz {
   _id: string;
@@ -70,6 +71,7 @@ export default function QuizzesPage() {
   const [isResultDialogOpen, setIsResultDialogOpen] = useState(false);
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [difficultyFilter, setDifficultyFilter] = useState("all");
+  const { handleError } = useErrorHandler();
 
   // Quiz taking states
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);

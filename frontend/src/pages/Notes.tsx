@@ -12,6 +12,7 @@ import { Search, Download, Eye, FileText, Calendar, User, Tag, Filter, BookOpen,
 import { formatDate } from '@/lib/utils';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
+import { useErrorHandler } from '@/hooks/useErrorHandler';
 
 interface Notes {
   _id: string;
@@ -48,6 +49,7 @@ const Notes = () => {
   const [selectedNote, setSelectedNote] = useState<Notes | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [downloading, setDownloading] = useState<string | null>(null);
+  const { handleError } = useErrorHandler();
 
   const categories = ['Grammar', 'Vocabulary', 'Reading', 'Writing', 'Listening', 'Speaking', 'General'];
   const difficulties = ['Beginner', 'Intermediate', 'Advanced'];

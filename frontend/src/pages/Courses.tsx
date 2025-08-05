@@ -1,13 +1,15 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Search, Filter, Clock, Users, Star, Sparkles, BookOpen, Loader2 } from "lucide-react";
+import { Search, Filter, Clock, Users, Star, Sparkles, BookOpen, Loader2, Play, X } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useCourses } from "@/hooks/useCourses";
+import { useErrorHandler } from '@/hooks/useErrorHandler';
 
 const coursesData = [
   {
@@ -95,13 +97,23 @@ const categories = ["All", "IELTS", "English Proficiency", "Quran"];
 const Courses = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
+  const [videoUrl, setVideoUrl] = useState<string | null>(null);
+  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
+  const { handleError } = useErrorHandler();
 
   // Fetch courses from API - show all courses
   const { courses, loading, error, pagination } = useCourses({
     category: selectedCategory === "All" ? undefined : selectedCategory,
     search: searchQuery || undefined,
-    limit: 50
   });
+
+  // Handle error
+  if (error) {
+    handleError(error, {
+      title: 'Failed to load courses',
+      description: 'Unable to load course data. Please try again.'
+    });
+  }
 
     const filteredCourses = courses;
 

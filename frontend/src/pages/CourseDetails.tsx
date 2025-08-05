@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { useCourse } from "@/hooks/useCourses";
+import { useErrorHandler } from '@/hooks/useErrorHandler';
 
 const courseData = {
   1: {
@@ -52,6 +53,7 @@ const courseData = {
 const CourseDetails = () => {
   const { id } = useParams();
   const { course, loading, error } = useCourse(id || "");
+  const { handleError } = useErrorHandler();
 
   // Helper function to format video URL
   const formatVideoUrl = (videoUrl: string) => {
@@ -148,7 +150,32 @@ const CourseDetails = () => {
     );
   }
 
-  if (error || !course) {
+  if (error) {
+    handleError(error, {
+      title: 'Failed to load course',
+      description: 'Unable to load course details. Please try again.'
+    });
+    
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50">
+        <Navbar />
+        <div className="flex items-center justify-center h-64">
+          <div className="text-center">
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">Course Not Found</h2>
+            <p className="text-gray-600 mb-6">The course you're looking for doesn't exist or has been removed.</p>
+            <Link to="/courses">
+              <Button className="bg-gradient-to-r from-primary to-accent text-white">
+                Browse All Courses
+              </Button>
+            </Link>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (!course) {
     return (
       <div className="min-h-screen bg-background">
         <Navbar />
@@ -239,6 +266,7 @@ const CourseDetails = () => {
                       onError={(e) => {
                         console.error('Video loading error:', e);
                         console.error('Video URL:', formatVideoUrl(course.video));
+                        handleError('Failed to load video. Please try again later.');
                       }}
                       onLoadStart={() => {
                         console.log('Video loading started:', formatVideoUrl(course.video));
