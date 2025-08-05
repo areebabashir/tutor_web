@@ -12,7 +12,7 @@ import { toast } from 'sonner';
 import { studentAPI } from '@/lib/api';
 
 export default function StudentEnrollmentPage() {
-  const searchParams = useSearchParams();
+  const [searchParams] = useSearchParams();
   const courseId = searchParams.get('courseId');
   const courseTitle = searchParams.get('courseTitle');
   const navigate = useNavigate();
