@@ -15,18 +15,22 @@ import quizRoutes from './routes/quizRoutes.js'; // Importing quiz routes
 import blogRoutes from './routes/blogRoutes.js'; // Importing blog routes
 import commentRoutes from './routes/commentRoutes.js'; // Importing comment routes
 import notesRoutes from './routes/notesRoutes.js'; // Importing notes routes
-// Load environment variables
-dotenv.config();
+
+// Get __dirname equivalent in ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Load environment variables with explicit path
+dotenv.config({ path: path.join(__dirname, '.env') });
+
+// Debug: Check if environment variables are loaded
+
 
 // Connect to MongoDB
 connectDB();
 
 // Initialize Express app
 const app = express();
-
-// Get __dirname equivalent in ES modules
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 // CORS configuration
 app.use(cors({
