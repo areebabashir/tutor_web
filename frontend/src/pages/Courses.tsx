@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Search, Filter, Clock, Users, Star, Sparkles, BookOpen, Loader2, Play, X } from "lucide-react";
+import { Search, Filter, Clock, Users, Star, Sparkles, BookOpen, Loader2, Play, X, Eye } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
@@ -14,81 +14,55 @@ import { useErrorHandler } from '@/hooks/useErrorHandler';
 const coursesData = [
   {
     id: 1,
-    title: "Advanced Business Communication",
-    category: "Business Communication",
-    description: "Master professional communication skills for global business success with real-world scenarios and industry best practices",
-    duration: "8 weeks",
-    students: 1250,
+    title: "IELTS Preparation Course",
+    category: "IELTS",
+    description: "Comprehensive IELTS Academic & General Training prep: Listening, Reading, Writing, Speaking, full mock tests, band score strategies, and downloadable resources.",
+    duration: "12 weeks",
+    students: 3200,
     rating: 4.9,
-    image: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=400&h=240&fit=crop",
+    image: "https://images.unsplash.com/photo-1503676382389-4809596d5290?w=400&h=240&fit=crop",
     price: "$149",
-    level: "Advanced",
-    instructor: "Dr. Sarah Johnson"
+    level: "All Levels",
+    instructor: "Expert IELTS Trainer"
   },
   {
     id: 2,
-    title: "Professional Email Mastery",
-    category: "Email Etiquette",
-    description: "Write compelling emails that get responses and build lasting professional relationships",
-    duration: "4 weeks",
+    title: "Spoken English Course",
+    category: "Spoken English",
+    description: "Master daily conversation, pronunciation, public speaking, and fluency with interactive audio, live speaking clubs, and downloadable lessons.",
+    duration: "10 weeks",
     students: 2100,
     rating: 4.8,
-    image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400&h=240&fit=crop",
-    price: "$89",
-    level: "Intermediate",
-    instructor: "Michael Chen"
+    image: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&h=240&fit=crop",
+    price: "$129",
+    level: "All Levels",
+    instructor: "Fluency Coach"
   },
   {
     id: 3,
-    title: "Presentation Skills Excellence",
-    category: "Presentation Skills",
-    description: "Deliver powerful presentations that captivate and persuade audiences in any business setting",
-    duration: "6 weeks",
-    students: 980,
-    rating: 4.9,
-    image: "https://images.unsplash.com/photo-1556761175-b413da4baf72?w=400&h=240&fit=crop",
-    price: "$119",
+    title: "Competitive Exams English Preparation",
+    category: "Competitive Exams",
+    description: "CSS, PMS, FPSC, PPSC, NTS English: grammar, vocabulary, comprehension, essay, precis, translation, past papers, and mock tests.",
+    duration: "14 weeks",
+    students: 1800,
+    rating: 4.7,
+    image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&h=240&fit=crop",
+    price: "$139",
     level: "All Levels",
-    instructor: "Emily Rodriguez"
+    instructor: "Exam Specialist"
   },
   {
     id: 4,
-    title: "Cross-Cultural Business English",
-    category: "Cross-Cultural",
-    description: "Navigate international business with cultural intelligence and advanced language skills",
-    duration: "10 weeks",
-    students: 750,
-    rating: 4.7,
-    image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&h=240&fit=crop",
-    price: "$179",
-    level: "Advanced",
-    instructor: "David Kim"
-  },
-  {
-    id: 5,
-    title: "Business Writing Fundamentals",
-    category: "Professional Writing",
-    description: "Master the art of clear, concise, and persuasive business writing for all professional contexts",
-    duration: "6 weeks",
-    students: 1650,
-    rating: 4.8,
-    image: "https://images.unsplash.com/photo-1455390582262-044cdead277a?w=400&h=240&fit=crop",
-    price: "$99",
-    level: "Intermediate",
-    instructor: "Lisa Thompson"
-  },
-  {
-    id: 6,
-    title: "Negotiation & Persuasion",
-    category: "Negotiation",
-    description: "Develop advanced negotiation skills and persuasive communication techniques for business success",
+    title: "GRE Vocabulary Building Course",
+    category: "GRE Vocabulary",
+    description: "GRE Verbal mastery: 30+ word lists, flashcards, mnemonics, analogies, quizzes, and Urdu/Hindi translations for Pakistani learners.",
     duration: "8 weeks",
-    students: 890,
-    rating: 4.9,
-    image: "https://images.unsplash.com/photo-1556761175-4a5c4b0b0b0b?w=400&h=240&fit=crop",
-    price: "$159",
-    level: "Advanced",
-    instructor: "Robert Wilson"
+    students: 1200,
+    rating: 4.8,
+    image: "https://images.unsplash.com/photo-1464983953574-0892a716854b?w=400&h=240&fit=crop",
+    price: "$119",
+    level: "All Levels",
+    instructor: "GRE Verbal Coach"
   }
 ];
 
@@ -134,10 +108,10 @@ const Courses = () => {
           </div>
           
           <h1 className="text-5xl md:text-6xl font-bold mb-6 text-white">
-            Business English Courses
+            English Exam & Language Preparation Courses
           </h1>
           <p className="text-xl text-white/90 max-w-3xl mx-auto">
-            Discover our comprehensive collection of courses designed to advance your career and professional communication skills
+            Prepare for English exams and enhance your language skills with our comprehensive course offerings.
           </p>
         </div>
       </section>
@@ -221,39 +195,24 @@ const Courses = () => {
                         target.src = "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=400&h=240&fit=crop";
                       }}
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    
-                    {/* Video Preview Overlay */}
-                    {course.video && (
-                      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        <div className="bg-white/90 backdrop-blur-sm rounded-full p-3 cursor-pointer hover:bg-white transition-colors duration-200">
-                          <svg className="w-8 h-8 text-primary" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M8 5v14l11-7z"/>
-                          </svg>
-                        </div>
-                      </div>
-                    )}
-                    
+                    <Link to={`/course/${course._id}`}
+                      className="absolute top-2 right-2 bg-white/80 rounded-full p-2 shadow hover:bg-primary/90 hover:text-white transition-colors z-10">
+                      <Eye className="h-5 w-5" />
+                    </Link>
                     <div className="absolute top-4 left-4 flex flex-col gap-2">
-                    <Badge className="badge-modern bg-gradient-to-r from-primary to-accent text-white">
-                      {course.category}
-                    </Badge>
-                    <Badge variant="secondary" className="badge-modern">
-                      {course.level}
-                    </Badge>
-                    {course.tags && course.tags.length > 0 && (
-                      <Badge variant="outline" className="badge-modern bg-white/90 text-gray-800">
-                        {course.tags[0]}
+                      <Badge className="badge-modern bg-gradient-to-r from-primary to-accent text-white">
+                        {course.category}
                       </Badge>
-                    )}
-                  </div>
-                    <div className="absolute top-4 right-4">
-                      <div className="bg-white/90 backdrop-blur-sm rounded-full px-3 py-1">
-                        <Badge variant="secondary" className="text-xs bg-white/80 text-gray-800">
-                          {course.category}
+                      <Badge variant="secondary" className="badge-modern">
+                        {course.level}
+                      </Badge>
+                      {course.tags && course.tags.length > 0 && (
+                        <Badge variant="outline" className="badge-modern bg-white/90 text-gray-800">
+                          {course.tags[0]}
                         </Badge>
-                      </div>
+                      )}
                     </div>
+                    {/* Remove duplicate category badge at top right */}
                   </div>
                   
                   <CardContent className="p-6">
@@ -289,11 +248,7 @@ const Courses = () => {
                         <span className="text-sm text-muted-foreground ml-1">USD</span>
                       </div>
                       <div className="flex gap-2">
-                        <Link to={`/course/${course._id}`}>
-                          <Button className="btn-modern bg-gradient-to-r from-primary to-accent text-white hover:shadow-lg">
-                            View Details
-                          </Button>
-                        </Link>
+                        {/* Remove View Details button, keep only Enroll Now */}
                         <Link to={`/enroll-course?courseId=${course._id}`}>
                           <Button className="btn-modern bg-gradient-to-r from-primary to-accent text-white hover:shadow-lg">
                             Enroll Now

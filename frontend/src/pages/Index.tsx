@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, BookOpen, Users, Clock, DollarSign, Star, Play, ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
+import { ArrowRight, BookOpen, Users, Clock, DollarSign, Star, Play, ChevronLeft, ChevronRight, Loader2, Eye } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
@@ -58,47 +58,47 @@ interface Blog {
 const featuredCourses = [
   {
     id: 1,
-    title: "Complete Web Development Bootcamp",
-    description: "Learn HTML, CSS, JavaScript, React, and Node.js from scratch",
-    image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=400&h=240&fit=crop",
-    category: "Programming",
+    title: "IELTS Preparation Course",
+    description: "Comprehensive IELTS Academic & General Training prep: Listening, Reading, Writing, Speaking, full mock tests, band score strategies, and downloadable resources.",
+    image: "https://images.unsplash.com/photo-1503676382389-4809596d5290?w=400&h=240&fit=crop",
+    category: "IELTS",
     duration: "12 weeks",
-    students: 2500,
-    rating: 4.8,
-    price: "$99"
+    students: 3200,
+    rating: 4.9,
+    price: "$149"
   },
   {
     id: 2,
-    title: "Digital Marketing Mastery",
-    description: "Master SEO, social media marketing, and paid advertising",
-    image: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=400&h=240&fit=crop",
-    category: "Business",
-    duration: "8 weeks",
-    students: 1800,
-    rating: 4.7,
-    price: "$79"
+    title: "Spoken English Course",
+    description: "Master daily conversation, pronunciation, public speaking, and fluency with interactive audio, live speaking clubs, and downloadable lessons.",
+    image: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&h=240&fit=crop",
+    category: "Spoken English",
+    duration: "10 weeks",
+    students: 2100,
+    rating: 4.8,
+    price: "$129"
   },
   {
     id: 3,
-    title: "UI/UX Design Fundamentals",
-    description: "Create stunning user interfaces and user experiences",
-    image: "https://images.unsplash.com/photo-1581092795360-fd1ca04f0952?w=400&h=240&fit=crop",
-    category: "Design",
-    duration: "10 weeks",
-    students: 1200,
-    rating: 4.9,
-    price: "$89"
+    title: "Competitive Exams English Preparation",
+    description: "CSS, PMS, FPSC, PPSC, NTS English: grammar, vocabulary, comprehension, essay, precis, translation, past papers, and mock tests.",
+    image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&h=240&fit=crop",
+    category: "Competitive Exams",
+    duration: "14 weeks",
+    students: 1800,
+    rating: 4.7,
+    price: "$139"
   },
   {
     id: 4,
-    title: "Data Science with Python",
-    description: "Learn data analysis, machine learning, and visualization",
-    image: "https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7?w=400&h=240&fit=crop",
-    category: "Programming",
-    duration: "16 weeks",
-    students: 3200,
+    title: "GRE Vocabulary Building Course",
+    description: "GRE Verbal mastery: 30+ word lists, flashcards, mnemonics, analogies, quizzes, and Urdu/Hindi translations for Pakistani learners.",
+    image: "https://images.unsplash.com/photo-1464983953574-0892a716854b?w=400&h=240&fit=crop",
+    category: "GRE Vocabulary",
+    duration: "8 weeks",
+    students: 1200,
     rating: 4.8,
-    price: "$129"
+    price: "$119"
   }
 ];
 
@@ -340,9 +340,13 @@ const Index = () => {
                       className="w-full h-48 object-cover"
                       onError={(e) => {
                         const target = e.target as HTMLImageElement;
-                        target.src = "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=400&h=240&fit=crop";
+                        target.src = "https://images.unsplash.com/photo-1503676382389-4809596d5290?w=400&h=240&fit=crop";
                       }}
                     />
+                    <Link to={`/course/${course._id}`}
+                      className="absolute top-2 right-2 bg-white/80 rounded-full p-2 shadow hover:bg-primary/90 hover:text-white transition-colors z-10">
+                      <Eye className="h-5 w-5" />
+                    </Link>
                     <div className="absolute top-4 left-4 flex flex-col gap-2">
                       <Badge className="bg-gradient-secondary">
                         {course.category}
@@ -380,16 +384,11 @@ const Index = () => {
                         ${course.price}
                       </span>
                       <div className="flex gap-2">
-                        <Link to={`/course/${course._id}`}>
-                          <Button size="sm" variant="outline">
-                            View Details
+                        <Link to={`/enroll-course?courseId=${course._id}`}>
+                          <Button size="sm" variant="gradient">
+                            Enroll Now
                           </Button>
                         </Link>
-                                              <Link to={`/enroll-course?courseId=${course._id}`}>
-                        <Button size="sm" variant="gradient">
-                          Enroll Now
-                        </Button>
-                      </Link>
                       </div>
                     </div>
                   </CardContent>

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useErrorHandler } from '@/hooks/useErrorHandler';
+import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
 
 const teamMembers = [
   {
@@ -161,8 +162,8 @@ const About = () => {
               Who We Are
             </h1>
           <p className="text-xl text-white/90 max-w-3xl mx-auto">
-              We're passionate educators and industry experts dedicated to making high-quality learning accessible to everyone, everywhere.
-            </p>
+            We specialize in English language and exam preparation: IELTS, Spoken English, Competitive Exams, and GRE Vocabulary. Our platform offers interactive quizzes, downloadable resources, live speaking clubs, and expert guidance for your success.
+          </p>
         </div>
       </section>
 
@@ -195,7 +196,7 @@ const About = () => {
                     Mission
                   </h3>
                   <p className="text-gray-700 leading-relaxed">
-                    To democratize education by providing accessible, high-quality learning experiences that empower individuals to achieve their personal and professional goals, regardless of their background or location.
+                    To empower learners in Pakistan and beyond to achieve their English language and exam goals through comprehensive, interactive, and accessible online courses.
                   </p>
                 </div>
                 <div className="bg-primary/5 rounded-lg p-6">
@@ -307,54 +308,59 @@ const About = () => {
               Our instructors are industry professionals and subject matter experts passionate about sharing their knowledge and helping you succeed.
             </p>
           </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {teamMembers.map((member, index) => (
-              <Card key={index} className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 bg-white/90 backdrop-blur-sm border-gray-200">
-                <CardContent className="p-6 text-center">
-                  <div className="relative mb-4">
-                    <img
-                      src={member.image}
-                      alt={member.name}
-                      className="w-24 h-24 rounded-full object-cover mx-auto border-4 border-white shadow-lg"
-                    />
-                    <div className="absolute -bottom-2 -right-2 bg-gradient-to-r from-primary to-accent rounded-full p-1">
-                      <GraduationCap className="w-4 h-4 text-white" />
-                    </div>
-                  </div>
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                    {member.name}
-                  </h3>
-                  <p className="text-primary font-medium mb-3">
-                    {member.role}
-                  </p>
-                  <p className="text-gray-600 text-sm mb-4">
-                    {member.bio}
-                  </p>
-                  
-                  {/* Expertise Tags */}
-                  <div className="flex flex-wrap gap-1 justify-center mb-4">
-                    {member.expertise.map((skill, skillIndex) => (
-                      <Badge key={skillIndex} variant="secondary" className="text-xs">
-                        {skill}
-                      </Badge>
-                    ))}
-                  </div>
-                  
-                  {/* Stats */}
-                  <div className="flex items-center justify-center gap-4 text-sm">
-                    <div className="flex items-center gap-1">
-                      <Star className="w-4 h-4 text-primary fill-current" />
-                      <span className="font-medium">{member.rating}</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Users className="w-4 h-4 text-primary" />
-                      <span className="font-medium">{member.students}</span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+          <div className="relative max-w-5xl mx-auto">
+            <Carousel opts={{ align: "start" }}>
+              <CarouselPrevious />
+              <CarouselContent>
+                {teamMembers.map((member, index) => (
+                  <CarouselItem key={index} className="basis-full md:basis-1/2 lg:basis-1/3 px-2">
+                    <Card className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 bg-white/90 backdrop-blur-sm border-gray-200">
+                      <CardContent className="p-6 text-center">
+                        <div className="relative mb-4">
+                          <img
+                            src={member.image}
+                            alt={member.name}
+                            className="w-24 h-24 rounded-full object-cover mx-auto border-4 border-white shadow-lg"
+                          />
+                          <div className="absolute -bottom-2 -right-2 bg-gradient-to-r from-primary to-accent rounded-full p-1">
+                            <GraduationCap className="w-4 h-4 text-white" />
+                          </div>
+                        </div>
+                        <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                          {member.name}
+                        </h3>
+                        <p className="text-primary font-medium mb-3">
+                          {member.role}
+                        </p>
+                        <p className="text-gray-600 text-sm mb-4">
+                          {member.bio}
+                        </p>
+                        {/* Expertise Tags */}
+                        <div className="flex flex-wrap gap-1 justify-center mb-4">
+                          {member.expertise.map((skill, skillIndex) => (
+                            <Badge key={skillIndex} variant="secondary" className="text-xs">
+                              {skill}
+                            </Badge>
+                          ))}
+                        </div>
+                        {/* Stats */}
+                        <div className="flex items-center justify-center gap-4 text-sm">
+                          <div className="flex items-center gap-1">
+                            <Star className="w-4 h-4 text-primary fill-current" />
+                            <span className="font-medium">{member.rating}</span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <Users className="w-4 h-4 text-primary" />
+                            <span className="font-medium">{member.students}</span>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselNext />
+            </Carousel>
           </div>
         </div>
       </section>

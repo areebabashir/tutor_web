@@ -2,11 +2,10 @@ import mongoose from "mongoose";
 
 const connectDB = async () => {
   try {
-    const mongoUri = process.env.MONGODB_URI || process.env.MONGO_URI || 'mongodb://localhost:27017/tutor_web';
+    const mongoUri = "mongodb+srv://areeba:areeba@dbms.imoaaqd.mongodb.net/";
     
     if (!mongoUri) {
-      console.error('❌ MongoDB URI not found in environment variables');
-      console.log('💡 Please create a .env file with MONGODB_URI');
+     
       process.exit(1);
     }
     

@@ -442,6 +442,46 @@ const BlogEditor: React.FC<BlogEditorProps> = ({
                   onChange={(e) => setFormData({...formData, featuredImage: e.target.value})}
                   placeholder="Enter image URL"
                 />
+                {/* New: File input for uploading featured image */}
+                <Input
+                  type="file"
+                  accept="image/*"
+                  className="mt-2"
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    if (!file.type.startsWith('image/')) {
+                      toast.error('Please select a valid image file');
+                      return;
+                    }
+                    if (file.size > 5 * 1024 * 1024) {
+                      toast.error('Image size should be less than 5MB');
+                      return;
+                    }
+                    if (!authorization) {
+                      toast.error('Authorization required for image upload');
+                      return;
+                    }
+                    setImageUploading(true);
+                    try {
+                      const form = new FormData();
+                      form.append('image', file);
+                      const response = await blogAPI.uploadBlogImage(form, authorization);
+                      const imageUrl = `http://localhost:8000${response.data.imageUrl}`;
+                      setFormData((prev) => ({ ...prev, featuredImage: imageUrl }));
+                      toast.success('Featured image uploaded successfully');
+                    } catch (error) {
+                      console.error('Featured image upload error:', error);
+                      toast.error('Failed to upload featured image');
+                    } finally {
+                      setImageUploading(false);
+                      e.target.value = '';
+                    }
+                  }}
+                />
+                {imageUploading && (
+                  <p className="text-sm text-muted-foreground mt-2">Uploading image...</p>
+                )}
                 {formData.featuredImage && (
                   <div className="mt-2">
                     <img 
