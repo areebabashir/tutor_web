@@ -20,7 +20,7 @@ const notesSchema = new mongoose.Schema({
     type: String, 
     required: true, 
     trim: true,
-    enum: ['Grammar', 'Vocabulary', 'Reading', 'Writing', 'Listening', 'Speaking', 'General']
+    enum: ['IELTS preparation', 'Spoken English', 'English for competitive exams', 'GRE Vocabulary']
   },
   difficulty: { 
     type: String, 
@@ -91,4 +91,4 @@ notesSchema.set('toJSON', { virtuals: true });
 notesSchema.set('toObject', { virtuals: true });
 
 const Notes = mongoose.model('Notes', notesSchema);
-export default Notes; 
+export default Notes;

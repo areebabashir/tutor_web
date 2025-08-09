@@ -390,4 +390,12 @@ const BlogPage: React.FC = () => {
   );
 };
 
-export default BlogPage; 
+export default BlogPage;
+
+<SelectContent>
+  <SelectItem value="all">All Categories</SelectItem>
+  <SelectItem value="IELTS preparation">IELTS preparation</SelectItem>
+  <SelectItem value="Spoken English">Spoken English</SelectItem>
+  <SelectItem value="English for competitive exams">English for competitive exams</SelectItem>
+  <SelectItem value="GRE Vocabulary">GRE Vocabulary</SelectItem>
+</SelectContent>

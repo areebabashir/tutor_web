@@ -28,6 +28,8 @@ interface Blog {
   featured: boolean;
   allowComments: boolean;
   publishedAt?: string;
+  metaTitle?: string;
+  metaDescription?: string;
   createdAt: string;
   updatedAt: string;
   likes: Array<{
@@ -55,7 +57,7 @@ export default function AdminBlogsPage() {
     title: "",
     content: "",
     excerpt: "",
-    category: "Technology",
+    category: "IELTS preparation",
     tags: "",
     author: "Admin",
     status: "draft",
@@ -507,7 +509,7 @@ export default function AdminBlogsPage() {
                 category: formData.category,
                 tags: formData.tags.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0),
                 author: formData.author,
-                status: formData.status,
+                status: formData.status as 'draft' | 'published',
                 featuredImage: formData.featuredImage,
                 metaTitle: formData.metaTitle,
                 metaDescription: formData.metaDescription,
@@ -628,4 +630,4 @@ export default function AdminBlogsPage() {
       </Dialog>
     </div>
   );
-} 
+}

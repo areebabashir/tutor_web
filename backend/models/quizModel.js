@@ -31,7 +31,12 @@ const quizSchema = new mongoose.Schema({
   passingScore: { type: Number, required: true, default: 28 }, // 70% of 40 questions
   timeLimit: { type: Number, default: 30 }, // in minutes
   isActive: { type: Boolean, default: true },
-  category: { type: String, trim: true, default: 'General' },
+  category: { 
+    type: String, 
+    trim: true, 
+    default: 'IELTS preparation',
+    enum: ['IELTS preparation', 'Spoken English', 'English for competitive exams', 'GRE Vocabulary']
+  },
   difficulty: { type: String, enum: ['easy', 'medium', 'hard'], default: 'medium' },
   createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'Admin' },
   results: [quizResultSchema]
@@ -62,4 +67,4 @@ quizSchema.virtual('passRate').get(function() {
 });
 
 const Quiz = mongoose.model('Quiz', quizSchema);
-export default Quiz; 
+export default Quiz;

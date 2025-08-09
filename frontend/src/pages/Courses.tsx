@@ -66,7 +66,7 @@ const coursesData = [
   }
 ];
 
-const categories = ["All", "IELTS", "English Proficiency", "Quran"];
+const categories = ["All", "IELTS preparation", "Spoken English", "English for competitive exams", "GRE Vocabulary"];
 
 const Courses = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");

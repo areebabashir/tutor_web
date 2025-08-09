@@ -15,8 +15,8 @@ const courseSchema = new mongoose.Schema({
   },
   category: {
     type: String,
-    enum: ['IELTS', 'English Proficiency', 'Quran'],
-    required: [true, 'Course category is required']
+    required: true,
+    enum: ['IELTS preparation', 'Spoken English', 'English for competitive exams', 'GRE Vocabulary']
   },
   video: {
     type: String,
@@ -139,4 +139,4 @@ courseSchema.pre('save', function(next) {
   next();
 });
 
-export default mongoose.model('Course', courseSchema); 
+export default mongoose.model('Course', courseSchema);

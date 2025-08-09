@@ -191,7 +191,25 @@ export default function StudentEnrollmentForm({ preSelectedCourseId }: StudentEn
               </div>
             ) : (
               <>
-                                                                                   <div className="space-y-2">
+                {/* Add the courses dropdown here */}
+                <div className="space-y-2">
+                  <Label>Available Courses</Label>
+                  <Select>
+                    <SelectTrigger>
+                      <SelectValue placeholder="View available courses" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {courses.map(course => (
+                        <SelectItem key={course._id} value={course._id}>
+                          {course.title} - ${course.price}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <p className="text-xs text-muted-foreground">This is for display purposes only and doesn't affect your enrollment.</p>
+                </div>
+
+                <div className="space-y-2">
                   <Label>Selected Course</Label>
                   {preSelectedCourseId ? (
                     (() => {

@@ -605,4 +605,10 @@ const BlogEditor: React.FC<BlogEditorProps> = ({
   );
 };
 
-export default BlogEditor; 
+export default BlogEditor;
+<SelectContent>
+  <SelectItem value="IELTS preparation">IELTS preparation</SelectItem>
+  <SelectItem value="Spoken English">Spoken English</SelectItem>
+  <SelectItem value="English for competitive exams">English for competitive exams</SelectItem>
+  <SelectItem value="GRE Vocabulary">GRE Vocabulary</SelectItem>
+</SelectContent>

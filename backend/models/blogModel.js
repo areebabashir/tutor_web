@@ -29,7 +29,7 @@ const blogSchema = new mongoose.Schema({
   category: {
     type: String,
     required: [true, 'Blog category is required'],
-    enum: ['Technology', 'Education', 'Lifestyle', 'Business', 'Health', 'Travel', 'Other']
+    enum: ['IELTS preparation', 'Spoken English', 'English for competitive exams', 'GRE Vocabulary']
   },
   tags: [{
     type: String,
@@ -130,4 +130,4 @@ blogSchema.set('toObject', { virtuals: true });
 
 const Blog = mongoose.model('Blog', blogSchema);
 
-export default Blog; 
+export default Blog;

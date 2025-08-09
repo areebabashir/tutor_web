@@ -17,7 +17,7 @@ interface Course {
   _id: string;
   title: string;
   description: string;
-  category: 'IELTS' | 'English Proficiency' | 'Quran';
+  category: 'IELTS preparation' | 'Spoken English' | 'English for competitive exams' | 'GRE Vocabulary';
   video: string;
   image: string;
   syllabus: string;
@@ -56,7 +56,7 @@ export default function AdminCoursesPage() {
   const [formData, setFormData] = useState({
     title: "",
     description: "",
-    category: "IELTS" as 'IELTS' | 'English Proficiency' | 'Quran',
+    category: "IELTS preparation" as 'IELTS preparation' | 'Spoken English' | 'English for competitive exams' | 'GRE Vocabulary',
     video: "",
     image: "",
     syllabus: "",
@@ -270,7 +270,7 @@ export default function AdminCoursesPage() {
     setFormData({
       title: "",
       description: "",
-      category: "IELTS",
+      category: "IELTS preparation",
       video: "",
       image: "",
       syllabus: "",
@@ -386,12 +386,18 @@ export default function AdminCoursesPage() {
     }
   };
 
-  const getCategoryColor = (category: 'IELTS' | 'English Proficiency' | 'Quran') => {
+  const getCategoryColor = (category: 'IELTS preparation' | 'Spoken English' | 'English for competitive exams' | 'GRE Vocabulary') => {
     switch (category) {
-      case 'IELTS': return 'bg-purple-100 text-purple-800';
-      case 'English Proficiency': return 'bg-blue-100 text-blue-800';
-      case 'Quran': return 'bg-green-100 text-green-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'IELTS preparation':
+        return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300';
+      case 'Spoken English':
+        return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300';
+      case 'English for competitive exams':
+        return 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300';
+      case 'GRE Vocabulary':
+        return 'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-300';
+      default:
+        return 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300';
     }
   };
 
@@ -508,9 +514,10 @@ export default function AdminCoursesPage() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Categories</SelectItem>
-                <SelectItem value="IELTS">IELTS</SelectItem>
-                <SelectItem value="English Proficiency">English Proficiency</SelectItem>
-                <SelectItem value="Quran">Quran</SelectItem>
+                <SelectItem value="IELTS preparation">IELTS preparation</SelectItem>
+                <SelectItem value="Spoken English">Spoken English</SelectItem>
+                <SelectItem value="English for competitive exams">English for competitive exams</SelectItem>
+                <SelectItem value="GRE Vocabulary">GRE Vocabulary</SelectItem>
               </SelectContent>
             </Select>
             <Select value={statusFilter} onValueChange={setStatusFilter}>
@@ -648,9 +655,10 @@ export default function AdminCoursesPage() {
                     <SelectValue placeholder="Select category" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="IELTS">IELTS</SelectItem>
-                    <SelectItem value="English Proficiency">English Proficiency</SelectItem>
-                    <SelectItem value="Quran">Quran</SelectItem>
+                    <SelectItem value="IELTS preparation">IELTS preparation</SelectItem>
+                    <SelectItem value="Spoken English">Spoken English</SelectItem>
+                    <SelectItem value="English for competitive exams">English for competitive exams</SelectItem>
+                    <SelectItem value="GRE Vocabulary">GRE Vocabulary</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -988,14 +996,15 @@ export default function AdminCoursesPage() {
               </div>
               <div>
                 <Label htmlFor="edit-category">Category</Label>
-                <Select value={formData.category} onValueChange={(value) => setFormData({...formData, category: value as any})}>
+                <Select value={formData.category} onValueChange={(value: 'IELTS preparation' | 'Spoken English' | 'English for competitive exams' | 'GRE Vocabulary') => setFormData({...formData, category: value})}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select category" />
+                    <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="IELTS">IELTS</SelectItem>
-                    <SelectItem value="English Proficiency">English Proficiency</SelectItem>
-                    <SelectItem value="Quran">Quran</SelectItem>
+                    <SelectItem value="IELTS preparation">IELTS preparation</SelectItem>
+                    <SelectItem value="Spoken English">Spoken English</SelectItem>
+                    <SelectItem value="English for competitive exams">English for competitive exams</SelectItem>
+                    <SelectItem value="GRE Vocabulary">GRE Vocabulary</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

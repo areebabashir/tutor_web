@@ -73,7 +73,7 @@ const Notes = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [filePreview, setFilePreview] = useState<string>('');
 
-  const categories = ['Grammar', 'Vocabulary', 'Reading', 'Writing', 'Listening', 'Speaking', 'General'];
+  const categories = ['IELTS preparation', 'Spoken English', 'English for competitive exams', 'GRE Vocabulary'];
   const difficulties = ['Beginner', 'Intermediate', 'Advanced'];
   const statuses = ['active', 'inactive', 'archived'];
 
@@ -177,11 +177,11 @@ const Notes = () => {
   const handleDownload = async (id: string) => {
     try {
       const response = await notesAPI.downloadNotes(id);
-      const notes = notes.find(n => n._id === id);
-      if (notes) {
+      const noteItem = notes.find(n => n._id === id);
+      if (noteItem) {
         const link = document.createElement('a');
-        link.href = `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/${notes.fileUrl}`;
-        link.download = notes.fileName;
+        link.href = `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/${noteItem.fileUrl}`;
+        link.download = noteItem.fileName;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -758,4 +758,4 @@ const Notes = () => {
   );
 };
 
-export default Notes; 
+export default Notes;

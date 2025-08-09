@@ -371,12 +371,10 @@ export default function QuizzesPage() {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">All Categories</SelectItem>
-                        <SelectItem value="General">General</SelectItem>
-                        <SelectItem value="Mathematics">Mathematics</SelectItem>
-                        <SelectItem value="Science">Science</SelectItem>
-                        <SelectItem value="English">English</SelectItem>
-                        <SelectItem value="History">History</SelectItem>
-                        <SelectItem value="Computer Science">Computer Science</SelectItem>
+                        <SelectItem value="IELTS preparation">IELTS preparation</SelectItem>
+                        <SelectItem value="Spoken English">Spoken English</SelectItem>
+                        <SelectItem value="English for competitive exams">English for competitive exams</SelectItem>
+                        <SelectItem value="GRE Vocabulary">GRE Vocabulary</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -944,4 +942,4 @@ export default function QuizzesPage() {
       <Footer />
     </div>
   );
-} 
+}

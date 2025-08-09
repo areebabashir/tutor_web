@@ -59,9 +59,8 @@ const featuredCourses = [
   {
     id: 1,
     title: "IELTS Preparation Course",
-    description: "Comprehensive IELTS Academic & General Training prep: Listening, Reading, Writing, Speaking, full mock tests, band score strategies, and downloadable resources.",
-    image: "https://images.unsplash.com/photo-1503676382389-4809596d5290?w=400&h=240&fit=crop",
-    category: "IELTS",
+    description: "Comprehensive preparation for IELTS exam with practice tests and personalized feedback.",
+    category: "IELTS preparation",
     duration: "12 weeks",
     students: 3200,
     rating: 4.9,
@@ -70,8 +69,7 @@ const featuredCourses = [
   {
     id: 2,
     title: "Spoken English Course",
-    description: "Master daily conversation, pronunciation, public speaking, and fluency with interactive audio, live speaking clubs, and downloadable lessons.",
-    image: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&h=240&fit=crop",
+    description: "Improve your spoken English with interactive sessions and real-world scenarios.",
     category: "Spoken English",
     duration: "10 weeks",
     students: 2100,
@@ -81,9 +79,8 @@ const featuredCourses = [
   {
     id: 3,
     title: "Competitive Exams English Preparation",
-    description: "CSS, PMS, FPSC, PPSC, NTS English: grammar, vocabulary, comprehension, essay, precis, translation, past papers, and mock tests.",
-    image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&h=240&fit=crop",
-    category: "Competitive Exams",
+    description: "Targeted English preparation for competitive exams with specialized vocabulary and techniques.",
+    category: "English for competitive exams",
     duration: "14 weeks",
     students: 1800,
     rating: 4.7,
@@ -92,8 +89,7 @@ const featuredCourses = [
   {
     id: 4,
     title: "GRE Vocabulary Building Course",
-    description: "GRE Verbal mastery: 30+ word lists, flashcards, mnemonics, analogies, quizzes, and Urdu/Hindi translations for Pakistani learners.",
-    image: "https://images.unsplash.com/photo-1464983953574-0892a716854b?w=400&h=240&fit=crop",
+    description: "Master GRE vocabulary with effective memorization techniques and practice exercises.",
     category: "GRE Vocabulary",
     duration: "8 weeks",
     students: 1200,
@@ -239,14 +235,43 @@ const Index = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="text-center lg:text-left">
               <h1 className="text-4xl md:text-6xl font-poppins font-bold text-white mb-6 animate-fade-in">
-                Master Business English. 
-                <span className="block text-gradient-secondary">Enliven Your Career.</span>
+                Master English. 
+                <span className="block text-gradient-secondary">Advance Your Future.</span>
               </h1>
               <p className="text-xl text-white/90 mb-8 animate-fade-in">
-                Transform your professional communication with expert-led business English courses designed for global professionals and ambitious learners.
+                Transform your communication skills with expert-led English courses designed for academic success and professional growth.
               </p>
               
-              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start  animate-fade-in">
+              {/* Category Pills */}
+              <div className="flex flex-wrap gap-2 justify-center lg:justify-start mb-8 animate-fade-in">
+                <Link to="/courses?category=IELTS">
+                  <Badge className="px-4 py-2 bg-white/20 hover:bg-primary/80 text-white transition-colors cursor-pointer">
+                    IELTS Preparation
+                  </Badge>
+                </Link>
+                <Link to="/courses?category=Spoken">
+                  <Badge className="px-4 py-2 bg-white/20 hover:bg-primary/80 text-white transition-colors cursor-pointer">
+                    Spoken English
+                  </Badge>
+                </Link>
+                <Link to="/courses?category=Competitive">
+                  <Badge className="px-4 py-2 bg-white/20 hover:bg-primary/80 text-white transition-colors cursor-pointer">
+                    English for Competitive Exams
+                  </Badge>
+                </Link>
+                <Link to="/courses?category=GRE">
+                  <Badge className="px-4 py-2 bg-white/20 hover:bg-primary/80 text-white transition-colors cursor-pointer">
+                    GRE Vocabulary
+                  </Badge>
+                </Link>
+                <Link to="/courses?category=Home">
+                  <Badge className="px-4 py-2 bg-white/20 hover:bg-primary/80 text-white transition-colors cursor-pointer">
+                    In-Home Tutoring
+                  </Badge>
+                </Link>
+              </div>
+              
+              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start animate-fade-in">
                 <Link to="/courses">
                   <Button size="lg" variant="gradient" className="bg-gradient-to-r from-primary to-red-600 text-white text-lg px-6 py-3 shadow-lg hover:shadow-xl transition-all duration-300 font-semibold">
                     Explore Courses

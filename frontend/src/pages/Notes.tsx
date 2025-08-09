@@ -51,7 +51,7 @@ const Notes = () => {
   const [downloading, setDownloading] = useState<string | null>(null);
   const { handleError } = useErrorHandler();
 
-  const categories = ['Grammar', 'Vocabulary', 'Reading', 'Writing', 'Listening', 'Speaking', 'General'];
+  const categories = ['IELTS preparation', 'Spoken English', 'English for competitive exams', 'GRE Vocabulary'];
   const difficulties = ['Beginner', 'Intermediate', 'Advanced'];
 
   useEffect(() => {
@@ -557,4 +557,4 @@ const Notes = () => {
   );
 };
 
-export default Notes; 
+export default Notes;
