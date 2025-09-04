@@ -398,4 +398,5 @@ export default BlogPage;
   <SelectItem value="Spoken English">Spoken English</SelectItem>
   <SelectItem value="English for competitive exams">English for competitive exams</SelectItem>
   <SelectItem value="GRE Vocabulary">GRE Vocabulary</SelectItem>
+  <SelectItem value="Education">Education</SelectItem>
 </SelectContent>

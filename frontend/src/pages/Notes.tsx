@@ -51,7 +51,7 @@ const Notes = () => {
   const [downloading, setDownloading] = useState<string | null>(null);
   const { handleError } = useErrorHandler();
 
-  const categories = ['IELTS preparation', 'Spoken English', 'English for competitive exams', 'GRE Vocabulary'];
+  const categories = ['IELTS preparation', 'Spoken English', 'English for competitive exams', 'GRE Vocabulary', 'Education'];
   const difficulties = ['Beginner', 'Intermediate', 'Advanced'];
 
   useEffect(() => {

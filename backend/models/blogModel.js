@@ -29,7 +29,7 @@ const blogSchema = new mongoose.Schema({
   category: {
     type: String,
     required: [true, 'Blog category is required'],
-    enum: ['IELTS preparation', 'Spoken English', 'English for competitive exams', 'GRE Vocabulary']
+    enum: ['IELTS preparation', 'Spoken English', 'English for competitive exams', 'GRE Vocabulary', 'Education']
   },
   tags: [{
     type: String,

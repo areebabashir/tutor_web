@@ -73,7 +73,7 @@ const Notes = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [filePreview, setFilePreview] = useState<string>('');
 
-  const categories = ['IELTS preparation', 'Spoken English', 'English for competitive exams', 'GRE Vocabulary'];
+  const categories = ['IELTS preparation', 'Spoken English', 'English for competitive exams', 'GRE Vocabulary', 'Education'];
   const difficulties = ['Beginner', 'Intermediate', 'Advanced'];
   const statuses = ['active', 'inactive', 'archived'];
 

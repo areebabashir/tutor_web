@@ -372,13 +372,11 @@ export default function AdminBlogsPage() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Categories</SelectItem>
-                  <SelectItem value="Technology">Technology</SelectItem>
+                  <SelectItem value="IELTS preparation">IELTS preparation</SelectItem>
+                  <SelectItem value="Spoken English">Spoken English</SelectItem>
+                  <SelectItem value="English for competitive exams">English for competitive exams</SelectItem>
+                  <SelectItem value="GRE Vocabulary">GRE Vocabulary</SelectItem>
                   <SelectItem value="Education">Education</SelectItem>
-                  <SelectItem value="Lifestyle">Lifestyle</SelectItem>
-                  <SelectItem value="Business">Business</SelectItem>
-                  <SelectItem value="Health">Health</SelectItem>
-                  <SelectItem value="Travel">Travel</SelectItem>
-                  <SelectItem value="Other">Other</SelectItem>
                 </SelectContent>
               </Select>
             </div>
