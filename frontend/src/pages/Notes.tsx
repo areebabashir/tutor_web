@@ -87,7 +87,7 @@ const Notes = () => {
       const note = notes.find(n => n._id === id);
       if (note) {
         const link = document.createElement('a');
-        link.href = `${import.meta.env.VITE_API_URL || 'https://apis.bizlish.com/api'}/${note.fileUrl}`;
+        link.href = `${import.meta.env.VITE_API_URL || 'https://apis.bizlish.com'}/${note.fileUrl}`;
         link.download = note.fileName;
         document.body.appendChild(link);
         link.click();
