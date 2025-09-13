@@ -112,12 +112,12 @@ const CourseDetails = () => {
     
     // If it's a relative path from backend
     if (imageUrl.startsWith('/uploads/')) {
-      const backendUrl = import.meta.env.VITE_API_URL || 'https://apis.bizlish.com/api';
+      const backendUrl = import.meta.env.VITE_API_URL || 'https://apis.bizlish.online';
       return `${backendUrl}${imageUrl}`;
     }
     
     // Default case - assume it's a relative path
-    const backendUrl = import.meta.env.VITE_API_URL || 'https://apis.bizlish.com/api';
+    const backendUrl = import.meta.env.VITE_API_URL || 'https://apis.bizlish.online';
     return `${backendUrl}${imageUrl}`;
   };
 

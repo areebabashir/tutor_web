@@ -360,7 +360,7 @@ const Index = () => {
                 <Card key={course._id} className="hover-lift shadow-soft border-0 overflow-hidden">
                   <div className="relative">
                     <img
-                      src={`${import.meta.env.VITE_API_URL || 'https://apis.bizlish.com/api'}${course.image}`}
+                      src={`${import.meta.env.VITE_API_URL || 'https://apis.bizlish.online'}${course.image}`}
                       alt={course.title}
                       className="w-full h-48 object-cover"
                       onError={(e) => {
@@ -480,8 +480,8 @@ const Index = () => {
                           ? (blog.featuredImage.startsWith('data:') || blog.featuredImage.startsWith('http://') || blog.featuredImage.startsWith('https://'))
                             ? blog.featuredImage 
                             : blog.featuredImage.startsWith('/')
-                              ? `${import.meta.env.VITE_API_URL || 'https://apis.bizlish.com/api'}${blog.featuredImage}`
-                              : `${import.meta.env.VITE_API_URL || 'https://apis.bizlish.com/api'}/uploads/images/${blog.featuredImage}`
+                              ? `${import.meta.env.VITE_API_URL || 'https://apis.bizlish.online'}${blog.featuredImage}`
+                              : `${import.meta.env.VITE_API_URL || 'https://apis.bizlish.online'}/uploads/images/${blog.featuredImage}`
                           : "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=400&h=240&fit=crop"
                         }
                         alt={blog.title}
@@ -616,7 +616,7 @@ const Index = () => {
               <div className="flex flex-col md:flex-row items-center gap-8">
                 <img
                     src={reviews[currentTestimonial]?.image 
-                      ? `${import.meta.env.VITE_API_URL || 'https://apis.bizlish.com/api'}${reviews[currentTestimonial].image}`
+                      ? `${import.meta.env.VITE_API_URL || 'https://apis.bizlish.online'}${reviews[currentTestimonial].image}`
                       : "https://images.unsplash.com/photo-1494790108755-2616b612b378?w=100&h=100&fit=crop&crop=face"
                     }
                     alt={reviews[currentTestimonial]?.name || "Reviewer"}
