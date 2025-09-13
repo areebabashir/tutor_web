@@ -180,7 +180,7 @@ const Notes = () => {
       const noteItem = notes.find(n => n._id === id);
       if (noteItem) {
         const link = document.createElement('a');
-        link.href = `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/${noteItem.fileUrl}`;
+        link.href = `${import.meta.env.VITE_API_URL || 'https://apis.bizlish.com/api'}/${noteItem.fileUrl}`;
         link.download = noteItem.fileName;
         document.body.appendChild(link);
         link.click();

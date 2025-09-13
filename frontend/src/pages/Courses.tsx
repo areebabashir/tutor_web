@@ -187,7 +187,7 @@ const Courses = () => {
                 >
                   <div className="relative overflow-hidden">
                     <img
-                      src={`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}${course.image}`}
+                      src={`${import.meta.env.VITE_API_URL || 'https://apis.bizlish.com/api'}${course.image}`}
                       alt={course.title}
                       className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
                       onError={(e) => {

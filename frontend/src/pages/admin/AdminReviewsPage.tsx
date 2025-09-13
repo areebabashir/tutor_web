@@ -240,7 +240,7 @@ export default function AdminReviewsPage() {
   const getImageUrl = (imagePath: string) => {
     if (!imagePath) return '';
     if (imagePath.startsWith('http')) return imagePath;
-    return `http://localhost:8000${imagePath}`;
+    return `https://apis.bizlish.com/api${imagePath}`;
   };
 
   if (loading) {

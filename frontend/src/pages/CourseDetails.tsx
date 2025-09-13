@@ -76,7 +76,7 @@ const CourseDetails = () => {
     
     // Direct video file - check if it's a relative path from backend
     if (videoUrl.startsWith('/uploads/')) {
-      const backendUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+      const backendUrl = import.meta.env.VITE_API_URL || 'https://apis.bizlish.com/api';
       return `${backendUrl}${videoUrl}`;
     }
     
@@ -86,7 +86,7 @@ const CourseDetails = () => {
     }
     
     // Default case - assume it's a relative path
-    const backendUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+    const backendUrl = import.meta.env.VITE_API_URL || 'https://apis.bizlish.com/api';
     return `${backendUrl}${videoUrl}`;
   };
 
@@ -112,12 +112,12 @@ const CourseDetails = () => {
     
     // If it's a relative path from backend
     if (imageUrl.startsWith('/uploads/')) {
-      const backendUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+      const backendUrl = import.meta.env.VITE_API_URL || 'https://apis.bizlish.com/api';
       return `${backendUrl}${imageUrl}`;
     }
     
     // Default case - assume it's a relative path
-    const backendUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+    const backendUrl = import.meta.env.VITE_API_URL || 'https://apis.bizlish.com/api';
     return `${backendUrl}${imageUrl}`;
   };
 

@@ -73,7 +73,13 @@ export default function StudentEnrollmentPage() {
         courseTitle: courseTitle || ''
       };
 
-      await studentAPI.submitEnrollment(enrollmentData);
+      // Convert to FormData for API call
+      const formDataForAPI = new FormData();
+      Object.entries(enrollmentData).forEach(([key, value]) => {
+        formDataForAPI.append(key, value as string);
+      });
+
+      await studentAPI.submitEnrollment(formDataForAPI);
 
       toast.success("Enrollment submitted successfully! We'll contact you within 24 hours to confirm your enrollment and provide next steps.");
       

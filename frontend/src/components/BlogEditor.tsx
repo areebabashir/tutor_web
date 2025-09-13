@@ -152,7 +152,7 @@ const BlogEditor: React.FC<BlogEditorProps> = ({
 
       // Upload to server
       const response = await blogAPI.uploadBlogImage(formData, authorization);
-      const imageUrl = `http://localhost:8000${response.data.imageUrl}`;
+      const imageUrl = `https://apis.bizlish.com/api${response.data.imageUrl}`;
       
       // Insert image into editor
       const quill = quillRef.current?.getEditor();
@@ -465,7 +465,7 @@ const BlogEditor: React.FC<BlogEditorProps> = ({
                       const form = new FormData();
                       form.append('image', file);
                       const response = await blogAPI.uploadBlogImage(form, authorization);
-                      const imageUrl = `http://localhost:8000${response.data.imageUrl}`;
+                      const imageUrl = `https://apis.bizlish.com/api${response.data.imageUrl}`;
                       setFormData((prev) => ({ ...prev, featuredImage: imageUrl }));
                       toast.success('Featured image uploaded successfully');
                     } catch (error) {

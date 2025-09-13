@@ -172,7 +172,7 @@ export default function AdminTeachers() {
               <div className="flex items-start justify-between">
                 <div className="flex items-start space-x-4">
                   <Avatar className="h-16 w-16">
-                    <AvatarImage src={`http://localhost:8000/uploads/images/${teacher.image}`} />
+                    <AvatarImage src={`https://apis.bizlish.com/api/uploads/images/${teacher.image}`} />
                     <AvatarFallback>{teacher.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
                   </Avatar>
                   
@@ -233,7 +233,7 @@ export default function AdminTeachers() {
                         <div className="space-y-4">
                           <div className="flex items-center space-x-4">
                             <Avatar className="h-20 w-20">
-                              <AvatarImage src={`http://localhost:8000/uploads/images/${selectedTeacher.image}`} />
+                              <AvatarImage src={`https://apis.bizlish.com/api/uploads/images/${selectedTeacher.image}`} />
                               <AvatarFallback>{selectedTeacher.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
                             </Avatar>
                             <div>
@@ -290,7 +290,7 @@ export default function AdminTeachers() {
                             <Button
                               variant="outline"
                               size="sm"
-                              onClick={() => window.open(`http://localhost:8000/uploads/images/${selectedTeacher.image}`, '_blank')}
+                              onClick={() => window.open(`https://apis.bizlish.com/api/uploads/images/${selectedTeacher.image}`, '_blank')}
                             >
                               <Eye className="h-4 w-4 mr-2" />
                               View Image
@@ -298,7 +298,7 @@ export default function AdminTeachers() {
                             <Button
                               variant="outline"
                               size="sm"
-                              onClick={() => window.open(`http://localhost:8000/uploads/resumes/${selectedTeacher.resume}`, '_blank')}
+                              onClick={() => window.open(`https://apis.bizlish.com/api/uploads/resumes/${selectedTeacher.resume}`, '_blank')}
                             >
                               <Download className="h-4 w-4 mr-2" />
                               Download Resume
