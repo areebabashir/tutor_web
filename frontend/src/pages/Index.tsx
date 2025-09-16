@@ -219,14 +219,14 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <SEO 
-        title="Bizlish - Learn from the Best Tutors Anytime, Anywhere"
-        description="Transform your skills with expert-led courses in IELTS preparation, spoken English, competitive exams, and GRE vocabulary. Join thousands of successful students with flexible learning options and affordable pricing."
-        keywords="online learning, IELTS preparation, spoken English, competitive exams, GRE vocabulary, expert tutors, flexible learning, affordable courses, skill development"
-        ogTitle="Bizlish - Expert Online Learning Platform"
-        ogDescription="Master new skills with our comprehensive courses. Expert tutors, flexible schedules, and proven results."
-        canonical="https://bizlish.com"
-      />
+        <SEO
+          title="Bizlish - Learn English with Expert Tutors | IELTS, Spoken English, Competitive Exams"
+          description="Master English with expert tutors. IELTS preparation, spoken English, competitive exams, and GRE vocabulary courses. Flexible learning, proven results."
+          keywords="English learning, IELTS preparation, spoken English, competitive exams, GRE vocabulary, expert tutors, online English courses, language learning, English classes"
+          ogTitle="Bizlish - Expert English Learning Platform"
+          ogDescription="Master English with expert tutors. IELTS, spoken English, competitive exams, and GRE vocabulary courses."
+          canonical="https://bizlish.com"
+        />
       <Navbar />
       
       {/* Hero Section */}
@@ -239,11 +239,13 @@ const Index = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="text-center lg:text-left">
               <h1 className="text-4xl md:text-6xl font-poppins font-bold text-white mb-6 animate-fade-in">
-                Master English. 
-                <span className="block text-gradient-secondary">Advance Your Future.</span>
+                Learn English with Expert Tutors
+                <span className="block text-gradient-secondary">IELTS, Spoken English & More</span>
               </h1>
               <p className="text-xl text-white/90 mb-8 animate-fade-in">
-                Transform your communication skills with expert-led English courses designed for academic success and professional growth.
+                Transform your communication skills with expert-led English courses designed for academic success and professional growth. 
+                <Link to="/about" className="text-yellow-300 hover:text-yellow-200 underline">Learn more about our teaching methods</Link> and 
+                <Link to="/courses" className="text-yellow-300 hover:text-yellow-200 underline"> explore our course catalog</Link>.
               </p>
               
               {/* Category Pills */}
@@ -312,10 +314,11 @@ const Index = () => {
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-poppins font-bold mb-4">
-              Business English Categories
+              English Learning Categories
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Master essential business communication skills with expert-led courses designed for professional success
+              Master essential English communication skills with expert-led courses designed for professional success. 
+              <Link to="/contact" className="text-primary hover:underline">Contact us</Link> for personalized learning recommendations.
             </p>
           </div>
           
@@ -340,10 +343,12 @@ const Index = () => {
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-poppins font-bold mb-4">
-              Popular Business English Courses
+              Popular English Courses
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Discover our most popular and highly-rated business English courses. Start your learning journey today!
+              Discover our most popular and highly-rated English courses. Start your learning journey today! 
+              <Link to="/notes" className="text-primary hover:underline">Download free study materials</Link> and 
+              <Link to="/quizzes" className="text-primary hover:underline"> test your knowledge</Link>.
             </p>
           </div>
           
@@ -450,10 +455,11 @@ const Index = () => {
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-poppins font-bold mb-4">
-              Latest Insights & Tips
+              English Learning Tips & Insights
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Discover valuable insights, tips, and strategies to enhance your business English skills
+              Discover valuable insights, tips, and strategies to enhance your English skills. 
+              <Link to="/blog" className="text-primary hover:underline">Read our latest articles</Link> for expert advice.
             </p>
           </div>
           
@@ -600,7 +606,7 @@ const Index = () => {
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-poppins font-bold mb-4">
-              What Our Professionals Say
+              What Our Students Say
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
               Don't just take our word for it - hear from our successful professionals who transformed their business communication
