@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import SEO from "@/components/SEO";
 import { 
   Loader2, 
   BookOpen, 
@@ -287,6 +288,14 @@ export default function QuizzesPage() {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO 
+        title="Interactive English Quizzes - Test Your Knowledge | Bizlish"
+        description="Take comprehensive English quizzes to test and improve your skills. Practice IELTS, spoken English, competitive exams, and GRE vocabulary with interactive quizzes and instant feedback."
+        keywords="English quizzes, IELTS practice tests, spoken English quizzes, competitive exam preparation, GRE vocabulary tests, interactive learning, English assessment"
+        ogTitle="Interactive English Quizzes - Practice & Test Your Skills"
+        ogDescription="Challenge yourself with our comprehensive English quizzes. Get instant feedback and improve your language skills with interactive practice tests."
+        canonical="https://bizlish.com/quizzes"
+      />
       <Navbar />
       
       {/* Hero Section */}

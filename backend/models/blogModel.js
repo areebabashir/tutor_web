@@ -67,17 +67,6 @@ const blogSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
-  // Likes functionality
-  likes: [{
-    userEmail: {
-      type: String,
-      required: true
-    },
-    likedAt: {
-      type: Date,
-      default: Date.now
-    }
-  }],
   // SEO and social
   featured: {
     type: Boolean,

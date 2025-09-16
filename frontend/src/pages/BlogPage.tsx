@@ -6,11 +6,12 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Calendar, Clock, User, Search, Filter, Eye, ArrowRight, BookOpen, TrendingUp, Sparkles, Heart } from 'lucide-react';
+import { Calendar, Clock, User, Search, Filter, Eye, ArrowRight, BookOpen, TrendingUp, Sparkles } from 'lucide-react';
 import { blogAPI } from '@/lib/api';
 import { toast } from 'sonner';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
+import SEO from '@/components/SEO';
 import { useErrorHandler } from '@/hooks/useErrorHandler';
 
 interface Blog {
@@ -27,11 +28,6 @@ interface Blog {
   slug: string;
   readingTime: number;
   views: number;
-  likes: Array<{
-    userEmail: string;
-    likedAt: string;
-  }>;
-  likeCount: number;
 }
 
 const BlogPage: React.FC = () => {
@@ -124,6 +120,14 @@ const BlogPage: React.FC = () => {
 
   return (
     <>
+      <SEO 
+        title="English Learning Blog - Tips, Guides & Resources | Bizlish"
+        description="Discover expert tips, study guides, and resources for English learning, IELTS preparation, spoken English, and competitive exams. Stay updated with the latest learning strategies and success stories."
+        keywords="English learning blog, IELTS tips, spoken English guide, competitive exam preparation, English study resources, language learning tips, exam strategies"
+        ogTitle="English Learning Blog - Expert Tips & Resources"
+        ogDescription="Get expert advice and resources for mastering English. IELTS, spoken English, and competitive exam preparation tips."
+        canonical="https://bizlish.com/blog"
+      />
       <Navbar />
       <div className="min-h-screen bg-background">
         {/* Header Section */}
@@ -300,10 +304,6 @@ const BlogPage: React.FC = () => {
                               <span className="flex items-center">
                                 <Eye className="h-3 w-3 mr-1" />
                                 {blog.views || 0}
-                              </span>
-                              <span className="flex items-center">
-                                <Heart className="h-3 w-3 mr-1 text-red-500" />
-                                {blog.likeCount || 0}
                               </span>
                             </div>
                           </div>

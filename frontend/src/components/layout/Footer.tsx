@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Mail, Phone, MapPin, Facebook, Twitter, Instagram, Youtube, Sparkles, ArrowUp } from "lucide-react";
+import { Mail, Phone, MapPin, Instagram, Sparkles, ArrowUp } from "lucide-react";
 import bizlishLogo from "@/assets/bzlish.jpg";
 
 const Footer = () => {
@@ -80,7 +80,7 @@ const Footer = () => {
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Email</p>
-                  <p className="text-foreground font-medium">info@bizlish.com</p>
+                  <a href="mailto:bizlishofficial@gmail.com" className="text-foreground font-medium hover:text-primary transition-colors">bizlishofficial@gmail.com</a>
                 </div>
               </div>
               <div className="flex items-center space-x-3 group">
@@ -89,16 +89,7 @@ const Footer = () => {
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Phone</p>
-                  <p className="text-foreground font-medium">+1 (555) 123-4567</p>
-                </div>
-              </div>
-              <div className="flex items-center space-x-3 group">
-                <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                  <MapPin className="h-5 w-5 text-white" />
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Location</p>
-                  <p className="text-foreground font-medium">San Francisco, CA</p>
+                  <a href="tel:+923185078571" className="text-foreground font-medium hover:text-primary transition-colors">+92 318 5078571</a>
                 </div>
               </div>
             </div>
@@ -111,17 +102,8 @@ const Footer = () => {
               Stay connected with us for the latest updates and insights.
             </p>
             <div className="flex space-x-3">
-              <a href="#" className="w-12 h-12 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl flex items-center justify-center hover:scale-110 transition-all duration-300 hover:shadow-lg">
-                <Facebook className="h-5 w-5 text-white" />
-              </a>
-              <a href="#" className="w-12 h-12 bg-gradient-to-r from-sky-500 to-sky-600 rounded-xl flex items-center justify-center hover:scale-110 transition-all duration-300 hover:shadow-lg">
-                <Twitter className="h-5 w-5 text-white" />
-              </a>
-              <a href="#" className="w-12 h-12 bg-gradient-to-r from-pink-500 to-pink-600 rounded-xl flex items-center justify-center hover:scale-110 transition-all duration-300 hover:shadow-lg">
+              <a href="https://www.instagram.com/bizlishofficial?igsh=dnhlbm9oemhhM213&utm_source=qr" target="_blank" rel="noopener noreferrer" className="w-12 h-12 bg-gradient-to-r from-pink-500 to-pink-600 rounded-xl flex items-center justify-center hover:scale-110 transition-all duration-300 hover:shadow-lg">
                 <Instagram className="h-5 w-5 text-white" />
-              </a>
-              <a href="#" className="w-12 h-12 bg-gradient-to-r from-red-500 to-red-600 rounded-xl flex items-center justify-center hover:scale-110 transition-all duration-300 hover:shadow-lg">
-                <Youtube className="h-5 w-5 text-white" />
               </a>
             </div>
             <div className="pt-4">

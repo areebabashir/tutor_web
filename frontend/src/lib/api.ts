@@ -800,13 +800,6 @@ export const blogAPI = {
     return apiRequest(`${API_ENDPOINTS.BLOGS}/slug/${slug}`);
   },
 
-  // Toggle like on blog
-  toggleBlogLike: async (blogId: string, userEmail: string) => {
-    return apiRequest(`${API_ENDPOINTS.BLOGS}/${blogId}/like`, {
-      method: 'POST',
-      body: JSON.stringify({ userEmail }),
-    });
-  },
 
   // Create blog (admin only)
   createBlog: async (blogData: {

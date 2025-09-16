@@ -3,6 +3,7 @@ import { TeacherApplicationForm } from '../components/TeacherApplicationForm';
 import { Toaster } from 'sonner';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
+import SEO from '@/components/SEO';
 import { GraduationCap } from 'lucide-react';
 
 export function TeacherApplicationPage() {
@@ -16,6 +17,14 @@ export function TeacherApplicationPage() {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO 
+        title="Apply to Teach - Join Our Expert Team | Bizlish"
+        description="Join our team of expert English instructors and help students achieve their language learning goals. Apply to teach IELTS, spoken English, competitive exams, and GRE vocabulary courses."
+        keywords="teach English online, English teacher jobs, online teaching positions, IELTS instructor, spoken English teacher, competitive exam tutor, GRE vocabulary teacher"
+        ogTitle="Join Our Teaching Team - Expert English Instructors"
+        ogDescription="Become part of our expert teaching team and help students master English. Flexible schedules and competitive compensation."
+        canonical="https://bizlish.com/apply-teacher"
+      />
       <Navbar />
 
       {/* Hero Section */}

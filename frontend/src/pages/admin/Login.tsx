@@ -9,6 +9,7 @@ import { useAdminAuth } from "@/contexts/AdminAuthContext";
 import { authAPI } from "@/lib/api";
 import { useErrorHandler } from '@/hooks/useErrorHandler';
 import { toast } from "sonner";
+import SEO from "@/components/SEO";
 
 export default function AdminLogin() {
   const [credentials, setCredentials] = useState({
@@ -62,6 +63,13 @@ export default function AdminLogin() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-primary p-4">
+      <SEO 
+        title="Admin Login - Bizlish Management Dashboard"
+        description="Secure admin login portal for Bizlish management dashboard. Access course management, student enrollment, and content administration."
+        keywords="admin login, Bizlish admin, course management, student management, content administration"
+        noindex={true}
+        nofollow={true}
+      />
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold">Admin Login</CardTitle>

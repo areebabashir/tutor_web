@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Mail, Phone, MapPin, Clock, Send, Loader2, Sparkles, MessageSquare, Globe, Award } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import SEO from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -60,37 +61,28 @@ const Contact = () => {
       icon: Mail,
       title: "Email Us",
       description: "Send us an email anytime",
-      contact: "info@bizlish.com",
-      link: "mailto:info@bizlish.com",
+      contact: "bizlishofficial@gmail.com",
+      link: "mailto:bizlishofficial@gmail.com",
       color: "from-blue-500 to-blue-600",
       bgColor: "from-blue-50 to-blue-100"
     },
     {
       icon: Phone,
       title: "Call Us",
-      description: "Mon-Fri 9am-6pm PST",
-      contact: "+1 (555) 123-4567",
-      link: "tel:+15551234567",
+      description: "Available for inquiries",
+      contact: "+92 318 5078571",
+      link: "tel:+923185078571",
       color: "from-green-500 to-green-600",
       bgColor: "from-green-50 to-green-100"
     },
     {
-      icon: MapPin,
-      title: "Visit Us",
-      description: "Our headquarters",
-      contact: "123 Learning Street, San Francisco, CA 94102",
-      link: "#",
-      color: "from-purple-500 to-purple-600",
-      bgColor: "from-purple-50 to-purple-100"
-    },
-    {
-      icon: Clock,
-      title: "Office Hours",
-      description: "When we're available",
-      contact: "Mon-Fri: 9AM-6PM, Sat: 10AM-4PM",
-      link: "#",
-      color: "from-orange-500 to-orange-600",
-      bgColor: "from-orange-50 to-orange-100"
+      icon: Globe,
+      title: "Follow Us",
+      description: "Stay connected on Instagram",
+      contact: "@bizlishofficial",
+      link: "https://www.instagram.com/bizlishofficial?igsh=dnhlbm9oemhhM213&utm_source=qr",
+      color: "from-pink-500 to-pink-600",
+      bgColor: "from-pink-50 to-pink-100"
     }
   ];
 
@@ -103,6 +95,14 @@ const Contact = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO 
+        title="Contact Us - Get Help with Your English Learning | Bizlish"
+        description="Get in touch with our expert team for course inquiries, support, and guidance. Contact us at +92 318 5078571 or bizlishofficial@gmail.com. Follow us on Instagram @bizlishofficial for updates."
+        keywords="contact bizlish, English learning support, course inquiries, IELTS help, spoken English support, competitive exam guidance, customer service, +92 318 5078571, bizlishofficial@gmail.com"
+        ogTitle="Contact Bizlish - Your English Learning Support Team"
+        ogDescription="Need help with your English learning journey? Contact us at +92 318 5078571 or bizlishofficial@gmail.com for personalized guidance and support."
+        canonical="https://bizlish.com/contact"
+      />
       <Navbar />
       
       {/* Hero Section */}
@@ -273,6 +273,8 @@ const Contact = () => {
                           <a 
                             href={method.link} 
                             className="text-primary hover:text-primary/80 font-medium transition-colors"
+                            target={method.link.includes('instagram.com') ? '_blank' : undefined}
+                            rel={method.link.includes('instagram.com') ? 'noopener noreferrer' : undefined}
                           >
                             {method.contact}
                           </a>

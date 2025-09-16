@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Users, Award, Globe, Clock, Star, CheckCircle, Sparkles, BookOpen, Target, Heart, Shield, Zap, TrendingUp, Lightbulb, Rocket, GraduationCap } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import SEO from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -144,6 +145,14 @@ const About = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50">
+      <SEO 
+        title="About Us - Bizlish | Expert English Learning Platform"
+        description="Learn about Bizlish, your trusted partner for English language learning. We specialize in IELTS preparation, spoken English, competitive exams, and GRE vocabulary with expert tutors and proven results."
+        keywords="about bizlish, English learning platform, IELTS preparation, spoken English, competitive exams, GRE vocabulary, expert tutors, language learning"
+        ogTitle="About Bizlish - Your English Learning Partner"
+        ogDescription="Discover our mission to provide world-class English education with expert tutors and proven methodologies."
+        canonical="https://bizlish.com/about"
+      />
       <Navbar />
       
       {/* Hero Section */}

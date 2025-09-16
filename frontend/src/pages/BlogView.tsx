@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import SEO from '@/components/SEO';
 import { 
   Calendar, 
   Clock, 
@@ -16,7 +17,6 @@ import {
   Linkedin, 
   ArrowLeft, 
   BookOpen,
-  Heart,
   MessageCircle,
   Tag,
   ExternalLink,
@@ -49,11 +49,6 @@ interface Blog {
   views: number;
   metaTitle?: string;
   metaDescription?: string;
-  likes: Array<{
-    userEmail: string;
-    likedAt: string;
-  }>;
-  likeCount: number;
 }
 
 interface RelatedBlog {
@@ -74,8 +69,6 @@ export default function BlogView() {
   const [blog, setBlog] = useState<Blog | null>(null);
   const [relatedBlogs, setRelatedBlogs] = useState<RelatedBlog[]>([]);
   const [loading, setLoading] = useState(true);
-  const [liked, setLiked] = useState(false);
-  const [likesCount, setLikesCount] = useState(0);
   const [bookmarked, setBookmarked] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { handleError } = useErrorHandler();
@@ -97,12 +90,6 @@ export default function BlogView() {
       if (response.success) {
         setBlog(response.data);
         
-        // Initialize like state from blog data
-        setLikesCount(response.data.likeCount || 0);
-        // Check if current user has liked (for now, we'll use a mock check)
-        const userEmail = 'user@example.com'; // This should come from user authentication
-        const userLiked = response.data.likes?.some(like => like.userEmail === userEmail) || false;
-        setLiked(userLiked);
         
         // Fetch related blogs
         fetchRelatedBlogs(response.data.category, response.data._id);
@@ -197,25 +184,6 @@ export default function BlogView() {
     }
   };
 
-  const handleLike = async () => {
-    if (!blog) return;
-    
-    try {
-      // For now, we'll use a mock email. In a real app, you'd get this from user context
-      const userEmail = 'user@example.com'; // This should come from user authentication
-      
-      const response = await blogAPI.toggleBlogLike(blog._id, userEmail);
-      
-      // Update local state based on API response
-      setLiked(response.data.liked);
-      setLikesCount(response.data.likeCount);
-      
-      toast.success(response.message);
-    } catch (error) {
-      console.error('Error toggling like:', error);
-      toast.error('Failed to update like');
-    }
-  };
 
   const handleBookmark = () => {
     setBookmarked(!bookmarked);
@@ -265,6 +233,15 @@ export default function BlogView() {
 
   return (
     <>
+      <SEO 
+        title={blog.metaTitle || `${blog.title} - English Learning Blog | Bizlish`}
+        description={blog.metaDescription || blog.excerpt || `Read ${blog.title} - Expert insights and tips for English learning, IELTS preparation, spoken English, and competitive exams.`}
+        keywords={`${blog.title}, ${blog.category}, English learning, IELTS tips, spoken English, competitive exams, GRE vocabulary, English blog, language learning`}
+        ogTitle={blog.metaTitle || `${blog.title} - Expert English Learning Guide`}
+        ogDescription={blog.metaDescription || blog.excerpt || `Discover expert insights on ${blog.title}. Essential tips for English learning and exam preparation.`}
+        ogImage={blog.featuredImage || undefined}
+        canonical={`https://bizlish.com/blog/${blog.slug}`}
+      />
       <Navbar />
       <div className="min-h-screen bg-background">
         {/* Header Section */}
@@ -383,16 +360,6 @@ export default function BlogView() {
                       </div>
                     </div>
 
-                    {/* Like Button */}
-                    <Button
-                      onClick={handleLike}
-                      variant={liked ? "default" : "outline"}
-                      size="lg"
-                      className={`${liked ? 'bg-red-500 hover:bg-red-600 text-white shadow-lg' : 'border-2 border-gray-300 hover:border-red-300 hover:text-red-600 hover:bg-red-50'} rounded-full px-8 py-3 font-semibold`}
-                    >
-                      <Heart className={`h-5 w-5 mr-2 ${liked ? 'fill-current' : ''}`} />
-                      {likesCount} {liked ? 'Liked' : 'Like'}
-                    </Button>
                   </div>
 
                   {/* Tags */}

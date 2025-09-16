@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Loader2, Plus, Edit, Trash2, Eye, FileText, Calendar, Eye as EyeIcon, Users, TrendingUp, Heart } from "lucide-react";
+import { Loader2, Plus, Edit, Trash2, Eye, FileText, Calendar, Eye as EyeIcon, Users, TrendingUp } from "lucide-react";
 import { toast } from "sonner";
 import { useAdminAuth } from "@/contexts/AdminAuthContext";
 import { blogAPI } from "@/lib/api";
@@ -32,11 +32,6 @@ interface Blog {
   metaDescription?: string;
   createdAt: string;
   updatedAt: string;
-  likes: Array<{
-    userEmail: string;
-    likedAt: string;
-  }>;
-  likeCount: number;
 }
 
 export default function AdminBlogsPage() {
@@ -428,13 +423,6 @@ export default function AdminBlogsPage() {
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-muted-foreground">Reading Time:</span>
                   <span>{blog.readingTime} min</span>
-                </div>
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">Likes:</span>
-                  <span className="flex items-center gap-1">
-                    <Heart className="h-4 w-4 text-red-500" />
-                    {blog.likeCount || 0}
-                  </span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-muted-foreground">Created:</span>

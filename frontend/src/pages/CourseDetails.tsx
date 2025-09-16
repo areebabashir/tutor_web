@@ -2,6 +2,7 @@ import { useParams, Link } from "react-router-dom";
 import { ArrowLeft, Clock, Users, Star, CheckCircle, User, Calendar, Globe, Loader2 } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import SEO from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -193,6 +194,15 @@ const CourseDetails = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO 
+        title={`${course.title} - ${course.category} Course | Bizlish`}
+        description={course.description || `Learn ${course.title} with our comprehensive ${course.category} course. Expert instruction, flexible learning, and proven results.`}
+        keywords={`${course.title}, ${course.category}, English learning, course details, ${course.instructorName}, online course`}
+        ogTitle={`${course.title} - Expert ${course.category} Course`}
+        ogDescription={course.description || `Master ${course.title} with our expert-led course. Comprehensive curriculum and flexible learning options.`}
+        ogImage={course.image ? formatImageUrl(course.image) : undefined}
+        canonical={`https://bizlish.com/course/${course._id}`}
+      />
       <Navbar />
       
       {/* Video Hero Section */}

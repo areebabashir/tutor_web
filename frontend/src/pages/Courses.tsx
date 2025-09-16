@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Search, Filter, Clock, Users, Star, Sparkles, BookOpen, Loader2, Play, X, Eye } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import SEO from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -93,6 +94,14 @@ const Courses = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO 
+        title="English Courses - IELTS, Spoken English, Competitive Exams | Bizlish"
+        description="Explore our comprehensive English courses including IELTS preparation, spoken English, competitive exam prep, and GRE vocabulary. Expert instructors, flexible schedules, and proven results."
+        keywords="English courses, IELTS preparation, spoken English, competitive exams, GRE vocabulary, English learning, language courses, exam preparation"
+        ogTitle="English Courses - Expert-Led Learning at Bizlish"
+        ogDescription="Master English with our comprehensive courses. IELTS, spoken English, competitive exams, and GRE vocabulary preparation."
+        canonical="https://bizlish.com/courses"
+      />
       <Navbar />
       
       {/* Header Section */}

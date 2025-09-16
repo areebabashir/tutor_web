@@ -5,6 +5,7 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import StudentEnrollmentForm from '@/components/StudentEnrollmentForm';
+import SEO from '@/components/SEO';
 import { Toaster } from 'sonner';
 import { Users } from 'lucide-react';
 import { useErrorHandler } from '@/hooks/useErrorHandler';
@@ -110,6 +111,14 @@ export default function StudentEnrollmentPage() {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO 
+        title="Student Enrollment - Join Our English Learning Community | Bizlish"
+        description="Enroll as a student and start your English learning journey with our expert-led courses. Join thousands of students learning IELTS, spoken English, competitive exams, and GRE vocabulary."
+        keywords="student enrollment, English course registration, join English learning, IELTS student, spoken English student, competitive exam preparation, GRE vocabulary student"
+        ogTitle="Enroll as a Student - Start Your English Learning Journey"
+        ogDescription="Join our community of successful English learners. Enroll today and start your journey to English mastery with expert guidance."
+        canonical="https://bizlish.com/enroll-course"
+      />
       <Navbar />
       
       {/* Hero Section */}

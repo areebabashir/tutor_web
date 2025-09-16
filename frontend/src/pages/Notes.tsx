@@ -12,6 +12,7 @@ import { Search, Download, Eye, FileText, Calendar, User, Tag, Filter, BookOpen,
 import { formatDate } from '@/lib/utils';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
+import SEO from '@/components/SEO';
 import { useErrorHandler } from '@/hooks/useErrorHandler';
 
 interface Notes {
@@ -151,6 +152,14 @@ const Notes = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/5 to-accent/5">
+      <SEO 
+        title="Study Notes & Resources - Download Free English Learning Materials | Bizlish"
+        description="Access comprehensive study notes, practice materials, and downloadable resources for IELTS preparation, spoken English, competitive exams, and GRE vocabulary. Free study materials for all levels."
+        keywords="study notes, English learning resources, IELTS notes, spoken English materials, competitive exam preparation, GRE vocabulary, downloadable study materials, free resources"
+        ogTitle="Free English Study Notes & Resources - Bizlish"
+        ogDescription="Download comprehensive study materials for English learning. IELTS, spoken English, competitive exams, and GRE vocabulary resources."
+        canonical="https://bizlish.com/notes"
+      />
       <Navbar />
       
       {/* Hero Section */}

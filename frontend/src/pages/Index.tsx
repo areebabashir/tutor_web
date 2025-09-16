@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight, BookOpen, Users, Clock, DollarSign, Star, Play, ChevronLeft, ChevronRight, Loader2, Eye } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import SEO from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -48,11 +49,6 @@ interface Blog {
   publishedAt?: string;
   createdAt: string;
   updatedAt: string;
-  likes: Array<{
-    userEmail: string;
-    likedAt: string;
-  }>;
-  likeCount: number;
 }
 
 const featuredCourses = [
@@ -223,6 +219,14 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO 
+        title="Bizlish - Learn from the Best Tutors Anytime, Anywhere"
+        description="Transform your skills with expert-led courses in IELTS preparation, spoken English, competitive exams, and GRE vocabulary. Join thousands of successful students with flexible learning options and affordable pricing."
+        keywords="online learning, IELTS preparation, spoken English, competitive exams, GRE vocabulary, expert tutors, flexible learning, affordable courses, skill development"
+        ogTitle="Bizlish - Expert Online Learning Platform"
+        ogDescription="Master new skills with our comprehensive courses. Expert tutors, flexible schedules, and proven results."
+        canonical="https://bizlish.com"
+      />
       <Navbar />
       
       {/* Hero Section */}

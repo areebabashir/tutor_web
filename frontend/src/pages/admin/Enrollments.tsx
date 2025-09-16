@@ -133,7 +133,7 @@ export default function AdminEnrollments() {
     const matchesSearch = 
       student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       student.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (student.course && student.course.toLowerCase().includes(searchTerm.toLowerCase()));
+      (student.courses && student.courses.some(course => course.title.toLowerCase().includes(searchTerm.toLowerCase())));
     
     return matchesSearch;
   });
@@ -155,7 +155,7 @@ export default function AdminEnrollments() {
         s.name,
         s.email,
         s.phone,
-        s.course,
+        s.courses ? s.courses.map(c => c.title).join(', ') : 'No courses',
         formatDate(s.createdAt),
         s.city,
         s.qualification
@@ -447,8 +447,8 @@ export default function AdminEnrollments() {
                                       <Label htmlFor="edit-course">Course</Label>
                                       <Input
                                         id="edit-course"
-                                        value={editForm.course || ''}
-                                        onChange={(e) => setEditForm({ ...editForm, course: e.target.value })}
+                                        value={editForm.courses ? editForm.courses.map(c => c.title).join(', ') : ''}
+                                        onChange={(e) => setEditForm({ ...editForm, courses: [{ _id: '', title: e.target.value, category: '', level: '', price: 0 }] })}
                                       />
                                     </div>
                                     <div>
@@ -513,7 +513,7 @@ export default function AdminEnrollments() {
                                           <GraduationCap className="h-4 w-4 text-gray-500" />
                                           <div>
                                             <p className="text-sm text-gray-500">Course</p>
-                                            <p className="font-medium">{selectedStudent.course || 'Not specified'}</p>
+                                            <p className="font-medium">{selectedStudent.courses ? selectedStudent.courses.map(c => c.title).join(', ') : 'Not specified'}</p>
                                           </div>
                                         </div>
                                         <div className="flex items-center space-x-3">
