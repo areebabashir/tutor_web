@@ -29,6 +29,9 @@ import QuizzesPage from "./pages/Quizzes";
 import BlogPage from "./pages/BlogPage";
 import BlogView from "./pages/BlogView";
 import NotesPage from "./pages/Notes";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsOfService from "./pages/TermsOfService";
+import CookiePolicy from "./pages/CookiePolicy";
 import ErrorBoundary from "./components/ErrorBoundary";
 
 const queryClient = new QueryClient();
@@ -68,6 +71,9 @@ const App = () => (
               <Route path="/blog" element={<BlogPage />} />
               <Route path="/blog/:slug" element={<BlogView />} />
               <Route path="/notes" element={<NotesPage />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+              <Route path="/terms-of-service" element={<TermsOfService />} />
+              <Route path="/cookie-policy" element={<CookiePolicy />} />
               <Route path="/admin/login" element={<AdminLogin />} />
               <Route path="/admin" element={
                 <ProtectedAdminRoute>

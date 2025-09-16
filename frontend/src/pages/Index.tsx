@@ -13,12 +13,12 @@ import { reviewAPI, blogAPI } from "@/lib/api";
 import { toast } from "sonner";
 
 const categories = [
-  { name: "Programming", icon: "💻", color: "bg-gradient-primary", count: "50+ courses" },
-  { name: "Languages", icon: "🌍", color: "bg-gradient-secondary", count: "25+ courses" },
-  { name: "Business", icon: "📊", color: "bg-gradient-primary", count: "40+ courses" },
-  { name: "Design", icon: "🎨", color: "bg-gradient-secondary", count: "30+ courses" },
-  { name: "Science", icon: "🔬", color: "bg-gradient-primary", count: "20+ courses" },
-  { name: "Marketing", icon: "📈", color: "bg-gradient-secondary", count: "35+ courses" }
+  { name: "IELTS Preparation", icon: "📝", color: "bg-gradient-primary", count: "15+ courses" },
+  { name: "Spoken English", icon: "🗣️", color: "bg-gradient-secondary", count: "12+ courses" },
+  { name: "Competitive Exams", icon: "📚", color: "bg-gradient-primary", count: "10+ courses" },
+  { name: "GRE Vocabulary", icon: "📖", color: "bg-gradient-secondary", count: "8+ courses" },
+  { name: "Grammar & Writing", icon: "✍️", color: "bg-gradient-primary", count: "6+ courses" },
+  { name: "Business English", icon: "💼", color: "bg-gradient-secondary", count: "5+ courses" }
 ];
 
 interface Review {

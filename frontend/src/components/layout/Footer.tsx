@@ -42,10 +42,6 @@ const Footer = () => {
             <p className="text-muted-foreground leading-relaxed">
               Empowering professionals worldwide with business English skills that elevate your career and communication to new heights.
             </p>
-            <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-              <span>Trusted by 5000+ professionals</span>
-            </div>
           </div>
 
           {/* Quick Links */}
@@ -120,12 +116,12 @@ const Footer = () => {
         <div className="border-t border-border/50 mt-12 pt-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-muted-foreground text-center md:text-left">
-              © 2024 BIZLISH. All rights reserved. Enlivening English for professionals worldwide.
+              © 2025 BIZLISH. All rights reserved. Enlivening English for professionals worldwide.
             </p>
             <div className="flex items-center space-x-6 text-sm">
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">Privacy Policy</a>
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">Terms of Service</a>
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">Cookie Policy</a>
+              <Link to="/privacy-policy" className="text-muted-foreground hover:text-primary transition-colors">Privacy Policy</Link>
+              <Link to="/terms-of-service" className="text-muted-foreground hover:text-primary transition-colors">Terms of Service</Link>
+              <Link to="/cookie-policy" className="text-muted-foreground hover:text-primary transition-colors">Cookie Policy</Link>
             </div>
           </div>
         </div>
