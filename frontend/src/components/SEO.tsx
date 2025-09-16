@@ -27,7 +27,7 @@ const SEO: React.FC<SEOProps> = ({
   ogUrl,
   twitterCard = "summary_large_image",
   twitterSite = "@bizlishofficial",
-  canonical,
+  canonical = window.location.origin + window.location.pathname,
   noindex = false,
   nofollow = false
 }) => {
@@ -87,16 +87,62 @@ const SEO: React.FC<SEOProps> = ({
     if (robotsContent.length > 0) {
       updateMetaTag('robots', robotsContent.join(', '));
     } else {
-      // Remove robots meta tag if it exists and we want to allow indexing
-      const robotsMeta = document.querySelector('meta[name="robots"]');
-      if (robotsMeta) {
-        robotsMeta.remove();
-      }
+      // Default robots for SEO
+      updateMetaTag('robots', 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1');
     }
+
+    // Additional SEO meta tags
+    updateMetaTag('googlebot', 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1');
+    updateMetaTag('bingbot', 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1');
+
+    // Add structured data (JSON-LD)
+    const structuredData = {
+      "@context": "https://schema.org",
+      "@type": "EducationalOrganization",
+      "name": "Bizlish",
+      "description": description,
+      "url": canonical,
+      "logo": "https://bizlish.com/logo.png",
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "+92-318-5078571",
+        "contactType": "customer service",
+        "email": "bizlishofficial@gmail.com"
+      },
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "PK"
+      },
+      "sameAs": [
+        "https://www.instagram.com/bizlishofficial"
+      ],
+      "offers": {
+        "@type": "Offer",
+        "category": "English Language Learning",
+        "description": "IELTS preparation, Spoken English, Competitive Exams, GRE Vocabulary courses"
+      }
+    };
+
+    // Remove existing structured data
+    const existingScript = document.querySelector('script[type="application/ld+json"]');
+    if (existingScript) {
+      existingScript.remove();
+    }
+
+    // Add new structured data
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.textContent = JSON.stringify(structuredData);
+    document.head.appendChild(script);
 
     // Cleanup function to reset to default values when component unmounts
     return () => {
       document.title = "Bizlish - Learn from the Best Tutors Anytime, Anywhere";
+      // Remove structured data on cleanup
+      const scriptToRemove = document.querySelector('script[type="application/ld+json"]');
+      if (scriptToRemove) {
+        scriptToRemove.remove();
+      }
     };
   }, [title, description, keywords, author, ogTitle, ogDescription, ogImage, ogUrl, twitterCard, twitterSite, canonical, noindex, nofollow]);
 

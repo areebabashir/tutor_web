@@ -1,14 +1,24 @@
-User-agent: Googlebot
-Allow: /
-
-User-agent: Bingbot
-Allow: /
-
-User-agent: Twitterbot
-Allow: /
-
-User-agent: facebookexternalhit
-Allow: /
-
 User-agent: *
 Allow: /
+
+# Sitemap
+Sitemap: https://bizlish.com/sitemap.xml
+
+# Disallow admin areas
+Disallow: /admin/
+Disallow: /admin/login
+
+# Allow important pages
+Allow: /
+Allow: /courses
+Allow: /about
+Allow: /contact
+Allow: /blog
+Allow: /notes
+Allow: /quizzes
+Allow: /privacy-policy
+Allow: /terms-of-service
+Allow: /cookie-policy
+
+# Crawl delay
+Crawl-delay: 1
