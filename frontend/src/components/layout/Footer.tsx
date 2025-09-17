@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Mail, Phone, MapPin, Instagram, Sparkles, ArrowUp } from "lucide-react";
+import { Mail, Phone, MapPin, Instagram, Facebook, Sparkles, ArrowUp } from "lucide-react";
 import bizlishLogo from "@/assets/bzlish.jpg";
 
 const Footer = () => {
@@ -98,6 +98,9 @@ const Footer = () => {
               Stay connected with us for the latest updates and insights.
             </p>
             <div className="flex space-x-3">
+              <a href="https://www.facebook.com/share/1aHrpAMT42/" target="_blank" rel="noopener noreferrer" className="w-12 h-12 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl flex items-center justify-center hover:scale-110 transition-all duration-300 hover:shadow-lg">
+                <Facebook className="h-5 w-5 text-white" />
+              </a>
               <a href="https://www.instagram.com/bizlishofficial?igsh=dnhlbm9oemhhM213&utm_source=qr" target="_blank" rel="noopener noreferrer" className="w-12 h-12 bg-gradient-to-r from-pink-500 to-pink-600 rounded-xl flex items-center justify-center hover:scale-110 transition-all duration-300 hover:shadow-lg">
                 <Instagram className="h-5 w-5 text-white" />
               </a>

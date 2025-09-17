@@ -86,12 +86,6 @@ const Contact = () => {
     }
   ];
 
-  const stats = [
-    { number: "24h", label: "Response Time" },
-    { number: "98%", label: "Satisfaction Rate" },
-    { number: "5000+", label: "Students Helped" },
-    { number: "50+", label: "Countries Served" }
-  ];
 
   return (
     <div className="min-h-screen bg-background">
@@ -126,19 +120,6 @@ const Contact = () => {
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="py-16 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {stats.map((stat, index) => (
-              <div key={index} className="text-center stagger-item animate-fade-in-up">
-                <div className="text-4xl md:text-5xl font-bold text-primary mb-2">{stat.number}</div>
-                <div className="text-muted-foreground font-medium">{stat.label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* Contact Section */}
       <section className="py-16 lg:py-24">

@@ -66,12 +66,6 @@ const teamMembers = [
   }
 ];
 
-const stats = [
-  { icon: Users, number: "50,000+", label: "Happy Students", color: "text-primary", bgColor: "bg-primary/10" },
-  { icon: BookOpen, number: "200+", label: "Expert Courses", color: "text-primary", bgColor: "bg-primary/10" },
-  { icon: Globe, number: "150+", label: "Countries Reached", color: "text-primary", bgColor: "bg-primary/10" },
-  { icon: Award, number: "95%", label: "Success Rate", color: "text-primary", bgColor: "bg-primary/10" }
-];
 
 const values = [
   {
@@ -176,19 +170,6 @@ const About = () => {
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="py-16 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {stats.map((stat, index) => (
-              <div key={index} className="text-center stagger-item animate-fade-in-up">
-                <div className="text-4xl md:text-5xl font-bold text-primary mb-2">{stat.number}</div>
-                <div className="text-muted-foreground font-medium">{stat.label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* Mission & Vision */}
       <section className="py-16">
