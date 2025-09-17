@@ -243,9 +243,9 @@ const Index = () => {
                 <span className="block text-gradient-secondary">IELTS, Spoken English & More</span>
               </h1>
               <p className="text-xl text-white/90 mb-8 animate-fade-in">
-                Transform your communication skills with expert-led English courses designed for academic success and professional growth. 
-                <Link to="/about" className="text-yellow-300 hover:text-yellow-200 underline">Learn more about our teaching methods</Link> and 
-                <Link to="/courses" className="text-yellow-300 hover:text-yellow-200 underline"> explore our course catalog</Link>.
+                Transform your communication skills with expert-led English courses. 
+                <Link to="/about" className="text-yellow-300 hover:text-yellow-200 underline">Learn more</Link> and 
+                <Link to="/courses" className="text-yellow-300 hover:text-yellow-200 underline">explore our courses</Link>.
               </p>
               
               {/* Category Pills */}
