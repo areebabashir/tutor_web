@@ -11,6 +11,7 @@ const courseSchema = new mongoose.Schema({
     trim: true,
     maxlength: [2000, 'Description cannot exceed 2000 characters']
   },
+  
   category: {
     type: String,
     enum: ['IELTS preparation', 'Spoken English', 'English for competitive exams', 'GRE Vocabulary']
