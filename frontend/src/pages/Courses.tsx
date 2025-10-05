@@ -232,15 +232,12 @@ const Courses = () => {
                       <p className="text-muted-foreground text-sm mb-3 line-clamp-2">
                         {course.description}
                       </p>
-                      <p className="text-sm text-primary font-medium">
-                        by {course.instructorName}
-                      </p>
                     </div>
                     
                     <div className="flex items-center justify-between text-sm text-muted-foreground mb-4">
                       <div className="flex items-center space-x-1">
                         <Clock className="h-4 w-4" />
-                        <span>{course.durationInDays ? `${course.durationInDays} days` : 'Flexible'}</span>
+                        <span>Flexible</span>
                       </div>
                       <div className="flex items-center space-x-1">
                         <Badge variant="secondary" className="text-xs">

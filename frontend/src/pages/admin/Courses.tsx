@@ -22,11 +22,6 @@ interface Course {
   image: string;
   syllabus: string;
   features: string[];
-  duration: {
-    startDate: string;
-    endDate: string;
-  };
-  instructorName: string;
   price: number;
   status: 'active' | 'inactive' | 'upcoming';
   level: 'beginner' | 'intermediate' | 'advanced';
@@ -61,11 +56,6 @@ export default function AdminCoursesPage() {
     image: "",
     syllabus: "",
     features: [] as string[],
-    duration: {
-      startDate: "",
-      endDate: ""
-    },
-    instructorName: "",
     price: 0,
     status: "upcoming" as 'active' | 'inactive' | 'upcoming',
     level: "beginner" as 'beginner' | 'intermediate' | 'advanced',
@@ -107,23 +97,6 @@ export default function AdminCoursesPage() {
 
   const handleCreateCourse = async () => {
     try {
-      // Validate required fields
-      if (!formData.title || !formData.description || !formData.category || !formData.syllabus || !formData.instructorName) {
-        toast.error('Please fill in all required fields');
-        return;
-      }
-      
-      if (!formData.duration.startDate || !formData.duration.endDate) {
-        toast.error('Please select start and end dates');
-        return;
-      }
-      
-      // Validate date range
-      if (new Date(formData.duration.startDate) >= new Date(formData.duration.endDate)) {
-        toast.error('End date must be after start date');
-        return;
-      }
-      
       const { Authorization } = getAuthHeaders();
       
       // Create FormData for file upload
@@ -134,10 +107,9 @@ export default function AdminCoursesPage() {
       courseFormData.append('description', formData.description);
       courseFormData.append('category', formData.category);
       courseFormData.append('syllabus', formData.syllabus);
-      courseFormData.append('instructorName', formData.instructorName);
+      courseFormData.append('price', formData.price.toString());
       courseFormData.append('status', formData.status);
       courseFormData.append('level', formData.level);
-      courseFormData.append('duration', JSON.stringify(formData.duration));
       
       // Add files if selected
       if (selectedImage) {
@@ -179,23 +151,6 @@ export default function AdminCoursesPage() {
     if (!selectedCourse) return;
     
     try {
-      // Validate required fields
-      if (!formData.title || !formData.description || !formData.category || !formData.syllabus || !formData.instructorName) {
-        toast.error('Please fill in all required fields');
-        return;
-      }
-      
-      if (!formData.duration.startDate || !formData.duration.endDate) {
-        toast.error('Please select start and end dates');
-        return;
-      }
-      
-      // Validate date range
-      if (new Date(formData.duration.startDate) >= new Date(formData.duration.endDate)) {
-        toast.error('End date must be after start date');
-        return;
-      }
-      
       const { Authorization } = getAuthHeaders();
       
       // Create FormData for file upload
@@ -206,10 +161,9 @@ export default function AdminCoursesPage() {
       courseFormData.append('description', formData.description);
       courseFormData.append('category', formData.category);
       courseFormData.append('syllabus', formData.syllabus);
-      courseFormData.append('instructorName', formData.instructorName);
+      courseFormData.append('price', formData.price.toString());
       courseFormData.append('status', formData.status);
       courseFormData.append('level', formData.level);
-      courseFormData.append('duration', JSON.stringify(formData.duration));
       
       // Add files if selected
       if (selectedImage) {
@@ -275,11 +229,6 @@ export default function AdminCoursesPage() {
       image: "",
       syllabus: "",
       features: [],
-      duration: {
-        startDate: "",
-        endDate: ""
-      },
-      instructorName: "",
       price: 0,
       status: "upcoming",
       level: "beginner",
@@ -327,8 +276,6 @@ export default function AdminCoursesPage() {
       image: course.image,
       syllabus: course.syllabus,
       features: course.features,
-      duration: course.duration,
-      instructorName: course.instructorName,
       price: course.price,
       status: course.status,
       level: course.level,
@@ -360,13 +307,6 @@ export default function AdminCoursesPage() {
     setIsEditDialogOpen(true);
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    });
-  };
 
   const getStatusColor = (status: 'active' | 'inactive' | 'upcoming') => {
     switch (status) {
@@ -568,14 +508,6 @@ export default function AdminCoursesPage() {
               
               <div className="space-y-2 text-sm text-gray-500">
                 <div className="flex items-center">
-                  <User className="h-4 w-4 mr-2" />
-                  {course.instructorName}
-                </div>
-                <div className="flex items-center">
-                  <Calendar className="h-4 w-4 mr-2" />
-                  {formatDate(course.duration.startDate)} - {formatDate(course.duration.endDate)}
-                </div>
-                <div className="flex items-center">
                   <BookOpen className="h-4 w-4 mr-2" />
                   {course.features.length} features
                 </div>
@@ -737,15 +669,6 @@ export default function AdminCoursesPage() {
 
             <div className="grid grid-cols-3 gap-4">
               <div>
-                <Label htmlFor="instructor">Instructor Name</Label>
-                <Input
-                  id="instructor"
-                  value={formData.instructorName}
-                  onChange={(e) => setFormData({...formData, instructorName: e.target.value})}
-                  placeholder="Instructor name"
-                />
-              </div>
-              <div>
                 <Label htmlFor="level">Level</Label>
                 <Select value={formData.level} onValueChange={(value) => setFormData({...formData, level: value as any})}>
                   <SelectTrigger>
@@ -772,32 +695,6 @@ export default function AdminCoursesPage() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="startDate">Start Date</Label>
-                <Input
-                  id="startDate"
-                  type="date"
-                  value={formData.duration.startDate}
-                  onChange={(e) => setFormData({
-                    ...formData, 
-                    duration: {...formData.duration, startDate: e.target.value}
-                  })}
-                />
-              </div>
-              <div>
-                <Label htmlFor="endDate">End Date</Label>
-                <Input
-                  id="endDate"
-                  type="date"
-                  value={formData.duration.endDate}
-                  onChange={(e) => setFormData({
-                    ...formData, 
-                    duration: {...formData.duration, endDate: e.target.value}
-                  })}
-                />
-              </div>
-            </div>
 
             <div>
               <Label htmlFor="status">Status</Label>
@@ -1083,15 +980,6 @@ export default function AdminCoursesPage() {
 
             <div className="grid grid-cols-3 gap-4">
               <div>
-                <Label htmlFor="edit-instructor">Instructor Name</Label>
-                <Input
-                  id="edit-instructor"
-                  value={formData.instructorName}
-                  onChange={(e) => setFormData({...formData, instructorName: e.target.value})}
-                  placeholder="Instructor name"
-                />
-              </div>
-              <div>
                 <Label htmlFor="edit-level">Level</Label>
                 <Select value={formData.level} onValueChange={(value) => setFormData({...formData, level: value as any})}>
                   <SelectTrigger>
@@ -1118,32 +1006,6 @@ export default function AdminCoursesPage() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="edit-startDate">Start Date</Label>
-                <Input
-                  id="edit-startDate"
-                  type="date"
-                  value={formData.duration.startDate}
-                  onChange={(e) => setFormData({
-                    ...formData, 
-                    duration: {...formData.duration, startDate: e.target.value}
-                  })}
-                />
-              </div>
-              <div>
-                <Label htmlFor="edit-endDate">End Date</Label>
-                <Input
-                  id="edit-endDate"
-                  type="date"
-                  value={formData.duration.endDate}
-                  onChange={(e) => setFormData({
-                    ...formData, 
-                    duration: {...formData.duration, endDate: e.target.value}
-                  })}
-                />
-              </div>
-            </div>
 
             <div>
               <Label htmlFor="edit-status">Status</Label>
@@ -1301,17 +1163,9 @@ export default function AdminCoursesPage() {
                 </div>
                 <div className="flex-1">
                   <h3 className="text-2xl font-bold">{selectedCourse.title}</h3>
-                  <div className="flex items-center space-x-2 text-gray-600 mt-2">
-                    <User className="h-4 w-4" />
-                    <span>Instructor: {selectedCourse.instructorName}</span>
-                  </div>
                   <div className="flex items-center space-x-2 text-gray-600 mt-1">
                     <BookOpen className="h-4 w-4" />
                     <span>Category: {selectedCourse.category}</span>
-                  </div>
-                  <div className="flex items-center space-x-2 text-gray-600 mt-1">
-                    <Calendar className="h-4 w-4" />
-                    <span>Duration: {formatDate(selectedCourse.duration.startDate)} - {formatDate(selectedCourse.duration.endDate)}</span>
                   </div>
                 </div>
               </div>

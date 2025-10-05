@@ -6,16 +6,11 @@ export interface Course {
   _id: string;
   title: string;
   description: string;
-  category: 'IELTS' | 'English Proficiency' | 'Quran';
+  category: 'IELTS preparation' | 'Spoken English' | 'English for competitive exams' | 'GRE Vocabulary';
   video: string;
   image: string;
   syllabus: string;
   features?: string[];
-  duration: {
-    startDate: string;
-    endDate: string;
-  };
-  instructorName: string;
   price: number;
   maxStudents: number;
   currentStudents: number;
@@ -24,7 +19,6 @@ export interface Course {
   tags?: string[];
   requirements?: string[];
   learningOutcomes?: string[];
-  durationInDays?: number;
   availableSpots?: number;
   enrollmentPercentage?: number;
   createdAt: string;

@@ -77,7 +77,7 @@ const CourseDetails = () => {
     
     // Direct video file - check if it's a relative path from backend
     if (videoUrl.startsWith('/uploads/')) {
-      const backendUrl = import.meta.env.VITE_API_URL || 'https://apis.bizlish.com/api';
+      const backendUrl = import.meta.env.VITE_API_URL || 'https://apis.bizlish.online';
       return `${backendUrl}${videoUrl}`;
     }
     
@@ -87,7 +87,7 @@ const CourseDetails = () => {
     }
     
     // Default case - assume it's a relative path
-    const backendUrl = import.meta.env.VITE_API_URL || 'https://apis.bizlish.com/api';
+    const backendUrl = import.meta.env.VITE_API_URL || 'https://apis.bizlish.online';
     return `${backendUrl}${videoUrl}`;
   };
 
@@ -197,7 +197,7 @@ const CourseDetails = () => {
       <SEO 
         title={`${course.title} - ${course.category} Course | Bizlish`}
         description={course.description || `Learn ${course.title} with our comprehensive ${course.category} course. Expert instruction, flexible learning, and proven results.`}
-        keywords={`${course.title}, ${course.category}, English learning, course details, ${course.instructorName}, online course`}
+        keywords={`${course.title}, ${course.category}, English learning, course details, online course`}
         ogTitle={`${course.title} - Expert ${course.category} Course`}
         ogDescription={course.description || `Master ${course.title} with our expert-led course. Comprehensive curriculum and flexible learning options.`}
         ogImage={course.image ? formatImageUrl(course.image) : undefined}
@@ -234,7 +234,7 @@ const CourseDetails = () => {
               <div className="flex flex-wrap gap-4 text-white/90">
                 <div className="flex items-center">
                   <Clock className="w-4 h-4 mr-2" />
-                  <span>{course.durationInDays ? `${course.durationInDays} days` : 'Flexible'}</span>
+                  <span>Flexible</span>
                 </div>
                 <div className="flex items-center">
                   <Users className="w-4 h-4 mr-2" />
@@ -425,7 +425,7 @@ const CourseDetails = () => {
                       <User className="h-8 w-8 text-white" />
                     </div>
                     <div>
-                      <h3 className="text-xl font-poppins font-semibold">{course.instructorName}</h3>
+                      <h3 className="text-xl font-poppins font-semibold">Expert Instructor</h3>
                       <p className="text-muted-foreground">Expert instructor in {course.category}</p>
                     </div>
                   </div>
@@ -503,7 +503,7 @@ const CourseDetails = () => {
                 <CardContent className="space-y-3">
                   <div className="flex items-center justify-between">
                     <span className="text-muted-foreground">Duration</span>
-                    <span className="font-medium">{course.durationInDays ? `${course.durationInDays} days` : 'Flexible'}</span>
+                    <span className="font-medium">Flexible</span>
                   </div>
                   <Separator />
                   <div className="flex items-center justify-between">
