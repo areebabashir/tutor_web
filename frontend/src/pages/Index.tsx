@@ -404,7 +404,7 @@ const Index = () => {
                     <div className="flex items-center justify-between text-sm text-muted-foreground mb-4">
                       <div className="flex items-center space-x-1">
                         <Clock className="h-4 w-4" />
-                        <span>{course.durationInDays ? `${course.durationInDays} days` : 'Flexible'}</span>
+                        <span>Flexible</span>
                       </div>
                       <div className="flex items-center space-x-1">
                         <Badge variant="secondary" className="text-xs">

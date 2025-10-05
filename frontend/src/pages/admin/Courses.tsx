@@ -515,7 +515,7 @@ export default function AdminCoursesPage() {
 
               <div className="flex justify-between items-center mt-4 pt-4 border-t">
                 <div className="text-xs text-gray-500">
-                  Created: {formatDate(course.createdAt)}
+                  Created: {new Date(course.createdAt).toLocaleDateString()}
                 </div>
                 <div className="flex space-x-2">
                   <Button
@@ -1337,11 +1337,11 @@ export default function AdminCoursesPage() {
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <p className="text-sm text-gray-500">Created</p>
-                      <p className="font-medium">{formatDate(selectedCourse.createdAt)}</p>
+                      <p className="font-medium">{new Date(selectedCourse.createdAt).toLocaleDateString()}</p>
                     </div>
                     <div>
                       <p className="text-sm text-gray-500">Last Updated</p>
-                      <p className="font-medium">{formatDate(selectedCourse.updatedAt)}</p>
+                      <p className="font-medium">{new Date(selectedCourse.updatedAt).toLocaleDateString()}</p>
                     </div>
                   </div>
                 </CardContent>
