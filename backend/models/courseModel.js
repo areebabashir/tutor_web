@@ -17,11 +17,13 @@ const courseSchema = new mongoose.Schema({
   },
   video: {
     type: String,
-    trim: true
+    trim: true,
+    default: ''
   },
   image: {
     type: String,
-    trim: true
+    trim: true,
+    default: ''
   },
   syllabus: {
     type: String,
