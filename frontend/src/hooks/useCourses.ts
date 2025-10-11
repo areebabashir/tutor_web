@@ -11,7 +11,6 @@ export interface Course {
   image: string;
   syllabus: string;
   features?: string[];
-  price: number;
   maxStudents: number;
   currentStudents: number;
   status: 'active' | 'inactive' | 'upcoming';

@@ -98,7 +98,7 @@ const handleUploadError = (err, req, res, next) => {
     if (err.code === 'LIMIT_FILE_SIZE') {
       return res.status(400).json({
         success: false,
-        message: 'File too large. Maximum size is 50MB.'
+        message: 'File too large. Maximum size is 100MB for videos and 10MB for images.'
       });
     }
     if (err.code === 'LIMIT_FILE_COUNT') {
@@ -129,7 +129,10 @@ const upload = multer({
   storage,
   fileFilter,
   limits: {
-    fileSize: 50 * 1024 * 1024 // 50MB limit
+    fileSize: 100 * 1024 * 1024, // 100MB limit for videos
+    fieldSize: 100 * 1024 * 1024,
+    fields: 20,
+    files: 10
   }
 });
 

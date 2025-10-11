@@ -33,10 +33,6 @@ const courseSchema = new mongoose.Schema({
     type: [String],
     default: []
   },
-  price: {
-    type: Number,
-    default: 0
-  },
   maxStudents: {
     type: Number,
     default: 50

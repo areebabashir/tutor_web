@@ -44,7 +44,7 @@ export const getAllStudents = async (req, res) => {
   try {
     console.log('getAllStudents called');
     const students = await Student.find()
-      .populate('courses', 'title category level price')
+      .populate('courses', 'title category level')
       .sort({ createdAt: -1 });
     console.log('Found students:', students.length);
     res.status(200).json({ 
@@ -62,7 +62,7 @@ export const getAllStudents = async (req, res) => {
 export const getStudentById = async (req, res) => {
   try {
     const student = await Student.findById(req.params.id)
-      .populate('courses', 'title category level price');
+      .populate('courses', 'title category level');
     if (!student) {
       return res.status(404).json({ success: false, message: 'Student not found' });
     }
@@ -107,7 +107,7 @@ export const updateStudent = async (req, res) => {
       req.params.id,
       updateData,
       { new: true, runValidators: true }
-    ).populate('courses', 'title category level price');
+    ).populate('courses', 'title category level');
     
     if (!student) {
       return res.status(404).json({ success: false, message: 'Student not found' });

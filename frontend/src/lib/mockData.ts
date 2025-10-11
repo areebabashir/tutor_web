@@ -5,7 +5,6 @@ export interface Course {
   title: string;
   description: string;
   category: string;
-  price: number;
   image: string;
   duration: string;
   tutor: string;
@@ -39,7 +38,6 @@ export const mockCourses: Course[] = [
     title: 'Complete Web Development Bootcamp',
     description: 'Learn full-stack web development from scratch with React, Node.js, and MongoDB.',
     category: 'Web Development',
-    price: 199,
     image: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=400&h=300&fit=crop',
     duration: '12 weeks',
     tutor: 'John Smith',
@@ -51,7 +49,6 @@ export const mockCourses: Course[] = [
     title: 'Digital Marketing Mastery',
     description: 'Master social media marketing, SEO, and digital advertising strategies.',
     category: 'Marketing',
-    price: 149,
     image: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=400&h=300&fit=crop',
     duration: '8 weeks',
     tutor: 'Sarah Johnson',
@@ -63,7 +60,6 @@ export const mockCourses: Course[] = [
     title: 'Python Programming for Beginners',
     description: 'Start your programming journey with Python - from basics to advanced concepts.',
     category: 'Programming',
-    price: 129,
     image: 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=400&h=300&fit=crop',
     duration: '10 weeks',
     tutor: 'Mike Chen',
@@ -75,7 +71,6 @@ export const mockCourses: Course[] = [
     title: 'Graphic Design Fundamentals',
     description: 'Learn design principles, typography, and create stunning visuals with industry tools.',
     category: 'Design',
-    price: 179,
     image: 'https://images.unsplash.com/photo-1581090464777-f3220bbe1b8b?w=400&h=300&fit=crop',
     duration: '6 weeks',
     tutor: 'Emily Davis',

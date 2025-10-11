@@ -59,8 +59,7 @@ const featuredCourses = [
     category: "IELTS preparation",
     duration: "12 weeks",
     students: 3200,
-    rating: 4.9,
-    price: "$149"
+    rating: 4.9
   },
   {
     id: 2,
@@ -69,8 +68,7 @@ const featuredCourses = [
     category: "Spoken English",
     duration: "10 weeks",
     students: 2100,
-    rating: 4.8,
-    price: "$129"
+    rating: 4.8
   },
   {
     id: 3,
@@ -79,8 +77,7 @@ const featuredCourses = [
     category: "English for competitive exams",
     duration: "14 weeks",
     students: 1800,
-    rating: 4.7,
-    price: "$139"
+    rating: 4.7
   },
   {
     id: 4,
@@ -89,8 +86,7 @@ const featuredCourses = [
     category: "GRE Vocabulary",
     duration: "8 weeks",
     students: 1200,
-    rating: 4.8,
-    price: "$119"
+    rating: 4.8
   }
 ];
 
@@ -413,10 +409,7 @@ const Index = () => {
                       </div>
                     </div>
                     
-                    <div className="flex items-center justify-between">
-                      <span className="text-xl font-poppins font-bold text-primary">
-                        ${course.price}
-                      </span>
+                    <div className="flex items-center justify-end">
                       <div className="flex gap-2">
                         <Link to={`/enroll-course?courseId=${course._id}`}>
                           <Button size="sm" variant="gradient">

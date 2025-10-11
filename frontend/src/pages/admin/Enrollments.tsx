@@ -25,7 +25,6 @@ interface Student {
     title: string;
     category: string;
     level: string;
-    price: number;
   }>;
   courseNames?: string[];
   createdAt: string;
@@ -448,7 +447,7 @@ export default function AdminEnrollments() {
                                       <Input
                                         id="edit-course"
                                         value={editForm.courses ? editForm.courses.map(c => c.title).join(', ') : ''}
-                                        onChange={(e) => setEditForm({ ...editForm, courses: [{ _id: '', title: e.target.value, category: '', level: '', price: 0 }] })}
+                                        onChange={(e) => setEditForm({ ...editForm, courses: [{ _id: '', title: e.target.value, category: '', level: '' }] })}
                                       />
                                     </div>
                                     <div>

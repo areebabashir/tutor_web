@@ -32,26 +32,44 @@ connectDB();
 // Initialize Express app
 const app = express();
 
-// CORS configuration
+// CORS configuration - Allow production and development origins
 app.use(cors({
-  origin: [
-    'http://localhost:8080', 
-    'http://localhost:8081', 
-    'http://localhost:3000', 
-    'http://127.0.0.1:8080', 
-    'http://127.0.0.1:8081', 
-    'http://127.0.0.1:3000',
-    'https://bizlish.online',
-    'https://www.bizlish.online'
-  ],
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    const allowedOrigins = [
+      'http://localhost:8080', 
+      'http://localhost:8081', 
+      'http://localhost:3000', 
+      'http://127.0.0.1:8080', 
+      'http://127.0.0.1:8081', 
+      'http://127.0.0.1:3000',
+      'https://bizlish.online',
+      'https://www.bizlish.online'
+    ];
+    
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      console.warn(`CORS: Origin ${origin} not allowed`);
+      callback(null, true); // Still allow for now, but log warning
+    }
+  },
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+  exposedHeaders: ['Content-Length', 'Content-Type'],
+  preflightContinue: false,
+  optionsSuccessStatus: 204
 }));
 
-// Middleware
-app.use(express.json({ limit: '50mb' })); // Parse incoming JSON requests
-app.use(express.urlencoded({ extended: true, limit: '50mb' })); // Parse URL-encoded bodies
+// Handle preflight requests explicitly
+app.options('*', cors());
+
+// Middleware - Increased limits for file uploads
+app.use(express.json({ limit: '100mb' })); // Parse incoming JSON requests
+app.use(express.urlencoded({ extended: true, limit: '100mb', parameterLimit: 50000 })); // Parse URL-encoded bodies
 
 // Add request logging middleware
 app.use((req, res, next) => {

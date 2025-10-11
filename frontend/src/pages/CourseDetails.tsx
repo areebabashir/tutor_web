@@ -21,7 +21,6 @@ const courseData = {
     rating: 4.8,
     reviews: 456,
     image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800&h=400&fit=crop",
-    price: "$99",
     tutor: {
       name: "Sarah Johnson",
       bio: "Senior Full-Stack Developer with 8+ years experience at top tech companies",
@@ -477,12 +476,6 @@ const CourseDetails = () => {
               <Card>
                 <CardContent className="p-6">
                   <div className="text-center space-y-4">
-                    <div>
-                      <span className="text-3xl font-poppins font-bold text-primary">
-                        ${course.price}
-                      </span>
-                      <span className="text-muted-foreground ml-2">one-time payment</span>
-                    </div>
                     <Link to={`/enroll-course?courseId=${course._id}`}>
                       <Button className="w-full" variant="gradient" size="lg">
                         Enroll Now

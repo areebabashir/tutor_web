@@ -201,7 +201,7 @@ export default function StudentEnrollmentForm({ preSelectedCourseId }: StudentEn
                     <SelectContent>
                       {courses.map(course => (
                         <SelectItem key={course._id} value={course._id}>
-                          {course.title} - ${course.price}
+                          {course.title}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -226,7 +226,6 @@ export default function StudentEnrollmentForm({ preSelectedCourseId }: StudentEn
                           <div className="flex items-center gap-3 text-sm">
                             <Badge variant="outline">{selectedCourseData.category}</Badge>
                             <Badge variant="secondary">{selectedCourseData.level}</Badge>
-                            <span className="text-gray-500">${selectedCourseData.price}</span>
                           </div>
                         </div>
                       ) : (

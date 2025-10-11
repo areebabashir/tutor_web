@@ -34,7 +34,6 @@ interface TopCourse {
   title: string;
   instructor?: string;
   enrollments?: number;
-  price?: number;
 }
 
 interface QuizStats {

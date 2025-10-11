@@ -22,7 +22,6 @@ interface Course {
   image: string;
   syllabus: string;
   features: string[];
-  price: number;
   status: 'active' | 'inactive' | 'upcoming';
   level: 'beginner' | 'intermediate' | 'advanced';
   tags: string[];
@@ -56,7 +55,6 @@ export default function AdminCoursesPage() {
     image: "",
     syllabus: "",
     features: [] as string[],
-    price: 0,
     status: "upcoming" as 'active' | 'inactive' | 'upcoming',
     level: "beginner" as 'beginner' | 'intermediate' | 'advanced',
     tags: [] as string[],
@@ -107,7 +105,6 @@ export default function AdminCoursesPage() {
       courseFormData.append('description', formData.description);
       courseFormData.append('category', formData.category);
       courseFormData.append('syllabus', formData.syllabus);
-      courseFormData.append('price', formData.price.toString());
       courseFormData.append('status', formData.status);
       courseFormData.append('level', formData.level);
       
@@ -161,7 +158,6 @@ export default function AdminCoursesPage() {
       courseFormData.append('description', formData.description);
       courseFormData.append('category', formData.category);
       courseFormData.append('syllabus', formData.syllabus);
-      courseFormData.append('price', formData.price.toString());
       courseFormData.append('status', formData.status);
       courseFormData.append('level', formData.level);
       
@@ -229,7 +225,6 @@ export default function AdminCoursesPage() {
       image: "",
       syllabus: "",
       features: [],
-      price: 0,
       status: "upcoming",
       level: "beginner",
       tags: [],
@@ -276,7 +271,6 @@ export default function AdminCoursesPage() {
       image: course.image,
       syllabus: course.syllabus,
       features: course.features,
-      price: course.price,
       status: course.status,
       level: course.level,
       tags: course.tags,
@@ -667,7 +661,7 @@ export default function AdminCoursesPage() {
               />
             </div>
 
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="level">Level</Label>
                 <Select value={formData.level} onValueChange={(value) => setFormData({...formData, level: value as any})}>
@@ -680,18 +674,6 @@ export default function AdminCoursesPage() {
                     <SelectItem value="advanced">Advanced</SelectItem>
                   </SelectContent>
                 </Select>
-              </div>
-              <div>
-                <Label htmlFor="price">Price ($)</Label>
-                <Input
-                  id="price"
-                  type="number"
-                  min="0"
-                  step="0.01"
-                  value={formData.price}
-                  onChange={(e) => setFormData({...formData, price: parseFloat(e.target.value) || 0})}
-                  placeholder="0.00"
-                />
               </div>
             </div>
 
@@ -978,7 +960,7 @@ export default function AdminCoursesPage() {
               />
             </div>
 
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="edit-level">Level</Label>
                 <Select value={formData.level} onValueChange={(value) => setFormData({...formData, level: value as any})}>
@@ -991,18 +973,6 @@ export default function AdminCoursesPage() {
                     <SelectItem value="advanced">Advanced</SelectItem>
                   </SelectContent>
                 </Select>
-              </div>
-              <div>
-                <Label htmlFor="edit-price">Price ($)</Label>
-                <Input
-                  id="edit-price"
-                  type="number"
-                  min="0"
-                  step="0.01"
-                  value={formData.price}
-                  onChange={(e) => setFormData({...formData, price: parseFloat(e.target.value) || 0})}
-                  placeholder="0.00"
-                />
               </div>
             </div>
 

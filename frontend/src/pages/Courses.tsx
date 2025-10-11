@@ -22,7 +22,6 @@ const coursesData = [
     students: 3200,
     rating: 4.9,
     image: "https://images.unsplash.com/photo-1503676382389-4809596d5290?w=400&h=240&fit=crop",
-    price: "$149",
     level: "All Levels",
     instructor: "Expert IELTS Trainer"
   },
@@ -35,7 +34,6 @@ const coursesData = [
     students: 2100,
     rating: 4.8,
     image: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&h=240&fit=crop",
-    price: "$129",
     level: "All Levels",
     instructor: "Fluency Coach"
   },
@@ -48,7 +46,6 @@ const coursesData = [
     students: 1800,
     rating: 4.7,
     image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&h=240&fit=crop",
-    price: "$139",
     level: "All Levels",
     instructor: "Exam Specialist"
   },
@@ -61,7 +58,6 @@ const coursesData = [
     students: 1200,
     rating: 4.8,
     image: "https://images.unsplash.com/photo-1464983953574-0892a716854b?w=400&h=240&fit=crop",
-    price: "$119",
     level: "All Levels",
     instructor: "GRE Verbal Coach"
   }
@@ -246,13 +242,7 @@ const Courses = () => {
                       </div>
                     </div>
                     
-                    <div className="flex items-center justify-between pt-4 border-t border-border/50">
-                      <div>
-                        <span className="text-3xl font-bold text-primary">
-                          ${course.price}
-                        </span>
-                        <span className="text-sm text-muted-foreground ml-1">USD</span>
-                      </div>
+                    <div className="flex items-center justify-end pt-4 border-t border-border/50">
                       <div className="flex gap-2">
                         {/* Remove View Details button, keep only Enroll Now */}
                         <Link to={`/enroll-course?courseId=${course._id}`}>
