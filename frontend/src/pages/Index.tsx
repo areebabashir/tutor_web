@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, BookOpen, Users, Clock, DollarSign, Star, Play, ChevronLeft, ChevronRight, Loader2, Eye } from "lucide-react";
+import { ArrowRight, BookOpen, Users, Clock, DollarSign, Star, Play, ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import SEO from "@/components/SEO";
@@ -238,11 +238,11 @@ const Index = () => {
                 Learn English with Expert Tutors
                 <span className="block text-gradient-secondary">IELTS, Spoken English & More</span>
               </h1>
-              <p className="text-xl text-white/90 mb-8 animate-fade-in">
-                Transform your communication skills with expert-led English courses. <br />
-                <Link to="/about" className="text-yellow-300 hover:text-yellow-200 underline">Learn more</Link> and 
-                <Link to="/courses" className="text-yellow-300 hover:text-yellow-200 underline">explore our courses</Link>.
-              </p>
+                <p className="text-xl text-white/90 mb-8 animate-fade-in">
+                  Transform your communication skills with expert-led English courses. <br />
+                  <Link to="/about" className="text-yellow-300 hover:text-yellow-200 underline">Learn more</Link> and <br />
+                  <Link to="/courses" className="text-yellow-300 hover:text-yellow-200 underline">explore our courses</Link>.
+                </p>
               
               {/* Category Pills */}
               <div className="flex flex-wrap gap-2 justify-center lg:justify-start mb-8 animate-fade-in">
@@ -314,7 +314,7 @@ const Index = () => {
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
               Master essential English communication skills with expert-led courses designed for professional success. 
-              <Link to="/contact" className="text-primary hover:underline">Contact us</Link> for personalized learning recommendations.
+              <Link to="/contact" className="text-primary hover:underline"> Contact us</Link> for personalized learning recommendations.
             </p>
           </div>
           
@@ -362,34 +362,31 @@ const Index = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {featuredCourses.length > 0 ? (
                 featuredCourses.slice(0, 3).map((course) => (
-                <Card key={course._id} className="hover-lift shadow-soft border-0 overflow-hidden">
-                  <div className="relative">
-                    <img
-                      src={`${import.meta.env.VITE_API_URL || 'https://apis.bizlish.online'}${course.image}`}
-                      alt={course.title}
-                      className="w-full h-48 object-cover"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.src = "https://images.unsplash.com/photo-1503676382389-4809596d5290?w=400&h=240&fit=crop";
-                      }}
-                    />
-                    <Link to={`/course/${course._id}`}
-                      className="absolute top-2 right-2 bg-white/80 rounded-full p-2 shadow hover:bg-primary/90 hover:text-white transition-colors z-10">
-                      <Eye className="h-5 w-5" />
-                    </Link>
-                    <div className="absolute top-4 left-4 flex flex-col gap-2">
-                      <Badge className="bg-gradient-secondary">
-                        {course.category}
-                      </Badge>
-                      {course.tags && course.tags.length > 0 && (
-                        <Badge variant="outline" className="bg-white/90 text-gray-800 text-xs">
-                          {course.tags[0]}
+                <Link to={`/course/${course._id}`} key={course._id} className="block">
+                  <Card className="hover-lift shadow-soft border-0 overflow-hidden cursor-pointer h-full">
+                    <div className="relative">
+                      <img
+                        src={`${import.meta.env.VITE_API_URL || 'https://apis.bizlish.online'}${course.image}`}
+                        alt={course.title}
+                        className="w-full h-48 object-cover"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.src = "https://images.unsplash.com/photo-1503676382389-4809596d5290?w=400&h=240&fit=crop";
+                        }}
+                      />
+                      <div className="absolute top-4 left-4 flex flex-col gap-2">
+                        <Badge className="bg-gradient-secondary">
+                          {course.category}
                         </Badge>
-                      )}
+                        {course.tags && course.tags.length > 0 && (
+                          <Badge variant="outline" className="bg-white/90 text-gray-800 text-xs">
+                            {course.tags[0]}
+                          </Badge>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                  
-                  <CardContent className="p-6">
+                    
+                    <CardContent className="p-6">
                     <h3 className="font-poppins font-semibold text-lg mb-2 line-clamp-2">
                       {course.title}
                     </h3>
@@ -411,15 +408,22 @@ const Index = () => {
                     
                     <div className="flex items-center justify-end">
                       <div className="flex gap-2">
-                        <Link to={`/enroll-course?courseId=${course._id}`}>
-                          <Button size="sm" variant="gradient">
-                            Enroll Now
-                          </Button>
-                        </Link>
+                        <Button 
+                          size="sm" 
+                          variant="gradient"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            window.location.href = `/enroll-course?courseId=${course._id}`;
+                          }}
+                        >
+                          Enroll Now
+                        </Button>
                       </div>
                     </div>
                   </CardContent>
-                </Card>
+                  </Card>
+                </Link>
               ))
               ) : (
                 <div className="col-span-full text-center py-12">

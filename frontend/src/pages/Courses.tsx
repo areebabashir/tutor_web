@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Search, Filter, Clock, Users, Star, Sparkles, BookOpen, Loader2, Play, X, Eye } from "lucide-react";
+import { Search, Filter, Clock, Users, Star, Sparkles, BookOpen, Loader2, Play, X } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import SEO from "@/components/SEO";
@@ -186,41 +186,36 @@ const Courses = () => {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredCourses.map((course) => (
-                <Card 
-                  key={course._id} 
-                  className="card-modern hover-lift overflow-hidden group"
-                >
-                  <div className="relative overflow-hidden">
-                    <img
-                      src={`${import.meta.env.VITE_API_URL || 'https://apis.bizlish.online'}${course.image}`}
-                      alt={course.title}
-                      className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.src = "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=400&h=240&fit=crop";
-                      }}
-                    />
-                    <Link to={`/course/${course._id}`}
-                      className="absolute top-2 right-2 bg-white/80 rounded-full p-2 shadow hover:bg-primary/90 hover:text-white transition-colors z-10">
-                      <Eye className="h-5 w-5" />
-                    </Link>
-                    <div className="absolute top-4 left-4 flex flex-col gap-2">
-                      <Badge className="badge-modern bg-gradient-to-r from-primary to-accent text-white">
-                        {course.category}
-                      </Badge>
-                      <Badge variant="secondary" className="badge-modern">
-                        {course.level}
-                      </Badge>
-                      {course.tags && course.tags.length > 0 && (
-                        <Badge variant="outline" className="badge-modern bg-white/90 text-gray-800">
-                          {course.tags[0]}
+                <Link to={`/course/${course._id}`} key={course._id} className="block">
+                  <Card 
+                    className="card-modern hover-lift overflow-hidden group cursor-pointer h-full"
+                  >
+                    <div className="relative overflow-hidden">
+                      <img
+                        src={`${import.meta.env.VITE_API_URL || 'https://apis.bizlish.online'}${course.image}`}
+                        alt={course.title}
+                        className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.src = "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=400&h=240&fit=crop";
+                        }}
+                      />
+                      <div className="absolute top-4 left-4 flex flex-col gap-2">
+                        <Badge className="badge-modern bg-gradient-to-r from-primary to-accent text-white">
+                          {course.category}
                         </Badge>
-                      )}
+                        <Badge variant="secondary" className="badge-modern">
+                          {course.level}
+                        </Badge>
+                        {course.tags && course.tags.length > 0 && (
+                          <Badge variant="outline" className="badge-modern bg-white/90 text-gray-800">
+                            {course.tags[0]}
+                          </Badge>
+                        )}
+                      </div>
                     </div>
-                    {/* Remove duplicate category badge at top right */}
-                  </div>
-                  
-                  <CardContent className="p-6">
+                    
+                    <CardContent className="p-6">
                     <div className="mb-4">
                       <h3 className="font-semibold text-xl mb-2 line-clamp-2 group-hover:text-primary transition-colors">
                         {course.title}
@@ -244,17 +239,23 @@ const Courses = () => {
                     
                     <div className="flex items-center justify-end pt-4 border-t border-border/50">
                       <div className="flex gap-2">
-                        {/* Remove View Details button, keep only Enroll Now */}
-                        <Link to={`/enroll-course?courseId=${course._id}`}>
-                          <Button className="btn-modern bg-gradient-to-r from-primary to-accent text-white hover:shadow-lg">
-                            Enroll Now
-                          </Button>
-                        </Link>
+                        {/* Enroll button with onClick to prevent card navigation */}
+                        <Button 
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            window.location.href = `/enroll-course?courseId=${course._id}`;
+                          }}
+                          className="btn-modern bg-gradient-to-r from-primary to-accent text-white hover:shadow-lg"
+                        >
+                          Enroll Now
+                        </Button>
                       </div>
                     </div>
                   </CardContent>
-                </Card>
-                            ))}
+                  </Card>
+                </Link>
+              ))}
             </div>
           )}
 
